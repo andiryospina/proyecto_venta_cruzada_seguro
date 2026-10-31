@@ -10,6 +10,8 @@ from proyecto.data.cleaning import (
     encode_vehicle_age,
     encode_vehicle_damage,
     find_impossible_values,
+    find_test_csv,
+    find_train_csv,
     flag_minimum_premium,
 )
 
@@ -123,3 +125,28 @@ def test_clean_rejects_missing_columns():
 def test_clean_rejects_impossible_values():
     with pytest.raises(ValueError, match="imposibles"):
         clean(make_rows(Age=[150, 29]))
+
+
+# Ubicación del CSV: la plantilla del curso y el repo con un único dataset.csv deben funcionar
+def test_find_train_csv_prefers_course_layout(tmp_path):
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "train.csv").write_text("id")
+    (tmp_path / "dataset.csv").write_text("id")
+    assert find_train_csv(tmp_path) == tmp_path / "data" / "raw" / "train.csv"
+
+
+def test_find_train_csv_falls_back_to_dataset_csv_in_root(tmp_path):
+    (tmp_path / "dataset.csv").write_text("id")
+    assert find_train_csv(tmp_path) == tmp_path / "dataset.csv"
+
+
+def test_find_train_csv_fails_with_a_clear_message(tmp_path):
+    with pytest.raises(FileNotFoundError, match="dataset.csv"):
+        find_train_csv(tmp_path)
+
+
+def test_find_test_csv_is_optional(tmp_path):
+    assert find_test_csv(tmp_path) is None
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "test.csv").write_text("id")
+    assert find_test_csv(tmp_path) == tmp_path / "data" / "raw" / "test.csv"

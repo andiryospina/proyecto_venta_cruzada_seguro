@@ -36,6 +36,38 @@ EXPECTED_COLUMNS = [
 AGE_RANGE = (18, 100)
 
 
+# Dónde puede estar el CSV de entrenamiento. Se prueban en este orden y se usa el primero que exista:
+# la plantilla del curso (data/raw/train.csv), una copia con otro nombre en data/raw, o un dataset.csv en la raíz del repo.
+TRAIN_CANDIDATES = ("data/raw/train.csv", "data/raw/dataset.csv", "dataset.csv")
+# El CSV de predicción (sin Response) es opcional: puede no existir.
+TEST_CANDIDATES = ("data/raw/test.csv",)
+
+
+def find_data_file(root, candidates):
+    """Devuelve la primera ruta de `candidates` (relativa a `root`) que exista, o None si no hay ninguna."""
+    for relative in candidates:
+        path = Path(root) / relative
+        if path.is_file():
+            return path
+    return None
+
+
+def find_train_csv(root) -> Path:
+    """Ruta del CSV de entrenamiento. Falla con un mensaje claro si no está en ninguna de las ubicaciones esperadas."""
+    path = find_data_file(root, TRAIN_CANDIDATES)
+    if path is None:
+        raise FileNotFoundError(
+            "No se encontró el CSV de entrenamiento. Colócalo en alguna de estas rutas (dentro del repo): "
+            + ", ".join(TRAIN_CANDIDATES)
+        )
+    return path
+
+
+def find_test_csv(root):
+    """Ruta del CSV de predicción (sin Response) o None si no existe: es opcional."""
+    return find_data_file(root, TEST_CANDIDATES)
+
+
 def drop_personal_columns(df: pd.DataFrame, columns=PERSONAL_COLUMNS) -> pd.DataFrame:
     """Elimina las columnas con datos personales que existan en `df`."""
     present = [c for c in columns if c in df.columns]
