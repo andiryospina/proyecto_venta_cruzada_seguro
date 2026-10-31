@@ -27,10 +27,10 @@
 
 | Modelo | Costo por cliente (± ruido) | Costo si solo se llama al 20 % | Unidades por 100.000 clientes | Segundos de ajuste |
 |---|---|---|---|---|
-| **LightGBM** | **0,3245** (± 0,0036) | 0,3849 | **32.446** | 2,8 |
+| **LightGBM** | **0,3245** (± 0,0036) | 0,3849 | **32.446** | 2,6 |
 | XGBoost | 0,3259 (± 0,0038) | 0,3845 | 32.586 | 5,2 |
-| **Regresión logística** | 0,3278 (± 0,0027) | 0,3906 | 32.782 | 2,1 |
-| Bosque aleatorio | 0,3355 (± 0,0033) | 0,3903 | 33.548 | 25,3 |
+| **Regresión logística** | 0,3278 (± 0,0027) | 0,3906 | 32.782 | 1,8 |
+| Bosque aleatorio | 0,3355 (± 0,0033) | 0,3903 | 33.548 | 24,4 |
 | Árbol de decisión | 0,3377 (± 0,0014) | 0,4304 | 33.767 | 0,8 |
 | Línea base: llamar si hubo daño | 0,3980 (± 0,0023) | 0,5275 | 39.803 | — |
 | Línea base: no llamar a nadie | 0,6128 | 0,6653 | 61.282 | — |
