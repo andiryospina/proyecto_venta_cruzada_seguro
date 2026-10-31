@@ -1,7 +1,7 @@
 # Informe de la optimización
 
 > **BORRADOR para revisión del grupo.** Resultado de `notebooks/06_optimizacion.ipynb`. La mejor puntuación de una búsqueda es **optimista**: se comprueba en clientes que la búsqueda no vio.
-> La prueba cerrada **no se abrió**. Lo marcado **[DECIDE EL GRUPO]** necesita una decisión de negocio. Decisión guardada en `reports/06_best_params.json`.
+> La prueba cerrada **no se abrió**. Estados de decisión: **[DECIDIDO]** (resuelto con evidencia del proyecto), **[ADOPTADO]** (propuesta vigente por defecto hasta que el grupo diga lo contrario) o **[PENDIENTE: dato externo]** (no se puede resolver con estos datos); registro en `reports/decisiones_del_grupo.md`. Decisión guardada en `reports/06_best_params.json`.
 > Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, secciones 3 y 4.
 
 ## Resumen para quien decide
@@ -66,7 +66,7 @@
 
 - Métricas de control sin cambio: PR-AUC 0,3687 → 0,3694 y log loss 0,2648 → 0,2648 en LightGBM.
 
-**Regla de decisión escrita antes de mirar:** "Uso los parámetros optimizados **solo si todo el intervalo del 95 % está por debajo de cero**. Si cruza el cero, la mejora no se distingue del ruido y uso los de partida." (Por una razón de negocio además de la estadística: cambiar un modelo ya validado cuesta reentrenar, revalidar y documentar.) **[DECIDE EL GRUPO: confirmar]**
+**Regla de decisión escrita antes de mirar:** "Uso los parámetros optimizados **solo si todo el intervalo del 95 % está por debajo de cero**. Si cruza el cero, la mejora no se distingue del ruido y uso los de partida." (Por una razón de negocio además de la estadística: cambiar un modelo ya validado cuesta reentrenar, revalidar y documentar.) **[ADOPTADO · D06]**
 
 **Resultado de la regla (¿todo el intervalo por debajo de cero?):** **No, en ninguno de los dos.** Se usan los parámetros de partida.
 
@@ -102,11 +102,11 @@ El umbral de 16,7 % equivale a llamar al **35,0 %** de los clientes. Operar con 
 ## Decisión
 
 - **Parámetros que se usarán a partir de ahora:** **los de partida** para los dos finalistas, porque ninguna optimización pasó la regla. Guardados en `reports/06_best_params.json`.
-- **Umbral:** **16,7 % (`1 ÷ (R + 1)`)**, con R = 5 **[DECIDE EL GRUPO: confirmar R]**.
-- **Modelo que pasa a la validación final:** **LightGBM como principal** y **regresión logística como alternativa explicable**. Si el negocio exige explicar cada llamada, el modelo desplegado es la regresión; si no, LightGBM. **La decisión se toma antes de abrir la prueba cerrada, que se usa una sola vez para confirmar la cifra** **[DECIDE EL GRUPO]**.
+- **Umbral:** **16,7 % (`1 ÷ (R + 1)`)**, con R = 5 **[PENDIENTE: dato externo · P01]** (no cambia el umbral de forma relevante: la zona plana va de 15 % a 17,5 %).
+- **Modelo que pasa a la validación final:** **LightGBM como principal** y **regresión logística como alternativa explicable**. Si el negocio exige explicar cada llamada, el modelo desplegado es la regresión; si no, LightGBM. **La decisión se toma antes de abrir la prueba cerrada, que se usa una sola vez para confirmar la cifra** **[ADOPTADO POR DEFECTO · D10]**.
 - **Lo que no pudimos concluir:** (1) si LightGBM es mejor que la regresión en costo (el intervalo cruza el cero); (2) el valor real de R (el umbral es robusto, pero el ahorro absoluto depende de él); (3) cómo se comporta el modelo por edad y género con la prueba cerrada (vista previa en la etapa 5).
 
-## Decisiones de negocio antes de la etapa 7 [DECIDE EL GRUPO]
+## Decisiones de negocio antes de la etapa 7 (estado de cada una: `reports/decisiones_del_grupo.md`)
 
 | # | Decisión | Propuesta |
 |---|---|---|

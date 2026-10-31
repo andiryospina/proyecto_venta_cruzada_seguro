@@ -42,4 +42,4 @@ clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/mont
 |---|---|
 | | |
 
-Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/)
+Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/) · Decisiones del grupo y su estado: [`reports/decisiones_del_grupo.md`](reports/decisiones_del_grupo.md)
