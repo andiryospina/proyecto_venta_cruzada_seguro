@@ -1,0 +1,96 @@
+{
+  "etapa": "06_optimizacion",
+  "presupuesto_por_finalista": 20,
+  "datos": {
+    "busqueda": 228665,
+    "reservados": 76222,
+    "pliegues_de_busqueda": 3,
+    "nota": "un cliente por fila (id unico): reservar por fila es reservar por cliente"
+  },
+  "regla_de_decision": "usar los parametros optimizados solo si todo el intervalo del 95 % de (optimizado - partida) esta por debajo de cero en los clientes reservados",
+  "umbral": {
+    "regla": "1 / (R + 1)",
+    "R": 5,
+    "valor": 0.1667,
+    "minimo_empirico": 0.16,
+    "banda_a_menos_de_0.001": [
+      0.15,
+      0.175
+    ],
+    "mantener_el_teorico": true,
+    "porcentaje_de_clientes_llamados": 0.35
+  },
+  "finalistas": {
+    "lightgbm": {
+      "parametros_a_usar": {
+        "n_estimators": 200,
+        "learning_rate": 0.08,
+        "num_leaves": 31,
+        "min_child_samples": 100,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.0
+      },
+      "decision": "de partida",
+      "parametros_de_partida": {
+        "n_estimators": 200,
+        "learning_rate": 0.08,
+        "num_leaves": 31,
+        "min_child_samples": 100,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.0
+      },
+      "mejor_encontrado": {
+        "n_estimators": 400,
+        "learning_rate": 0.02034944180957616,
+        "num_leaves": 37,
+        "min_child_samples": 25,
+        "subsample": 0.6322189346248572,
+        "colsample_bytree": 0.545855365310915,
+        "reg_lambda": 6.0208941399309905
+      },
+      "diferencia_en_reservados": 0.00029,
+      "intervalo_95": [
+        -0.00173,
+        0.00227
+      ]
+    },
+    "regresion_logistica": {
+      "parametros_a_usar": {
+        "C": 1.0,
+        "age_spline_knots": 6,
+        "profile_12": false
+      },
+      "decision": "de partida",
+      "parametros_de_partida": {
+        "C": 1.0,
+        "age_spline_knots": 6,
+        "profile_12": false
+      },
+      "mejor_encontrado": {
+        "C": 1.0,
+        "age_spline_knots": 6,
+        "profile_12": false
+      },
+      "diferencia_en_reservados": 0.0,
+      "intervalo_95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "comparacion_de_finalistas": {
+    "regresion_menos_lightgbm": 0.00252,
+    "intervalo_95": [
+      -0.00056,
+      0.00516
+    ]
+  },
+  "tracking": {
+    "donde": "local",
+    "experimento": "venta-cruzada-seguros-optimizacion",
+    "ejecucion": "20261031-112601",
+    "ensayos_registrados": 40
+  }
+}

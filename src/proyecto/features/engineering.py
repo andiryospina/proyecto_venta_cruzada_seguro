@@ -219,6 +219,7 @@ class FeatureOptions:
     clip_premium: bool = False              # recortar la prima en el percentil 99 (decisión 4 del EDA)
     segment_flag: bool = False              # marca "sin seguro y con daño"
     age_splines: bool = False               # edad como curva suave en vez de una recta
+    age_spline_knots: int = 6               # cuántos puntos de quiebre tiene la curva de la edad (más = más flexible)
     target_encode_codes: bool = False       # tasa histórica de región y canal en vez de variables 0/1 por categoría
     premium_vs_region: bool = False         # prima relativa a su región
     scale: bool = False                     # escalar numéricas (necesario para la regresión logística)
@@ -253,7 +254,7 @@ def build_preprocessor(options: FeatureOptions = FeatureOptions()) -> ColumnTran
     numeric = keep(NUMERIC_COLS + ORDINAL_COLS)
     if options.age_splines and "Age" in numeric:
         numeric.remove("Age")
-        parts.append(("age_curve", Pipeline([("spline", SplineTransformer(n_knots=6, degree=3, include_bias=False)),
+        parts.append(("age_curve", Pipeline([("spline", SplineTransformer(n_knots=options.age_spline_knots, degree=3, include_bias=False)),
                                              ("scale", scaler)]), ["Age"]))
     if numeric:
         parts.append(("numeric", scaler, numeric))
