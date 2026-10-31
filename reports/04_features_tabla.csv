@@ -1,0 +1,27 @@
+modelo,variante,pr_auc,pr_auc_ruido,costo,costo_ruido,log_loss,roc_auc
+lightgbm,referencia,0.37148,0.0036,0.32518,0.00309,0.26452,0.85804
+lightgbm,1 recorte de la prima (p99),0.37103,0.00307,0.32539,0.00315,0.26456,0.85797
+lightgbm,2 segmento comercial,0.37059,0.00366,0.32573,0.00346,0.26449,0.85805
+lightgbm,3 edad como curva,0.36936,0.00344,0.32517,0.00323,0.26467,0.85776
+lightgbm,4 tasa histórica de región y canal,0.37095,0.00443,0.32738,0.00388,0.26507,0.85713
+lightgbm,5 prima relativa a la región,0.37095,0.00322,0.32514,0.00296,0.26458,0.85796
+lightgbm,6 sin Vintage ni Driving_License,0.37062,0.00349,0.32518,0.00319,0.26452,0.85795
+lightgbm,7 sin Gender,0.3698,0.00364,0.32567,0.00304,0.26472,0.85765
+lightgbm,8 sin agrupar canales raros,0.37125,0.0034,0.32538,0.00356,0.26449,0.8581
+lightgbm,9 sin prima ni su marca,0.36792,0.0032,0.32608,0.00314,0.2648,0.8574
+lightgbm,"A simple: sin Vintage, licencia ni Gender",0.37074,0.00367,0.32446,0.00358,0.26457,0.85785
+lightgbm,B mínima: A y sin prima,0.36915,0.00333,0.32515,0.00347,0.26464,0.85761
+regresion_logistica,referencia,0.33693,0.00338,0.33266,0.0026,0.26886,0.84919
+regresion_logistica,1 recorte de la prima (p99),0.33699,0.00351,0.3328,0.00268,0.26885,0.84919
+regresion_logistica,2 segmento comercial,0.33697,0.00349,0.33301,0.00277,0.26888,0.84917
+regresion_logistica,3 edad como curva,0.35616,0.0031,0.32722,0.00231,0.26652,0.85435
+regresion_logistica,4 tasa histórica de región y canal,0.32713,0.00453,0.33547,0.00337,0.27145,0.84436
+regresion_logistica,5 prima relativa a la región,0.33715,0.00345,0.33293,0.0028,0.26883,0.84922
+regresion_logistica,6 sin Vintage ni Driving_License,0.33722,0.00331,0.33316,0.00278,0.2689,0.84909
+regresion_logistica,7 sin Gender,0.33693,0.00332,0.33362,0.0024,0.26888,0.84921
+regresion_logistica,8 sin agrupar canales raros,0.33722,0.00347,0.33301,0.00319,0.26885,0.84921
+regresion_logistica,9 sin prima ni su marca,0.33637,0.00329,0.33268,0.00283,0.26887,0.84908
+regresion_logistica,"A simple: sin Vintage, licencia ni Gender",0.33701,0.00348,0.33367,0.00248,0.26895,0.84909
+regresion_logistica,B mínima: A y sin prima,0.33639,0.00342,0.33334,0.00277,0.26897,0.84898
+regresion_logistica,C: A + edad como curva,0.35644,0.00302,0.32782,0.00268,0.26659,0.85429
+regresion_logistica,D: B + edad como curva,0.35544,0.00304,0.32814,0.00255,0.26664,0.85411
