@@ -1,0 +1,17 @@
+modelo,variante,columnas_que_agrega,pr_auc,pr_auc_ruido,costo,log_loss,roc_auc
+lightgbm,referencia,0,0.37148,0.0036,0.32518,0.26452,0.85804
+lightgbm,N1 tamaño del canal y la región,2,0.37066,0.00252,0.32483,0.26454,0.85786
+lightgbm,N2 puntaje de necesidad,1,0.37082,0.00307,0.32556,0.26456,0.85785
+lightgbm,N3 perfil de 12 combinaciones,12,0.37117,0.00438,0.32493,0.26448,0.85806
+lightgbm,N4 joven con vehículo nuevo,1,0.37148,0.0037,0.32516,0.2645,0.85808
+lightgbm,N5 prima frente a su tramo de edad,1,0.37067,0.00373,0.32508,0.26454,0.85792
+lightgbm,N6 fracción de vida como cliente,1,0.37017,0.00354,0.32511,0.26464,0.8578
+lightgbm,todas las nuevas,18,0.36985,0.00363,0.32491,0.2647,0.85758
+regresion_logistica,referencia,0,0.35616,0.0031,0.32722,0.26652,0.85435
+regresion_logistica,N1 tamaño del canal y la región,2,0.35607,0.00308,0.32741,0.26653,0.85431
+regresion_logistica,N2 puntaje de necesidad,1,0.35613,0.00314,0.32706,0.26653,0.85434
+regresion_logistica,N3 perfil de 12 combinaciones,12,0.35726,0.00168,0.3271,0.26627,0.8547
+regresion_logistica,N4 joven con vehículo nuevo,1,0.35614,0.00299,0.3272,0.26653,0.85434
+regresion_logistica,N5 prima frente a su tramo de edad,1,0.356,0.00294,0.32707,0.26653,0.85432
+regresion_logistica,N6 fracción de vida como cliente,1,0.35605,0.00295,0.3272,0.26652,0.85434
+regresion_logistica,todas las nuevas,18,0.35753,0.00187,0.32736,0.26628,0.85471
