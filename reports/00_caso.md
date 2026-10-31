@@ -1,16 +1,21 @@
 # Ficha de caso
 
-> Plantilla en blanco. Instrucciones y un ejemplo completo (CreditSight): `material-del-curso/evaluacion/ficha-de-caso.md`.
+> **BORRADOR** preparado a partir de los datos. Lo marcado **[DECIDE EL GRUPO]** no se puede saber desde el dataset.
+> Instrucciones y ejemplo completo: `material-del-curso/evaluacion/ficha-de-caso.md`.
 > Estados: `borrador` → (`devuelta` → `borrador`)* → `aprobada`. Solo con la ficha **aprobada** se avanza al EDA.
 
-- **case_id:** <!-- identificador corto, en minúsculas y con guiones (ej. mi-startup) -->
-- **business_question:** <!-- 2–3 frases: quién decide, qué decide y con qué información -->
-- **dataset_source:** <!-- nombre y enlace del dataset, y su licencia -->
-- **dataset_rows:** <!-- número de filas (mínimo 50.000; lo recomendado, 100.000 o más) -->
-- **dataset_columns:** <!-- número de columnas -->
-- **target:** <!-- columna que se predice (o "no hay: se agrupa", si es clusterización) -->
-- **problem_type:** <!-- clasificación, regresión o clusterización -->
-- **primary_metric:** <!-- métrica principal y por qué es la que importa para el negocio -->
-- **business_cost_note:** <!-- qué cuesta equivocarse en cada dirección, en términos del negocio -->
+- **case_id:** `venta-cruzada-seguros`
+- **business_question:** Una aseguradora ya tiene clientes con seguro de salud y quiere ofrecerles además un seguro de vehículo.
+  El equipo comercial decide a qué clientes llamar primero, usando la edad, la antigüedad del vehículo, si ya tienen seguro de
+  vehículo, si el vehículo tuvo daños, la prima anual, la región y el canal de venta. **[DECIDE EL GRUPO: confirmar o ajustar]**
+- **dataset_source:** el esquema coincide con *Health Insurance Cross Sell Prediction* (Kaggle). **[DECIDE EL GRUPO: enlace y licencia]**
+- **dataset_rows:** 381.109 en `train.csv` (más 127.037 en `test.csv`, sin objetivo)
+- **dataset_columns:** 12 en `train.csv` (11 variables más `Response`)
+- **target:** `Response` (1 = el cliente aceptó la oferta; 0 = no)
+- **problem_type:** clasificación binaria
+- **primary_metric:** PR-AUC (propuesta). Solo el 12,26 % de los clientes acepta, así que la exactitud engaña: un modelo que siempre
+  dice "no" acierta el 87,7 % y no encuentra a ningún comprador. Se complementa con recall entre el 10 % y el 20 % de clientes mejor puntuados.
+- **business_cost_note:** **[DECIDE EL GRUPO]** No llamar a quien habría comprado es una venta perdida; llamar a quien no comprará es un
+  costo de contacto. Como comprar es raro (1 de cada 8), dejar de contactar a un comprador suele ser el error más caro, pero el grupo debe confirmarlo.
 - **status:** borrador
 - **reviewer_notes:** <!-- las llena el instructor -->

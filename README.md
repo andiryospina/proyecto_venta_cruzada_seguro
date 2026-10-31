@@ -1,6 +1,6 @@
-# Nombre del proyecto
+# Venta cruzada de seguros
 
-> Una frase: qué problema de negocio resuelve este proyecto y para quién.
+> Predecir qué clientes con seguro de salud aceptarán un seguro de vehículo, para que el equipo comercial priorice a quién llamar. _(Borrador: el grupo confirma el nombre y el caso.)_
 
 **App desplegada:** _enlace público de Streamlit (se completa en la clase 5)_
 

@@ -45,7 +45,7 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 
 ## 5. Riesgos
 
-- Fuga de información posible: no se ve una columna posterior a la decisión; conviene revisar `Vintage` (días como cliente) en la etapa 4.
+- Fuga de información posible: no se ve una columna posterior a la decisión; `Vintage` (días como cliente) no muestra relación con el objetivo (correlación -0,001); se medirá el modelo con y sin ella en la etapa 4.
 - Sesgos o equidad: `Gender` y `Age`.
 - Datos faltantes o de mala calidad: 0 nulos. En `Annual_Premium`, el 17 % de las filas vale exactamente 2.630 (parece un mínimo impuesto) y el máximo es 540.165 contra un percentil 99 de 72.963.
 - Límites de lo que el modelo puede decir: ordena clientes por probabilidad de aceptar; no explica por qué compran ni mide el efecto de llamar.
