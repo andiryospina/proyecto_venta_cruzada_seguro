@@ -93,3 +93,93 @@ def test_tournament_features_drop_the_variables_retired_in_stage_4():
         names = list(build_preprocessor(options).fit(X, y).get_feature_names_out())
         assert "Vintage" not in names and "Driving_License" not in names and not any(n.startswith("Gender") for n in names)
         assert "Annual_Premium" in names and "Previously_Insured" in names     # la prima se conserva (decisión de la etapa 4)
+
+
+# ======================================================================================================================
+# Lógica que se movió del notebook 05 a los módulos: debe dar lo mismo que antes
+# ======================================================================================================================
+def test_run_tournament_stores_every_fold_and_out_of_sample_probabilities():
+    from proyecto.data import split as sp
+    from proyecto.models.train import run_tournament
+
+    frame = make_clean_frame(600, seed=8)
+    X, y = frame.drop(columns="Response"), frame["Response"]
+    folds = sp.stratified_folds(frame, n_splits=3)
+    candidates = {k: v for k, v in tournament_candidates().items() if k in ("línea base: llamar si hubo daño", "regresión logística")}
+    per_fold, oof = run_tournament(candidates, X, y, folds)
+
+    assert set(per_fold) == set(candidates) == set(oof)
+    for name in candidates:
+        assert len(per_fold[name]) == 3                                   # una fila por pliegue
+        assert {"cost", "pr_auc", "recall_top", "fit_seconds", "predict_seconds"} <= set(per_fold[name].columns)
+        assert oof[name].shape == (len(frame),) and np.isfinite(oof[name]).all()
+        assert (oof[name] > 0).any()                                       # cada cliente recibió una probabilidad
+
+
+def test_run_tournament_oof_is_made_by_models_that_did_not_see_the_client():
+    """Si se barajan las respuestas, las probabilidades fuera de muestra no pueden predecir: la PR-AUC queda cerca del azar."""
+    from sklearn.metrics import average_precision_score
+
+    from proyecto.data import split as sp
+    from proyecto.models.train import run_tournament
+
+    frame = make_clean_frame(3000, seed=9)
+    X = frame.drop(columns="Response")
+    y = frame["Response"].sample(frac=1.0, random_state=1).reset_index(drop=True)
+    data = frame.assign(Response=y)
+    folds = sp.stratified_folds(data, n_splits=5)
+    _, oof = run_tournament({"regresión logística": tournament_candidates()["regresión logística"]}, X, y, folds)
+    assert average_precision_score(y, oof["regresión logística"]) < y.mean() + 0.06
+
+
+def test_calibration_table_of_a_perfectly_calibrated_model_has_no_gap():
+    from proyecto.models.metrics import calibration_table
+
+    rng = np.random.default_rng(0)
+    proba = rng.uniform(0.02, 0.5, 50_000)
+    y = (rng.random(50_000) < proba).astype(int)
+    table = calibration_table(y, proba)
+    assert len(table) == 10
+    assert (table["predicted"] - table["real"]).abs().max() < 0.02
+    assert table["predicted"].is_monotonic_increasing
+
+
+def test_paired_comparison_counts_folds_and_noise_like_the_notebook_did():
+    from proyecto.models.metrics import paired_comparison
+
+    per_fold = {"A": pd.DataFrame({"cost": [0.30, 0.31, 0.32, 0.33, 0.34], "pr_auc": [0.4, 0.4, 0.4, 0.4, 0.4]}),
+                "B": pd.DataFrame({"cost": [0.31, 0.32, 0.33, 0.34, 0.345], "pr_auc": [0.3, 0.3, 0.3, 0.3, 0.3]})}
+    cost = paired_comparison(per_fold, "A", "B", "cost")
+    assert cost["folds_won"] == 5 and cost["n_folds"] == 5 and cost["mean_difference"] == pytest.approx(0.0090)
+    assert cost["difference_over_noise"] > 1
+    pr = paired_comparison(per_fold, "A", "B", "pr_auc", lower_is_better=False)
+    assert pr["mean_difference"] == pytest.approx(0.1) and pr["folds_won"] == 5 and pr["difference_over_noise"] > 1000   # diferencia constante: ruido casi cero
+    reverse = paired_comparison(per_fold, "B", "A", "cost")
+    assert reverse["folds_won"] == 0 and reverse["mean_difference"] == pytest.approx(-0.0090)
+
+
+def test_cost_sensitivity_matches_the_cost_per_client_for_each_r():
+    from proyecto.models.metrics import cost_per_client, cost_sensitivity
+
+    y = np.array([1, 1, 0, 0, 0, 1, 0, 0])
+    probabilities = {"a": np.array([0.9, 0.2, 0.3, 0.05, 0.1, 0.12, 0.4, 0.01]), "b": np.full(8, 0.5)}
+    table = cost_sensitivity(y, probabilities, [2, 5])
+    assert list(table.columns) == ["R = 2", "R = 5"] and list(table.index) == ["a", "b"]
+    for r in (2, 5):
+        for name, p in probabilities.items():
+            assert table.loc[name, f"R = {r}"] == pytest.approx(cost_per_client(y, (p >= 1 / (r + 1)).astype(int), fn_cost=r))
+
+
+def test_audit_by_group_reports_who_is_called_and_who_is_missed():
+    from proyecto.models.metrics import audit_by_group
+
+    y = np.array([1, 1, 0, 0, 1, 0, 0, 0])
+    proba = np.array([0.9, 0.05, 0.4, 0.01, 0.9, 0.01, 0.01, 0.01])
+    groups = pd.Series(["a", "a", "a", "a", "b", "b", "b", "b"], name="grupo")
+    table = audit_by_group(y, proba, groups)
+    assert table.index.name == "grupo" and list(table.index) == ["a", "b"]
+    assert table.loc["a", "clients"] == 4 and table.loc["a", "real_rate"] == pytest.approx(0.5)
+    assert table.loc["a", "called_rate"] == pytest.approx(0.5)                # llama a los clientes con 0,9 y 0,4
+    assert table.loc["a", "recall"] == pytest.approx(0.5) and table.loc["a", "precision"] == pytest.approx(0.5)
+    assert table.loc["a", "buyers_missed"] == 1
+    assert table.loc["b", "recall"] == pytest.approx(1.0) and table.loc["b", "buyers_missed"] == 0

@@ -3,7 +3,12 @@
 El pipeline se guarda **entero**: la app de Streamlit carga un solo objeto que recibe las columnas limpias y devuelve
 probabilidades, sin repetir ningún cálculo a mano.
 """
+import time
+
+import numpy as np
+import pandas as pd
 from lightgbm import LGBMClassifier
+from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -13,6 +18,7 @@ from xgboost import XGBClassifier
 
 from proyecto.features.engineering import FeatureOptions, build_preprocessor
 from proyecto.models.baselines import DamageRuleClassifier
+from proyecto.models.metrics import technical_metrics
 
 RANDOM_STATE = 42
 
@@ -60,3 +66,30 @@ def tournament_candidates(random_state: int = RANDOM_STATE) -> dict:
         "XGBoost": build_pipeline(XGBClassifier(n_estimators=200, learning_rate=0.08, max_depth=6, subsample=0.8, colsample_bytree=0.8,
                                                 tree_method="hist", n_jobs=4, eval_metric="logloss", random_state=random_state), trees),
     }
+
+
+def run_tournament(candidates: dict, X: pd.DataFrame, y, folds) -> tuple:
+    """Corre el torneo: cada candidato en **los mismos pliegues**, guardando cada pliegue.
+
+    Para cada pliegue ajusta el modelo con el entrenamiento del pliegue, predice el resto y calcula `technical_metrics`
+    (más los segundos de ajuste y de predicción). Devuelve dos diccionarios, ambos con el nombre del candidato como llave:
+
+    - `per_fold`: DataFrame con una fila por pliegue (para comparar de a pares).
+    - `oof`: probabilidades "fuera de muestra": cada cliente predicho por un modelo que **no lo vio**.
+    """
+    y = pd.Series(np.asarray(y))
+    per_fold, oof = {}, {}
+    for name, estimator in candidates.items():
+        rows, proba_oof = [], np.zeros(len(y))
+        for train_idx, valid_idx in folds:
+            t0 = time.time()
+            model = clone(estimator).fit(X.iloc[train_idx], y.iloc[train_idx])
+            fit_seconds = time.time() - t0
+            t1 = time.time()
+            proba = model.predict_proba(X.iloc[valid_idx])[:, 1]
+            predict_seconds = time.time() - t1
+            proba_oof[valid_idx] = proba
+            rows.append({**technical_metrics(y.iloc[valid_idx], proba), "fit_seconds": fit_seconds, "predict_seconds": predict_seconds})
+        per_fold[name] = pd.DataFrame(rows)
+        oof[name] = proba_oof
+    return per_fold, oof
