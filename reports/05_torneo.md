@@ -2,7 +2,7 @@
 
 > **BORRADOR para revisión del grupo.** Resultado de `notebooks/05_torneo.ipynb`. El torneo **descarta**: elige 1-2 finalistas con evidencia, no un campeón definitivo.
 > Todas las cifras son de **validación cruzada** sobre el entrenamiento; la prueba cerrada **no se abrió**. Tabla reproducible: `reports/05_torneo_tabla.csv`.
-> Lo marcado **[DECIDE EL GRUPO]** necesita una decisión de negocio. Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, sección 2.
+> Estados de decisión: **[DECIDIDO]** (resuelto con evidencia del proyecto), **[ADOPTADO]** (propuesta vigente por defecto hasta que el grupo diga lo contrario) o **[PENDIENTE: dato externo]** (no se puede resolver con estos datos); registro en `reports/decisiones_del_grupo.md`. Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, sección 2.
 
 ## Resumen para quien decide
 
@@ -16,10 +16,10 @@
 
 - **Mismos datos y mismos pliegues para todos:** 5 pliegues estratificados por `Response`, semilla 42, **los mismos de las etapas 3 y 4**. Un cliente por fila (`id` único), así que no hace falta partir por grupo. 304.887 clientes de entrenamiento.
 - **Líneas base:** (1) **no llamar a nadie** (predice la proporción de compradores, 12,26 %): costo 0,613; (2) **la regla de negocio "llamar si hubo daño"** (aprende la tasa con y sin daño): costo 0,398. Ningún modelo real las pierde.
-- **Métrica principal (la de negocio):** **costo promedio por cliente** con R = 5 (umbral 16,7 %), en unidades de llamada. Complemento que no depende de calibración: **costo si solo se llama al 20 % mejor puntuado**. **R = 5 es una hipótesis [DECIDE EL GRUPO].**
+- **Métrica principal (la de negocio):** **costo promedio por cliente** con R = 5 (umbral 16,7 %), en unidades de llamada. Complemento que no depende de calibración: **costo si solo se llama al 20 % mejor puntuado**. **R = 5 es una hipótesis [PENDIENTE: dato externo · P01].**
 - **Métricas técnicas:** ROC-AUC, PR-AUC, exactitud balanceada, precisión y recall por clase, F1 macro, log loss, Brier, recall y *lift* en el 20 % mejor puntuado.
 - **Variables usadas** (decididas en `reports/04_features.md`): sin `Vintage`, `Driving_License` ni `Gender`, con canales y regiones raros agrupados. La regresión recibe además **la edad como curva** (+6,2 veces el ruido en la etapa 4); los árboles no la necesitan.
-- **Criterios de elección, en orden [DECIDE EL GRUPO: confirmar]:** consistencia (gana en 4 de 5 pliegues y supera 1 vez el ruido) → costo → ranking sin depender del umbral → tiempo y simplicidad → explicabilidad (solo si la exige el negocio o el regulador).
+- **Criterios de elección, en orden [ADOPTADO · D05]:** consistencia (gana en 4 de 5 pliegues y supera 1 vez el ruido) → costo → ranking sin depender del umbral → tiempo y simplicidad → explicabilidad (solo si la exige el negocio o el regulador).
 
 ## Tabla comparativa
 
@@ -83,7 +83,7 @@
 
 ## ¿Cuánto vale la diferencia?
 
-- **Decisiones estimadas por campaña:** 100.000 clientes (supuesto de referencia **[DECIDE EL GRUPO]**).
+- **Decisiones estimadas por campaña:** 100.000 clientes (escala de reporte, no un pronóstico) **[DECIDIDO · D09]**.
 - **Ahorro frente a la línea base "llamar si hubo daño":** LightGBM **+7.357** unidades de llamada (18,5 %); regresión +7.021 (17,6 %).
 - **Ahorro frente a "no llamar a nadie":** LightGBM +28.836.
 - **Diferencia entre el mejor y el siguiente:** LightGBM frente a XGBoost, 140 unidades; frente a la regresión, ≈ 340 unidades (≈ 1 % del costo total). El ruido del costo es ≈ 360 unidades: **ninguna de las dos diferencias es mayor que el ruido**.
@@ -124,7 +124,7 @@
 - **Edad (el riesgo):** a los de 20-25 años y a los de 66 o más casi no se les llama (recall de 36 % y 40 %). Compran poco y llamarlos no compensa con R = 5, pero el costo agregado esconde que **una parte importante de sus compradores no recibe la oferta**: en el entrenamiento, **2.061 compradores de 20-25 años** (64 % de los suyos) y **1.124 de 66 o más** (60 %) no son llamados. Es una decisión de **política comercial**, no un fallo del modelo.
 - **Operación:** todos reentrenan en menos de un minuto (el bosque, ≈ 26 s). El tiempo no decide, salvo para descartar al bosque.
 
-## Decisiones que necesitamos del negocio antes de la etapa 6 [DECIDE EL GRUPO]
+## Decisiones del negocio antes de la etapa 6 (estado de cada una: `reports/decisiones_del_grupo.md`)
 
 | # | Decisión | Propuesta |
 |---|---|---|

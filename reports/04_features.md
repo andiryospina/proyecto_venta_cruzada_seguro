@@ -2,7 +2,7 @@
 
 > **BORRADOR para revisión del grupo.** Resultado de `notebooks/04_features.ipynb`. Cada idea de variable es una **hipótesis medida** con la misma validación;
 > se conserva solo si la mejora supera el ruido entre pliegues. Tabla completa y reproducible: `reports/04_features_tabla.csv`.
-> Lo marcado **[DECIDE EL GRUPO]** necesita una decisión de negocio.
+> Estados de decisión: **[DECIDIDO]** (resuelto con evidencia del proyecto), **[ADOPTADO]** (propuesta vigente por defecto hasta que el grupo diga lo contrario) o **[PENDIENTE: dato externo]** (no se puede resolver con estos datos); registro en `reports/decisiones_del_grupo.md`.
 > Guía: `material-del-curso/kit/guia-modelado-y-optimizacion.md`, sección 1.
 
 ## Resumen para quien decide
@@ -19,7 +19,7 @@
 - **Métrica principal (y por qué):** **PR-AUC**, porque solo el 12,26 % de los clientes acepta y mide qué tan arriba quedan los compradores en la lista.
 - **Métricas de control:** **costo por cliente** con R = 5 (umbral 16,7 %), log loss y ROC-AUC.
 - **Pliegues:** 5 estratificados por `Response`, semilla 42, **los mismos de la etapa 3**, solo sobre el entrenamiento (304.887 clientes). Un cliente por fila, así que no hace falta partir por grupo. La prueba cerrada **no se abrió**.
-- **Regla de decisión escrita antes de medir [DECIDE EL GRUPO: confirmar]:**
+- **Regla de decisión escrita antes de medir [ADOPTADO · D04]:**
   - **R1 Evidencia:** agregar una variable solo si mejora / ruido > 1 en PR-AUC y gana en 4 de 5 pliegues.
   - **R2 Disponibilidad:** debe conocerse al momento de llamar.
   - **R3 Complejidad:** no agregar datos que el equipo comercial no pueda dar o mantener, salvo evidencia muy clara (mejora / ruido > 3).
@@ -105,13 +105,13 @@ Se mantuvieron las 10 variables y se crearon 6 derivadas (código en `src/proyec
 - **En la regresión la mejor es N3** (PR-AUC 0,3573; log loss 0,2665 → 0,2663), pero el costo **no cambia** (0,3271 frente a 0,3272) y exigiría 12 columnas más.
 - **Por qué no aportan, aunque en el EDA (sección 4.2) muestren señal clara:** N2 y N3 son funciones exactas de tres columnas que el modelo ya tiene; N4 reexpresa edad y antigüedad del vehículo (correlación 0,82 entre sí); N6 es en esencia `1 / edad`; N1 identifica el canal, que el modelo ya conoce; N5 es más débil que la prima original.
 - **Conclusión:** una señal descriptiva clara **no es valor incremental**. El techo del modelo está en los **datos**, no en el modelado.
-- **Datos nuevos que valdría la pena evaluar (hipótesis, no medibles con este dataset) [DECIDE EL GRUPO]:** 1) historial de contactos; 2) fecha de vencimiento del seguro de vehículo actual; 3) tiempo desde el último siniestro y su monto; 4) número de vehículos y pólizas del hogar; 5) canal y horario preferidos de contacto; 6) ingreso (solo con revisión legal por el riesgo de equidad). Cada uno se mediría con este mismo experimento.
+- **Datos nuevos que valdría la pena evaluar (hipótesis, no medibles con este dataset) [PENDIENTE: dato externo · P08]:** 1) historial de contactos; 2) fecha de vencimiento del seguro de vehículo actual; 3) tiempo desde el último siniestro y su monto; 4) número de vehículos y pólizas del hogar; 5) canal y horario preferidos de contacto; 6) ingreso (solo con revisión legal por el riesgo de equidad). Cada uno se mediría con este mismo experimento.
 
 ## Supuestos y riesgos
 
 | # | Supuesto o riesgo | Mitigación propuesta | Responsable |
 |---|---|---|---|
-| 1 | **R = 5** es una hipótesis; fija el umbral de contacto en 16,7 %. Cambia el costo absoluto, no el orden entre variantes **[DECIDE EL GRUPO]** | Confirmar con la aseguradora el margen de una venta y el costo de una llamada | Negocio |
+| 1 | **R = 5** es una hipótesis; fija el umbral de contacto en 16,7 %. Cambia el costo absoluto, no el orden entre variantes **[PENDIENTE: dato externo · P01]** | Confirmar con la aseguradora el margen de una venta y el costo de una llamada | Negocio |
 | 2 | La app debe poder pedir y validar 7 datos: `Previously_Insured`, `Vehicle_Damage`, `Vehicle_Age`, `Age`, región, canal y prima | Validar con ventas que el vendedor los conoce **antes** de llamar (R2) | Negocio |
 | 3 | Retirar `Gender` no garantiza equidad: `Age` y región pueden ser sustitutos | Medir recall y tasa de contacto por género y tramo de edad en la validación (etapa 7) | Datos y Legal |
 | 4 | Los canales cambian (en `test.csv` ya hay dos que no estaban en el entrenamiento) | Canales desconocidos van a "otros"; revisar la lista cada trimestre | Datos |
