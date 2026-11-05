@@ -16,8 +16,8 @@ data/raw/*
 !data/raw/.gitkeep
 
 # Datos procesados: se regeneran con notebooks/03_preprocesamiento.ipynb
-data/processed/*
-!data/processed/.gitkeep
+# data/processed/*
+# !data/processed/.gitkeep
 
 # Sistema operativo y editores
 .DS_Store
@@ -32,3 +32,6 @@ mlruns/
 
 # Modelo intermedio (pesado): solo se sube models/model.joblib
 models/final_pipeline.joblib
+
+# Estudio de Optuna de la etapa 06 (se regenera; permite reanudar la búsqueda)
+optuna_06.db

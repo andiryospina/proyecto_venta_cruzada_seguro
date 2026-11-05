@@ -1,0 +1,54 @@
+{
+  "finalista": "lightgbm",
+  "decision": "optimizado",
+  "parametros": {
+    "n_estimators": 186,
+    "learning_rate": 0.031476986256212196,
+    "num_leaves": 31,
+    "min_child_samples": 137,
+    "subsample": 0.9430233324921596,
+    "colsample_bytree": 0.6010355988956476,
+    "reg_lambda": 0.47795677163559325
+  },
+  "parametros_optimizados": {
+    "n_estimators": 186,
+    "learning_rate": 0.031476986256212196,
+    "num_leaves": 31,
+    "min_child_samples": 137,
+    "subsample": 0.9430233324921596,
+    "colsample_bytree": 0.6010355988956476,
+    "reg_lambda": 0.47795677163559325
+  },
+  "parametros_partida": {
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "num_leaves": 31
+  },
+  "busqueda": {
+    "metrica": "cost",
+    "ensayos": 40,
+    "pliegues": 3,
+    "mejor_ensayo": 13,
+    "costo_cv_mejor": 0.3326087474699185,
+    "costo_cv_partida": 0.3345896607791749
+  },
+  "reservado": {
+    "clientes": 76060,
+    "costo_partida": 0.33273731264790957,
+    "costo_optimizado": 0.3302918748356561,
+    "diferencia": -0.002445437812253484,
+    "intervalo_95": [
+      -0.004167762292926637,
+      -0.0006041283197475684
+    ],
+    "pr_auc_diferencia": 0.004450836397729585,
+    "pr_auc_intervalo_95": [
+      0.0016148383569846271,
+      0.007571028856273813
+    ]
+  },
+  "tracking": "local",
+  "experimento": "venta-cruzada-optimizacion",
+  "mlflow_parent_run_id": "b9f3537f921d4b509fc5e2a708b612e8",
+  "mlflow_check_run_id": "947a62003ee846ff8a7c693d2b40f377"
+}
