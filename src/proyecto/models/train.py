@@ -43,8 +43,9 @@ def build_pipeline(model, options: FeatureOptions = FeatureOptions()) -> Pipelin
     return Pipeline([("features", build_preprocessor(options)), ("model", model)])
 
 
-# Variables decididas en el notebook 04 (`reports/04_features.md`): se quitan Vintage, Driving_License y Gender.
-TOURNAMENT_FEATURES = FeatureOptions(drop=("Vintage", "Driving_License", "Gender"))                 # variante A (modelos de árboles)
+# Variables decididas en el notebook 04 (`reports/04_features.md`): se quitan Vintage y Driving_License.
+# `Gender` se conserva por decision del grupo (2026-11-05): quitarla no tenia efecto medible en el costo (0,3245 frente a 0,3252).
+TOURNAMENT_FEATURES = FeatureOptions(drop=("Vintage", "Driving_License"))                 # variante A (modelos de árboles)
 TOURNAMENT_FEATURES_LINEAR = TOURNAMENT_FEATURES.with_changes(age_splines=True, scale=True)         # variante C (regresión: edad como curva)
 
 

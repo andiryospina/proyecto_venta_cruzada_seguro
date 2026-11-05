@@ -83,7 +83,7 @@ def test_every_candidate_fits_and_returns_probabilities_for_the_same_data():
         assert np.isfinite(proba).all() and np.allclose(proba.sum(axis=1), 1.0), name
 
 
-def test_tournament_features_drop_the_variables_retired_in_stage_4():
+def test_tournament_features_drop_the_variables_retired_in_stage_4_and_keep_gender():
     from proyecto.features.engineering import build_preprocessor
     from proyecto.models.train import TOURNAMENT_FEATURES, TOURNAMENT_FEATURES_LINEAR
 
@@ -91,7 +91,8 @@ def test_tournament_features_drop_the_variables_retired_in_stage_4():
     X, y = frame.drop(columns="Response"), frame["Response"]
     for options in (TOURNAMENT_FEATURES, TOURNAMENT_FEATURES_LINEAR):
         names = list(build_preprocessor(options).fit(X, y).get_feature_names_out())
-        assert "Vintage" not in names and "Driving_License" not in names and not any(n.startswith("Gender") for n in names)
+        assert "Vintage" not in names and "Driving_License" not in names
+        assert any(n.startswith("Gender") for n in names)                     # Gender se conserva por decisión del grupo (2026-11-05)
         assert "Annual_Premium" in names and "Previously_Insured" in names     # la prima se conserva (decisión de la etapa 4)
 
 
