@@ -1,0 +1,5 @@
+Prueba abierta una sola vez (specs/005-validacion)
+fecha: 2026-11-05T20:43:56
+usuario: andir
+commit: e94c0cb
+archivo: test.parquet (76222 filas)

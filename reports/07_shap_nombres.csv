@@ -1,0 +1,11 @@
+columna_shap,variable,shap_abs_promedio
+x7,flags__Previously_Insured,1.318366950622554
+x11,flags__uninsured_with_damage,0.8432077026374721
+x8,flags__Vehicle_Damage,0.40793274977175425
+x3,num__age_peak_distance,0.1813771084119695
+x12,flags__damage_x_vehicle_age,0.11384697652413397
+x1,num__Age,0.10592128478260557
+x9,flags__Vehicle_Age,0.05946598468469172
+x41,cat__Region_Code_28,0.04595908958647857
+x0,premium__Annual_Premium,0.0433918954185174
+x4,num__premium_per_age,0.03202273942886864

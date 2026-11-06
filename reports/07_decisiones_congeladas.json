@@ -1,0 +1,20 @@
+{
+  "modelo_final": "lightgbm",
+  "parametros": {
+    "n_estimators": 186,
+    "learning_rate": 0.031476986256212196,
+    "num_leaves": 31,
+    "min_child_samples": 137,
+    "subsample": 0.9430233324921596,
+    "colsample_bytree": 0.6010355988956476,
+    "reg_lambda": 0.477956771635593
+  },
+  "variables": "base + 5 nuevas (use_engineered=True), con Gender, sin Policy_Sales_Channel",
+  "entrenamiento_final": "todo train.parquet",
+  "calibrar": false,
+  "metrica_principal": "costo esperado por cliente, matriz [[0, 1], [5, 0]] (menor es mejor)",
+  "regla_de_decision": "llamar si P(interesado) > 1/6 = 0.1667 (umbral fijo, sale de la matriz)",
+  "linea_base": "regla: Previously_Insured = 0 y Vehicle_Damage = Yes",
+  "lectura": "el modelo es mejor que la línea base solo si todo el IC 95 % de (costo modelo − costo línea base) está bajo cero",
+  "decidido_el": "2026-11-05T20:43:52"
+}

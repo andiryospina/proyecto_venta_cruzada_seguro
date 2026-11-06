@@ -80,3 +80,10 @@ TUNE_HOLDOUT = 0.25
 TUNE_SEED = 7           # semilla de la reserva (distinta de SEED para no repetir la partición de prueba)
 TUNE_FOLDS = 3          # pliegues dentro de la búsqueda: menos que el torneo para que cada ensayo tarde poco
 TUNE_TRIALS = 40        # presupuesto de ensayos, fijado antes de empezar
+
+# Validación final (specs/005-validacion): elecciones aprobadas por el grupo ANTES de abrir la prueba
+# Tramos de edad para el análisis por segmento: (etiqueta, edad mínima incluida). El primero coincide con YOUNG_AGE.
+AGE_BANDS = [("18-29", 18), ("30-44", 30), ("45-59", 45), ("60+", 60)]
+MIN_REGION_SIZE = 1000              # regiones con menos clientes en la prueba se agrupan como "otras"
+SENSITIVITY_RATIOS = (3, 5, 10)     # costo de perder un interesado frente a una llamada sin éxito (5 es el supuesto)
+TEST_MARKER = ROOT / "reports" / "prueba_abierta.txt"   # constancia de que la prueba ya se abrió (una sola vez)
