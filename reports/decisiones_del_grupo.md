@@ -14,7 +14,7 @@
 
 ## Resumen
 
-- **15 decisiones** (D01 a D15; D12 y D14 **reemplazadas** por D15) y **12 pendientes** (P01 a P12; **P12 cerrada**). **El 2026-11-06 el grupo adoptó la opción recomendada de P01, P02, P03, P04, P06, P08, P09 y P11 como supuestos declarados**: siguen marcadas «por confirmar» porque ninguna tiene aún respuesta de la aseguradora, de Legal ni del instructor. Siguen abiertas P05 (licencia), P07 (roles y nombre de la startup) y P10 (aprobaciones).
+- **15 decisiones** (D01 a D15; D12 y D14 **reemplazadas** por D15) y **12 pendientes** (P01 a P12; **P12 cerrada**). **El 2026-11-06 el grupo adoptó la opción recomendada de P01, P02, P03, P04, P06, P08, P09 y P11 como supuestos declarados**: siguen marcadas «por confirmar» porque ninguna tiene aún respuesta de la aseguradora, de Legal ni del instructor. Siguen abiertas P05 (licencia) y P10 (aprobaciones); **P07 quedó cerrada** (roles y nombre «Contacto Inteligente»).
 - **Actualizado el 2026-11-06 (`specs/007-integracion-main`):** el grupo decidió que el **modelo final es el de la rama de Andiry**, porque debe incluir las **5 variables nuevas** (D15). El código oficial de `src/` pasa a ser el de esa rama. **Las cifras de D01 a D11 y de P01 a P04 se midieron con el código anterior de `main`** (etapas 4 a 6 de la compañera) y se conservan como historia; las del modelo final están en `reports/04_features.md` a `reports/07_validacion.md` y en `models/ficha_modelo.md`. Detalle de la integración: `reports/integracion_main.md`.
 - **Actualizado el 2026-11-05:** el grupo decidió **eliminar `Policy_Sales_Channel`** (posible fuga) y **conservar `Gender`**; las etapas 3 a 6 se reejecutaron y las cifras de abajo son las nuevas.
 - **Ninguna de las pendientes bloquea el modelado.** Solo **P03** (si se exige explicar cada llamada) debe quedar resuelta **antes de abrir la prueba cerrada** en la etapa 7, porque decide cuál modelo se confirma.
@@ -143,11 +143,11 @@
 | **Valor de trabajo vigente** | "¿A qué clientes con seguro de salud conviene ofrecerles un seguro de vehículo?"; decide el equipo comercial; pesa más no llamar a un comprador (R = 5) |
 | **Qué ya se comprobó** | Solo el 12,26 % acepta, así que conviene priorizar: con R entre 2 y 12 todos los modelos superan a las líneas base, y el segmento "sin seguro y con daño" concentra el 97,7 % de los compradores en el 48 % de la lista |
 
-### P07 · Integrantes, roles, nombre de la startup y repositorio
+### P07 · Integrantes, roles, nombre de la startup y repositorio — **[CERRADO 2026-11-06]**
 
 | | |
 |---|---|
-| **Qué falta** | El **nombre de la startup**. **Roles:** el grupo indicó (2026-11-06) que los cinco integrantes trabajaron **por igual y en conjunto** en todas las etapas, y así quedó en el `README.md` y la especificación; los commits del repositorio los hicieron Ricardo y Jessica Andiry. **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
+| **Qué falta** | Nada. **Nombre de la startup: «Contacto Inteligente»** (elegido por el grupo el 2026-11-06). **Roles:** el grupo indicó (2026-11-06) que los cinco integrantes trabajaron **por igual y en conjunto** en todas las etapas, y así quedó en el `README.md` y la especificación; los commits del repositorio los hicieron Ricardo y Jessica Andiry. **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
 | **Quién lo cierra** | El grupo |
 | **Dónde va** | `especificacion-proyecto.md` §1, `README.md` e `informe_tecnico.md` |
 
@@ -192,7 +192,7 @@
 | P04 · Piso de contacto | Comercial + Legal | Adoptado como supuesto del grupo: Sin piso de contacto; recomendación documentada | 2026-11-06 |
 | P05 · Fuente y licencia | Grupo | | |
 | P06 · Caso de negocio | Negocio | Adoptado como supuesto del grupo: Hipótesis del caso; falta aprobar la ficha | 2026-11-06 |
-| P07 · Roles y nombre de la startup | Grupo | | |
+| P07 · Roles y nombre de la startup | Grupo | Cerrado: los cinco trabajaron en conjunto; startup «Contacto Inteligente» | 2026-11-06 |
 | P08 · Datos nuevos | Negocio + TI | Adoptado como supuesto del grupo: Siguientes pasos: historial de contactos y vencimiento del seguro | 2026-11-06 |
 | P09 · Hipótesis del daño | Negocio | Adoptado como supuesto del grupo: Hipótesis; se redacta como asociación, no como causa | 2026-11-06 |
 | P10 · Aprobaciones | Instructor y grupo | | |

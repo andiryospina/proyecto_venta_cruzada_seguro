@@ -2,7 +2,7 @@
 marp: true
 theme: default
 paginate: true
-header: "Presentación ejecutiva · Venta cruzada inteligente: predicción del interés en seguro de vehículo"
+header: "Contacto Inteligente · Venta cruzada inteligente: predicción del interés en seguro de vehículo"
 footer: "Casos Avanzados · Maestría en Ingeniería Analítica"
 ---
 

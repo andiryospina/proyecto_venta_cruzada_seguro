@@ -1,4 +1,4 @@
-# Informe técnico — Venta cruzada inteligente: predicción del interés en seguro de vehículo
+# Informe técnico — Contacto Inteligente: venta cruzada inteligente, predicción del interés en seguro de vehículo
 
 > **BORRADOR para revisión del grupo (actualizado el 2026-11-06).** Ensamblado a partir de los informes de `reports/`; las cifras de la
 > prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`. Se entrega el domingo 15 de noviembre (hito H4).
@@ -6,7 +6,7 @@
 > **Integración (2026-11-06, `specs/007-integracion-main`):** el grupo tenía dos modelos finales; quedó el que incluye las 5 variables nuevas
 > (D15 en `reports/decisiones_del_grupo.md`). Este informe describe **ese** modelo. Qué se tomó de cada rama: `reports/integracion_main.md`.
 
-**Grupo:** Ricardo González Restrepo (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (trabajo conjunto de los cinco en todas las etapas; commits de Ricardo y Jessica Andiry; nombre de la startup: **[PENDIENTE]**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
+**Grupo:** Ricardo González Restrepo (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (trabajo conjunto de los cinco en todas las etapas; commits de Ricardo y Jessica Andiry; startup: **Contacto Inteligente**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
 ## Resumen ejecutivo
 
@@ -144,7 +144,7 @@ streamlit run app/streamlit_app.py
 
 - [x] Las **9 secciones** tienen contenido y cada decisión lleva su motivo (la 7 y la 8 tienen pasos pendientes, declarados).
 - [x] Las cifras de la prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`.
-- [ ] Completar los roles de cada integrante y el nombre de la startup (integrantes, repositorio y enlace de la app ya están).
+- [x] Integrantes, nombre de la startup, repositorio y enlace de la app (el trabajo fue conjunto; ver P07).
 - [x] Registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`): versión 2, alias `champion`.
 - [x] No hay credenciales, `.env` ni datos personales.
 - [ ] El enlace de la app abre en una ventana privada.
