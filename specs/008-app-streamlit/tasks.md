@@ -16,17 +16,17 @@
 
 ## Fase 2 · Interfaz (Historias 1 a 5)
 
-- [ ] T005 Refactorizar `app/streamlit_app.py`: el formulario pasa tal cual a `render_predict_tab()`; cabecera con título y subtítulo; `st.tabs` con las 8 pestañas.
-- [ ] T006 Ayudantes de lectura con caché y `show_markdown` con aviso si falta el archivo (pestañas 1 a 3 y subpestañas 4 y 6).
-- [ ] T007 Bloque "Avisos importantes" sobre las pestañas (Historia 3).
-- [ ] T008 Pestaña 5: tarjetas, aviso 3.1, sensibilidad, imágenes, segmentos e informe completo en desplegable (Historia 2).
-- [ ] T009 Pestaña 7: sección B destacada con fichas P01 a P12, y A/estados/hoja de cierre en desplegables (Historia 5).
-- [ ] T010 Ampliar `tests/test_app.py`: las 8 pestañas cargan sin excepción y muestran contenido; avisos visibles; tarjetas del JSON; aviso con una raíz sin archivos; las
+- [x] T005 Refactorizar `app/streamlit_app.py`: el formulario pasa tal cual a `render_predict_tab()`; cabecera con título y subtítulo; `st.tabs` con las 8 pestañas.
+- [x] T006 Ayudantes de lectura con caché y `show_markdown` con aviso si falta el archivo (pestañas 1 a 3 y subpestañas 4 y 6).
+- [x] T007 Bloque "Avisos importantes" sobre las pestañas (Historia 3).
+- [x] T008 Pestaña 5: tarjetas, aviso 3.1, sensibilidad, imágenes, segmentos e informe completo en desplegable (Historia 2).
+- [x] T009 Pestaña 7: sección B destacada con fichas P01 a P12, y A/estados/hoja de cierre en desplegables (Historia 5).
+- [x] T010 Ampliar `tests/test_app.py`: las 8 pestañas cargan sin excepción y muestran contenido; avisos visibles; tarjetas del JSON; aviso con una raíz sin archivos; las
   3 pruebas originales no se tocan.
 
 ## Fase 3 · Verificación y entrega
 
-- [ ] T011 Suite completa en verde (`pytest`, sin caché), con el número de pruebas.
+- [x] T011 Suite completa en verde (`pytest`, sin caché), con el número de pruebas.
 - [ ] T012 `git check-ignore -v` sobre cada archivo que la app lee: vacío. `git grep` de secretos sobre los cambios: vacío. `requirements.txt` sin cambios.
 - [ ] T013 Arrancar la app en local (puerto 8599), capturas con `cdp_check.py` (inicio y con `click`), revisarlas; cerrar el servidor.
 - [ ] T014 Revisión con las listas de los agentes (fuga, pruebas, código de la IA) y con `checklist-revision-ia.md`; anotar hallazgos.
