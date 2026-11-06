@@ -1,0 +1,18 @@
+{
+  "modelo_final": "LightGBM",
+  "parametros": "partida",
+  "parametros_valores": {
+    "n_estimators": 200,
+    "learning_rate": 0.08,
+    "num_leaves": 31,
+    "min_child_samples": 100,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 0.0
+  },
+  "variables": "sin Policy_Sales_Channel (D13), sin Vintage ni Driving_License, con Gender (D12)",
+  "calibrar": false,
+  "metrica_principal": "costo esperado por cliente (R = 5)",
+  "regla_de_decision": "llamar si P(compra) > 1/(R+1) = 0.1667",
+  "decidido_el": "2026-11-05 19:09"
+}

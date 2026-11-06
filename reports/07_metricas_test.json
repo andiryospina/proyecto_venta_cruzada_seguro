@@ -1,0 +1,194 @@
+{
+  "decisiones": {
+    "modelo_final": "LightGBM",
+    "parametros": "partida",
+    "parametros_valores": {
+      "n_estimators": 200,
+      "learning_rate": 0.08,
+      "num_leaves": 31,
+      "min_child_samples": 100,
+      "subsample": 0.8,
+      "colsample_bytree": 0.8,
+      "reg_lambda": 0.0
+    },
+    "variables": "sin Policy_Sales_Channel (D13), sin Vintage ni Driving_License, con Gender (D12)",
+    "calibrar": false,
+    "metrica_principal": "costo esperado por cliente (R = 5)",
+    "regla_de_decision": "llamar si P(compra) > 1/(R+1) = 0.1667",
+    "decidido_el": "2026-11-05 19:09"
+  },
+  "prueba": {
+    "clientes": 76222,
+    "abierta_el": "La prueba se abrió por primera vez el 2026-11-05 19:09.",
+    "metricas": {
+      "modelo final (LightGBM)": {
+        "roc_auc": 0.8518643856038326,
+        "pr_auc": 0.35330157695980957,
+        "recall_top": 0.5630485977306786,
+        "lift_top": 2.815242988653393,
+        "balanced_accuracy": 0.7921292631082143,
+        "precision_1": 0.29597711554477313,
+        "recall_0": 0.7092852870813398,
+        "recall_1": 0.8749732391350888,
+        "f1_macro": 0.6319272951256758,
+        "contact_rate": 0.3623232137703025,
+        "log_loss": 0.2672189221320542,
+        "brier": 0.08747056165457569,
+        "cost": 0.33170213324237097,
+        "cost_top": 0.3987693841673008
+      },
+      "baseline: llamar si hubo daño": {
+        "roc_auc": 0.7708888717312052,
+        "pr_auc": 0.23572656541592965,
+        "recall_top": 0.3942410618711197,
+        "lift_top": 1.9712053093555983,
+        "balanced_accuracy": 0.7708888717312052,
+        "precision_1": 0.23805065792895408,
+        "recall_0": 0.5619019138755981,
+        "recall_1": 0.9798758295868123,
+        "f1_macro": 0.550630933960221,
+        "contact_rate": 0.5045000131195718,
+        "log_loss": 0.292424690367831,
+        "brier": 0.09396185962858984,
+        "cost": 0.3967358505418383,
+        "cost_top": 0.5229067723229514
+      },
+      "alternativa: regresión logística": {
+        "roc_auc": 0.848491480281724,
+        "pr_auc": 0.34366175414508576,
+        "recall_top": 0.555983729394134,
+        "lift_top": 2.77991864697067,
+        "balanced_accuracy": 0.7903188633879614,
+        "precision_1": 0.2934544540591002,
+        "recall_0": 0.7057715311004785,
+        "recall_1": 0.8748661956754442,
+        "f1_macro": 0.629303919538266,
+        "contact_rate": 0.365393193566162,
+        "log_loss": 0.26903437198648594,
+        "brier": 0.08799038166703892,
+        "cost": 0.33485083046889347,
+        "cost_top": 0.40396473459106297
+      }
+    },
+    "costo_por_cliente": {
+      "modelo final (LightGBM)": {
+        "media": 0.33170213324237097,
+        "ic95_bajo": 0.32636213953976545,
+        "ic95_alto": 0.33692437878827636
+      },
+      "baseline: llamar si hubo daño": {
+        "media": 0.3967358505418383,
+        "ic95_bajo": 0.39273372517121036,
+        "ic95_alto": 0.40060743617328326
+      },
+      "alternativa: regresión logística": {
+        "media": 0.33485083046889347,
+        "ic95_bajo": 0.32981061898139646,
+        "ic95_alto": 0.3402472383301409
+      }
+    },
+    "modelo_menos_baseline": {
+      "media": -0.06503371729946734,
+      "ic95": [
+        -0.07003457007163286,
+        -0.06070327464511558
+      ]
+    },
+    "modelo_menos_regresion": {
+      "media": -0.003148697226522526,
+      "ic95": [
+        -0.005983180708981659,
+        -0.0005897247513841154
+      ]
+    },
+    "porcentaje_llamado": 0.3623232137703025
+  },
+  "segmentos": {
+    "genero": [
+      {
+        "Gender": "Female",
+        "clientes": 34913,
+        "tasa real": 0.10219688941082118,
+        "% llamados": 0.29619339501045455,
+        "recall (compradores llamados)": 0.8452914798206278,
+        "precisión (llamados que compran)": 0.29165457886084517,
+        "compradores no llamados": 552
+      },
+      {
+        "Gender": "Male",
+        "clientes": 41309,
+        "tasa real": 0.13977583577428648,
+        "% llamados": 0.4182139485342177,
+        "recall (compradores llamados)": 0.8933148597159681,
+        "precisión (llamados que compran)": 0.29856448251910167,
+        "compradores no llamados": 616
+      }
+    ],
+    "edad": [
+      {
+        "tramo de edad": "20-25",
+        "clientes": 22838,
+        "tasa real": 0.035554777125842894,
+        "% llamados": 0.057448112794465364,
+        "recall (compradores llamados)": 0.33251231527093594,
+        "precisión (llamados que compran)": 0.20579268292682926,
+        "compradores no llamados": 542
+      },
+      {
+        "tramo de edad": "26-35",
+        "clientes": 14595,
+        "tasa real": 0.11229873244261733,
+        "% llamados": 0.30996916752312437,
+        "recall (compradores llamados)": 0.9176327028676022,
+        "precisión (llamados que compran)": 0.33244916003536695,
+        "compradores no llamados": 135
+      },
+      {
+        "tramo de edad": "36-45",
+        "clientes": 14118,
+        "tasa real": 0.21674458138546537,
+        "% llamados": 0.6546961325966851,
+        "recall (compradores llamados)": 0.980718954248366,
+        "precisión (llamados que compran)": 0.3246781348047171,
+        "compradores no llamados": 59
+      },
+      {
+        "tramo de edad": "46-55",
+        "clientes": 12299,
+        "tasa real": 0.1943247418489308,
+        "% llamados": 0.6486706236279373,
+        "recall (compradores llamados)": 0.9811715481171548,
+        "precisión (llamados que compran)": 0.29393331662070693,
+        "compradores no llamados": 45
+      },
+      {
+        "tramo de edad": "56-65",
+        "clientes": 6772,
+        "tasa real": 0.14574719432959243,
+        "% llamados": 0.5606910809214413,
+        "recall (compradores llamados)": 0.92806484295846,
+        "precisión (llamados que compran)": 0.24124308664735317,
+        "compradores no llamados": 71
+      },
+      {
+        "tramo de edad": "66+",
+        "clientes": 5600,
+        "tasa real": 0.08107142857142857,
+        "% llamados": 0.13625,
+        "recall (compradores llamados)": 0.3039647577092511,
+        "precisión (llamados que compran)": 0.18086500655307994,
+        "compradores no llamados": 316
+      }
+    ]
+  },
+  "shap_importancia": {
+    "Previously_Insured": 2.3242478538814306,
+    "Vehicle_Damage": 1.0280120858429074,
+    "Region_Code": 0.3472302307918931,
+    "Age": 0.3275725093049497,
+    "Vehicle_Age": 0.12902932852778065,
+    "Gender": 0.090406090260706,
+    "Annual_Premium": 0.08621165927547408,
+    "Premium_is_minimum": 0.016406386513068222
+  }
+}
