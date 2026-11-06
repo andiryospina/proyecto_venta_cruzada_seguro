@@ -2,7 +2,7 @@
 
 > Predecir qué clientes con seguro de salud aceptarán un seguro de vehículo, para que el equipo comercial priorice a quién llamar. _(Borrador: el grupo confirma el nombre y el caso.)_
 
-**App desplegada:** _enlace público de Streamlit (se completa en la clase 5)_
+**App desplegada:** [https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/](https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/) *(Streamlit Community Cloud; se despliega desde el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`, rama `main`, idéntico al `main` de este repositorio)*
 
 **Estado (2026-11-06):** etapas 1 a 9 completas en local. Modelo final: LightGBM con 5 variables nuevas, sin `Policy_Sales_Channel` y con `Gender`; costo 0,3312 por cliente en la prueba frente a 0,3720 de la regla "sin seguro de vehículo y con daño" (diferencia −0,0408, IC 95 % [−0,0453; −0,0362]). Ver [`reports/07_validacion.md`](reports/07_validacion.md), [`models/ficha_modelo.md`](models/ficha_modelo.md) y, sobre cómo se unieron las dos ramas del grupo, [`reports/integracion_main.md`](reports/integracion_main.md). Pendiente: registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`). Orden para reproducir: notebooks 03 a 09 y `pytest`.
 

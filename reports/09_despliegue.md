@@ -10,12 +10,12 @@
 
 | Dato | Valor |
 |---|---|
-| Enlace público de la app | |
+| Enlace público de la app | https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ |
 | Plataforma | Streamlit Community Cloud |
-| Repo, rama y archivo principal | |
+| Repo, rama y archivo principal | `rigonzalezre-dot/proyecto_venta_cruzada_seguro` (fork de Ricardo, idéntico al `main` de `andiryospina/proyecto_venta_cruzada_seguro`), rama `main`, `app/streamlit_app.py`. Se despliega desde el fork porque Andiry es la dueña del repositorio oficial y Ricardo no tiene permisos de administrador allí |
 | Versión de Python elegida | ☐ 3.12  ☐ otra → motivo: _______________ |
 | ¿Se comprobó en una **ventana privada**? | ☐ sí  ☐ no |
-| ¿Se desplegó? | ☐ sí  ☐ no → **plan B** (apartado 4) |
+| ¿Se desplegó? | ☒ sí (2026-11-06) — **falta comprobar el enlace en ventana privada y anotar las pruebas del apartado 3** |
 
 ## 2. Decisiones de despliegue y su motivo
 

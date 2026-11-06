@@ -41,7 +41,7 @@ footer: "Casos Avanzados · Maestría en Ingeniería Analítica"
 
 # 4 · Demo de la app
 
-**Enlace:** *(se completa al desplegar)*
+**Enlace:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
 1. **Un caso normal:** hombre de 34 años, sin seguro previo, con daño en el vehículo → el modelo da 39 % de probabilidad y recomienda **LLAMAR**.
 2. **Un caso límite:** el mismo cliente con seguro previo y sin daño → 0,3 %, **NO LLAMAR**.
