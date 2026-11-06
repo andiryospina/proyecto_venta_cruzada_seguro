@@ -39,7 +39,6 @@ def make_clean_frame(n: int = 600, seed: int = 0) -> pd.DataFrame:
         "Vehicle_Age": rng.integers(0, 3, n),
         "Vehicle_Damage": damage,
         "Annual_Premium": premium,
-        "Policy_Sales_Channel": rng.choice([26, 124, 152, 999], n, p=[0.4, 0.3, 0.29, 0.01]),
         "Vintage": rng.integers(10, 300, n),
         "Premium_is_minimum": (premium == 2630.0).astype(int),
         "Response": y,
@@ -134,7 +133,6 @@ def test_preprocessor_handles_unseen_categories_at_predict_time():
     for changes in ({}, {"target_encode_codes": True}):
         pre = build_preprocessor(FeatureOptions(**changes)).fit(X, y)
         new = X.head(5).copy()
-        new["Policy_Sales_Channel"] = 31337      # canal que nunca se vio
         new["Region_Code"] = 7777                # región que nunca se vio
         out = pre.transform(new)
         dense = out.toarray() if hasattr(out, "toarray") else np.asarray(out)
@@ -151,12 +149,12 @@ def test_feature_options_with_changes_returns_a_new_object():
 # Segunda ronda: variables nuevas
 # ======================================================================================================================
 def test_code_volume_counts_clients_from_fit_data_only_and_unseen_is_zero():
-    train = np.array([[26, 28]] * 100 + [[152, 28]] * 10 + [[152, 3]] * 5)
+    train = np.array([[28]] * 110 + [[3]] * 5)
     transformer = CodeVolume().fit(train)
-    out = transformer.transform(np.array([[26, 28], [152, 3], [999, 7777]]))
-    assert out[0, 0] == pytest.approx(np.log1p(100)) and out[0, 1] == pytest.approx(np.log1p(110))
-    assert out[1, 0] == pytest.approx(np.log1p(15)) and out[1, 1] == pytest.approx(np.log1p(5))
-    assert out[2].tolist() == [0.0, 0.0]                  # canal y región que nunca se vieron
+    out = transformer.transform(np.array([[28], [3], [7777]]))
+    assert out[0, 0] == pytest.approx(np.log1p(110))
+    assert out[1, 0] == pytest.approx(np.log1p(5))
+    assert out[2].tolist() == [0.0]                       # región que nunca se vio
 
 
 def test_need_score_truth_table():
@@ -193,7 +191,7 @@ def test_premium_vs_age_band_uses_train_medians_per_band_and_global_fallback():
 
 
 @pytest.mark.parametrize("option,extra_columns", [
-    ("channel_region_volume", 2), ("need_score", 1), ("profile_12", 12), ("young_new_vehicle", 1),
+    ("region_volume", 1), ("need_score", 1), ("profile_12", 12), ("young_new_vehicle", 1),
     ("premium_vs_age_band", 1), ("vintage_share", 1),
 ])
 def test_each_new_feature_adds_exactly_its_columns_and_keeps_the_existing_ones(option, extra_columns):

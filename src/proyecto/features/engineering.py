@@ -24,7 +24,7 @@ ORDINAL_COLS = ["Vehicle_Age"]
 NUMERIC_COLS = ["Age", "Vintage"]
 PREMIUM_COL = "Annual_Premium"
 CATEGORICAL_COL = "Gender"
-CODE_COLS = ["Region_Code", "Policy_Sales_Channel"]
+CODE_COLS = ["Region_Code"]
 RARE_LABEL = -1   # código que reemplaza a los canales o regiones poco frecuentes y a los que no se vieron al entrenar
 
 
@@ -117,7 +117,7 @@ def _segment_names(transformer, input_features):
 # ----------------------------------------------------------------------------------------------------------------------
 YOUNG_MAX_AGE = 25                       # primer tramo de edad del EDA (20-25 años): el de menor aceptación (3,5 %)
 AGE_BANDS = [19, 25, 35, 45, 55, 65, 200]   # los mismos tramos del EDA
-NEW_FEATURES = ("channel_region_volume", "need_score", "profile_12", "young_new_vehicle", "premium_vs_age_band", "vintage_share")
+NEW_FEATURES = ("region_volume", "need_score", "profile_12", "young_new_vehicle", "premium_vs_age_band", "vintage_share")
 
 
 def _fixed_names(names, transformer, input_features):
@@ -126,10 +126,10 @@ def _fixed_names(names, transformer, input_features):
 
 
 class CodeVolume(BaseEstimator, TransformerMixin):
-    """Tamaño de cada canal y de cada región: el logaritmo de cuántos clientes tiene en el entrenamiento.
+    """Tamaño de cada región: el logaritmo de cuántos clientes tiene en el entrenamiento.
 
-    Responde a: "¿es un canal masivo o de nicho?". No usa la respuesta, solo cuenta clientes. Un código que no se vio
-    al entrenar vale 0. Recibe dos columnas, en este orden: `Policy_Sales_Channel` y `Region_Code`.
+    Responde a: "¿es una región grande o de nicho?". No usa la respuesta, solo cuenta clientes. Un código que no se vio
+    al entrenar vale 0. Recibe la columna `Region_Code`.
     """
 
     def fit(self, X, y=None):
@@ -143,7 +143,7 @@ class CodeVolume(BaseEstimator, TransformerMixin):
         return np.column_stack(columns)
 
     def get_feature_names_out(self, input_features=None):
-        return np.asarray(["channel_volume", "region_volume"], dtype=object)
+        return np.asarray(["region_volume"], dtype=object)
 
 
 class PremiumVsAgeBand(BaseEstimator, TransformerMixin):
@@ -225,7 +225,7 @@ class FeatureOptions:
     scale: bool = False                     # escalar numéricas (necesario para la regresión logística)
     drop: tuple = field(default_factory=tuple)   # columnas que se quitan (prueba de "¿esta variable sirve?")
     # --- segunda ronda: variables NUEVAS (se suman a las existentes) ---
-    channel_region_volume: bool = False     # tamaño del canal y de la región (¿masivo o de nicho?)
+    region_volume: bool = False             # tamaño de la región (¿grande o de nicho?)
     need_score: bool = False                # puntaje de necesidad de cobertura, de 0 a 4
     profile_12: bool = False                # las 12 combinaciones de seguro previo × daño × antigüedad del vehículo
     young_new_vehicle: bool = False         # 25 años o menos con vehículo de menos de 1 año
@@ -291,8 +291,8 @@ def build_preprocessor(options: FeatureOptions = FeatureOptions()) -> ColumnTran
     def available(*columns):
         return not (set(columns) & dropped)
 
-    if options.channel_region_volume and available("Policy_Sales_Channel", "Region_Code"):
-        parts.append(("volume", Pipeline([("volume", CodeVolume()), ("scale", scaler)]), ["Policy_Sales_Channel", "Region_Code"]))
+    if options.region_volume and available("Region_Code"):
+        parts.append(("volume", Pipeline([("volume", CodeVolume()), ("scale", scaler)]), ["Region_Code"]))
 
     if options.need_score and available("Previously_Insured", "Vehicle_Damage", "Vehicle_Age"):
         names = partial(_fixed_names, ["need_score"])

@@ -12,13 +12,13 @@
     "regla": "1 / (R + 1)",
     "R": 5,
     "valor": 0.1667,
-    "minimo_empirico": 0.16,
+    "minimo_empirico": 0.175,
     "banda_a_menos_de_0.001": [
       0.15,
-      0.175
+      0.18
     ],
     "mantener_el_teorico": true,
-    "porcentaje_de_clientes_llamados": 0.35
+    "porcentaje_de_clientes_llamados": 0.36
   },
   "finalistas": {
     "lightgbm": {
@@ -42,18 +42,18 @@
         "reg_lambda": 0.0
       },
       "mejor_encontrado": {
-        "n_estimators": 400,
-        "learning_rate": 0.02034944180957616,
-        "num_leaves": 37,
-        "min_child_samples": 25,
-        "subsample": 0.6322189346248572,
-        "colsample_bytree": 0.545855365310915,
-        "reg_lambda": 6.0208941399309905
+        "n_estimators": 500,
+        "learning_rate": 0.034773043067021225,
+        "num_leaves": 12,
+        "min_child_samples": 295,
+        "subsample": 0.8600309920794306,
+        "colsample_bytree": 0.6191576808058824,
+        "reg_lambda": 3.179144658777483
       },
-      "diferencia_en_reservados": 0.00029,
+      "diferencia_en_reservados": -0.00021,
       "intervalo_95": [
-        -0.00173,
-        0.00227
+        -0.00214,
+        0.00181
       ]
     },
     "regresion_logistica": {
@@ -69,28 +69,28 @@
         "profile_12": false
       },
       "mejor_encontrado": {
-        "C": 1.0,
-        "age_spline_knots": 6,
+        "C": 0.197187679528193,
+        "age_spline_knots": 12,
         "profile_12": false
       },
-      "diferencia_en_reservados": 0.0,
+      "diferencia_en_reservados": -0.0006,
       "intervalo_95": [
-        0.0,
-        0.0
+        -0.00199,
+        0.00088
       ]
     }
   },
   "comparacion_de_finalistas": {
-    "regresion_menos_lightgbm": 0.00252,
+    "regresion_menos_lightgbm": 0.00281,
     "intervalo_95": [
-      -0.00056,
-      0.00516
+      0.00017,
+      0.0055
     ]
   },
   "tracking": {
     "donde": "local",
     "experimento": "venta-cruzada-seguros-optimizacion",
-    "ejecucion": "20261031-112601",
+    "ejecucion": "20261105-184315",
     "ensayos_registrados": 40
   }
 }

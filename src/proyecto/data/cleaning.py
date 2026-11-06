@@ -22,7 +22,11 @@ VEHICLE_AGE_MAP = {"< 1 Year": 0, "1-2 Year": 1, "> 2 Years": 2}  # tiene orden 
 MIN_PREMIUM = 2630.0
 
 # Decisión 5 del EDA: son códigos, no cantidades (la región 28 no es "mayor" que la 3)
-CODE_COLUMNS = ["Region_Code", "Policy_Sales_Channel"]
+CODE_COLUMNS = ["Region_Code"]
+
+# Decisión del grupo (2026-10-31, decisión 8 del EDA): `Policy_Sales_Channel` es el canal por el que se contactó al cliente;
+# puede no conocerse antes de decidir a quién llamar (sospecha de fuga). Se elimina del todo en vez de medirla con y sin.
+DROPPED_COLUMNS = ["Policy_Sales_Channel"]
 
 # El dataset no trae nombres, documentos ni teléfonos. Si algún día aparecieran, se listan aquí y se eliminan al cargar.
 PERSONAL_COLUMNS: tuple = ()
@@ -103,8 +107,13 @@ def encode_vehicle_age(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def drop_excluded_columns(df: pd.DataFrame, columns=DROPPED_COLUMNS) -> pd.DataFrame:
+    """Elimina las columnas que no deben llegar al modelo (hoy: `Policy_Sales_Channel`, posible fuga)."""
+    return df.drop(columns=[c for c in columns if c in df.columns])
+
+
 def cast_code_columns(df: pd.DataFrame, columns=CODE_COLUMNS) -> pd.DataFrame:
-    """Los códigos de región y de canal llegan como decimales (28.0); se pasan a enteros (28).
+    """El código de región llega como decimal (28.0); se pasan a enteros (28).
 
     Falla si hay vacíos o decimales reales, porque un código no puede ser 28.5.
     """
@@ -160,6 +169,7 @@ def clean(df: pd.DataFrame) -> pd.DataFrame:
         raise ValueError(f"Valores imposibles encontrados: {problems}")
     out = encode_vehicle_damage(out)
     out = encode_vehicle_age(out)
+    out = drop_excluded_columns(out)
     out = cast_code_columns(out)
     out = flag_minimum_premium(out)
     return out.reset_index(drop=True)

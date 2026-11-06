@@ -58,12 +58,11 @@ def test_vehicle_age_rejects_unknown_value():
         encode_vehicle_age(make_rows(Vehicle_Age=["> 2 Years", "3 Years"]))
 
 
-# Regla 5 · códigos de región y canal pasan a entero
+# Regla 5 · el código de región pasa a entero
 def test_code_columns_become_integers():
     out = cast_code_columns(make_rows())
     assert out["Region_Code"].tolist() == [28, 3]
     assert str(out["Region_Code"].dtype) == "int64"
-    assert str(out["Policy_Sales_Channel"].dtype) == "int64"
 
 
 def test_code_columns_reject_missing_or_fractional_codes():
@@ -114,7 +113,8 @@ def test_clean_is_complete_and_does_not_modify_input():
 def test_clean_works_without_target_column():
     out = clean(make_rows().drop(columns="Response"))
     assert "Response" not in out.columns
-    assert set(EXPECTED_COLUMNS) <= set(out.columns)
+    assert set(EXPECTED_COLUMNS) - {"Policy_Sales_Channel"} <= set(out.columns)
+    assert "Policy_Sales_Channel" not in out.columns            # decisión 8 del EDA: se elimina por posible fuga
 
 
 def test_clean_rejects_missing_columns():
