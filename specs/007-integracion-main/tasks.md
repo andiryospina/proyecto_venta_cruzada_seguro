@@ -106,17 +106,17 @@ prueba.** Toda cifra de prueba se copia de `reports/07_metricas_test.json` (vers
 
 **Objetivo y prueba independiente:** paso 6 de `quickstart.md` sin resultados.
 
-- [ ] T026 [US4] Ejecutar `git grep -nE '@(unaula|gmail|hotmail|outlook)' -- . ':!material-del-curso'` y
+- [x] T026 [US4] Ejecutar `git grep -nE '@(unaula|gmail|hotmail|outlook)' -- . ':!material-del-curso'` y
   `git grep -n -i "dapi\|cloud.databricks.com\|azuredatabricks" -- . ':!.env.example'`; ambos vacíos. Si aparece algo, quitarlo del
   archivo (no del historial: anotarlo en `reports/integracion_main.md`).
 
 ## Fase 7 · Cierre
 
-- [ ] T027 Escribir `reports/integracion_main.md` con la tabla de la sección 1 de `data-model.md` (archivo, cambio de `main`, decisión,
+- [x] T027 Escribir `reports/integracion_main.md` con la tabla de la sección 1 de `data-model.md` (archivo, cambio de `main`, decisión,
   motivo) y las cifras de comprobación (pruebas, ida y vuelta, filas); comprobar el paso 8 de `quickstart.md` (todo archivo borrado
   aparece en la tabla).
-- [ ] T028 [P] Actualizar `README.md` (modelo final, cómo abrir la app) y `specs/README.md` (agregar `007-integracion-main`).
-- [ ] T029 [P] Revisar con el subagente `auditor-de-fuga` (notebook 09, `serving.py`, defaults solo de entrenamiento) y con
+- [x] T028 [P] Actualizar `README.md` (modelo final, cómo abrir la app) y `specs/README.md` (agregar `007-integracion-main`).
+- [x] T029 [P] Revisar con el subagente `auditor-de-fuga` (notebook 09, `serving.py`, defaults solo de entrenamiento) y con
   `revisor-de-codigo-ia` (`serving.py`, `test_serving.py`, notebook 09); anotar lo que digan en `reports/integracion_main.md`.
 - [ ] T030 Ejecutar todo `quickstart.md` (pasos 1 a 9) y `PYTHONUTF8=1 python -m pytest -q` completo en verde; commit
   "Integra main: inferencia, app e informes sobre el modelo final".
