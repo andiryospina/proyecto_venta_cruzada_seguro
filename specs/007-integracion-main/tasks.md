@@ -82,24 +82,24 @@ prueba.** Toda cifra de prueba se copia de `reports/07_metricas_test.json` (vers
 **Objetivo:** `models/model.joblib` = modelo final con la traducción persona → modelo; la app lo usa.
 **Prueba independiente:** pasos 1, 2 y 9 de `quickstart.md`.
 
-- [ ] T020 [US3] Reescribir `tests/test_serving.py` (primero; debe fallar con el `serving.py` de `main`) con las 5 pruebas de
+- [x] T020 [US3] Reescribir `tests/test_serving.py` (primero; debe fallar con el `serving.py` de `main`) con las 5 pruebas de
   `contracts/serving.md`, usando un `Pipeline` de juguete entrenado con columnas como las de `train.parquet` (no el modelo real).
-- [ ] T021 [US3] Reescribir `src/proyecto/inference/serving.py` según `contracts/serving.md`: `RAW_COLUMNS` = `["Age",
+- [x] T021 [US3] Reescribir `src/proyecto/inference/serving.py` según `contracts/serving.md`: `RAW_COLUMNS` = `["Age",
   "Annual_Premium", "Region_Code", "Vintage", "Gender", "Driving_License", "Previously_Insured", "Vehicle_Age", "Vehicle_Damage"]`;
   codificación con `CATEGORY_MAPS` y `MIN_PREMIUM` de `config.py` (`Driving_License` y `Previously_Insured`: `Yes`=1, `No`=0); sin `id`
   (plan B de `research.md` R5 si el modelo la exige). `pytest tests/test_serving.py -q` en verde.
-- [ ] T022 [US3] `notebooks/09_inferencia.ipynb` (solo orquesta): cargar `models/final_pipeline.joblib` y
+- [x] T022 [US3] `notebooks/09_inferencia.ipynb` (solo orquesta): cargar `models/final_pipeline.joblib` y
   `data/processed/train.parquet`; `build_defaults(to_raw(train))`; `build_schema` con las claves de `contracts/input_schema.md`
   (`valid_range`: `Age` 18–100, `Annual_Premium` > 0, `Vintage` ≥ 0, `Region_Code` 0–52; `cost_matrix` = `COST_MATRIX`;
   `decision_labels` {"0": "No llamar", "1": "Llamar"}; etiquetas, título y aviso de uso responsable). No importa nada de
   `proyecto.models.metrics` ni lee `test.parquet`.
-- [ ] T023 [US3] Ejecutar el notebook 09: guarda `models/model.joblib` (`ServingModel`) y `models/input_schema.json`; celda de ida y
+- [x] T023 [US3] Ejecutar el notebook 09: guarda `models/model.joblib` (`ServingModel`) y `models/input_schema.json`; celda de ida y
   vuelta: diferencia máxima entre `model.joblib` (con `to_raw`) y `final_pipeline.joblib` en 200 clientes de entrenamiento `<= 1e-9`
   (paso 2 de `quickstart.md`); ejemplo con 3 clientes de entrenamiento y un caso inválido (edad 150) que lanza `InputValidationError`.
 - [ ] T024 [US3] Abrir la app (`streamlit run app/streamlit_app.py`) y comprobar el paso 9 de `quickstart.md`: 9 datos, sin canal,
   "Llamar/No llamar", aviso de uso responsable, error con edad 150. Si hace falta tocar `app/streamlit_app.py`, solo cambios pequeños
   (la app es de `main`).
-- [ ] T025 [US3] `reports/09_despliegue.md`: estructura de `main`, con las 9 entradas del formulario, cómo se generan `model.joblib` e
+- [x] T025 [US3] `reports/09_despliegue.md`: estructura de `main`, con las 9 entradas del formulario, cómo se generan `model.joblib` e
   `input_schema.json` (notebook 09) y el resultado de la ida y vuelta de T023.
 
 ## Fase 6 · Historia 4 (P2): nada personal en el repositorio
