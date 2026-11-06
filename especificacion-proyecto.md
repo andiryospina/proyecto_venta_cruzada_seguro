@@ -40,7 +40,7 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
   idénticas salvo el `id`; el EDA decide si se quitan antes de partir.
 - **Datos personales o confidenciales presentes:** ☐ no  ☒ sí, de forma limitada: no hay nombres ni
   documentos, pero sí `Gender` y `Age` (atributos sensibles). `id` se quita del modelo (no aporta
-  información). `Gender` se evalúa en el análisis de equidad y el grupo decide si se usa como variable.
+  información). `Gender` se evalúa en el análisis de equidad; **el grupo decidió conservarla en el modelo** (2026-11-05), con auditoría por género y edad (`reports/07_segmentos.csv`) y aprobación de Legal pendiente.
 - **Licencia o permiso de uso de los datos:** por confirmar en la página de Kaggle y con el instructor.
 
 ## 4. Métrica
@@ -105,3 +105,8 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 | 2026-11-05 | **Prueba abierta una sola vez** (20:43:56, 76.222 clientes): el modelo **supera a la regla de negocio** con confianza del 95 % | Costo 0,3312 frente a 0,3720; diferencia −0,0408, IC 95 % [−0,0453; −0,0362], todo bajo cero. Llama al 36,5 % de la base (la regla, al 47,8 %) con recall 87,9 % (`reports/07_validacion.md`) |
 | 2026-11-05 | Límites declarados, sin cambiar el modelo: con costo 10 a 1 gana la regla (0,386 frente a 0,405); recall bajo en 18–29 años (48 %) y 60+ (64 %); `Age`, `Gender` y `Region_Code` son atributos sensibles | Cambiar modelo o umbral mirando la prueba la invalidaría. Pendiente con validación: confirmar el supuesto 5 a 1 y medir el modelo sin `Gender` |
 | 2026-11-05 | La ejecución de la etapa 07 quedó en **MLflow local**, no en Databricks | El `.env` de quien ejecutó tenía `MLFLOW_FORCE_LOCAL` y la conexión comentada; no se repite porque sería abrir la prueba otra vez. Las cifras están en `reports/07_metricas_test.json` |
+| 2026-11-05 | *(desde `main`)* Conservar `Gender` en el modelo (D12 del registro del grupo) | Quitarla no tiene costo medible; el grupo decidió mantenerla. Exige auditoría de equidad (hecha en la etapa 07) y aprobación de Legal |
+| 2026-11-05 | *(desde `main`, **reemplazada el 2026-11-06**)* Modelo final: LightGBM con parámetros de partida y sin variables nuevas (D14) | Reemplazada por la decisión del 2026-11-06 (D15). Ese modelo también se evaluó en la prueba (19:09) |
+| 2026-11-05 | *(desde `main`)* Registrar el modelo final en Databricks (Unity Catalog, alias `champion`); la app usa `models/model.joblib` y no consulta Databricks | El registro es la fuente de verdad. Hoy `champion` (v1) es el modelo de `main`; pasa al modelo final con T009 de `specs/006-registro-modelo` |
+| 2026-11-06 | **Integración de `main`: el modelo final es el de esta rama (D15)** — LightGBM con las 5 variables nuevas, sin `Policy_Sales_Channel`, con `Gender`, parámetros de Optuna. Código oficial de `src/` = el de esta rama | El grupo exige incluir las variables nuevas. No se eligió comparando cifras de prueba. La prueba quedó abierta dos veces en el grupo (19:09 y 20:43 del 2026-11-05) y se declara (`reports/07_validacion.md` §3.1). Detalle: `reports/integracion_main.md` |
+| 2026-11-06 | El modelo se registra como `venta_cruzada_seguros` (nombre que ya usaba el grupo), no `venta_cruzada_lgbm` | Un solo nombre en el registro; la versión 1 de `main` queda como historia |

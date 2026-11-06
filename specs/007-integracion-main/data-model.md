@@ -25,7 +25,7 @@ Estados: **R** = versión de la rama · **M** = versión de `main` · **A** = se
 | `notebooks/01` a `06` | M | R | Ver `research.md` R3 |
 | `notebooks/07`, `08` | M (conflicto) | R | Modelo final; en el 08 se cambia el nombre del modelo a `venta_cruzada_seguros` |
 | `notebooks/09_inferencia.ipynb` | M | A | Se rehace sobre `serving.py` nuevo |
-| `reports/00_caso.md`, `01_eda.md`, `especificaciones/02-eda.md` | M | M (revisar) | Caso y EDA; se quita lo que cite secciones o cifras que solo están en los notebooks de `main` |
+| `reports/00_caso.md`, `01_eda.md`, `especificaciones/02-eda.md` | M | **R** + notas de `main` *(cambiado en T015)* | La revisión mostró que la versión de `main` no corregía la de la rama: la reemplazaba por un borrador de sus notebooks 01–02 (que ya no están), con la métrica principal como PR-AUC (el modelo final usa costo esperado) y las hipótesis del EDA en blanco. Se conservan de `main` la nota sobre la eliminación del canal (D13, P11) y el enlace al registro de decisiones |
 | `especificaciones/03-preprocesamiento.md`, `specs/002-variables/spec.md` | M | R | Describen la limpieza y las variables de la rama |
 | `reports/04_features.md`, `04_features_tabla.csv`, `05_torneo.md`, `06_optimizacion.md`, `06_best_params.json` | M | R | Resultados del código de la rama |
 | `reports/04_features_tabla_nuevas.csv`, `05_torneo_tabla.csv` | A | Q | Resultados del código de `main` |

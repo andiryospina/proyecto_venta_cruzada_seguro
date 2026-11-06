@@ -37,6 +37,20 @@
 - La marca registra el commit `e94c0cb`; el código de esta etapa (`src/proyecto/models/validation.py` y el notebook 07) aún no
   estaba en un commit en ese momento.
 
+### 3.1 La prueba en el grupo: se abrió dos veces *(agregado el 2026-11-06, `specs/007-integracion-main`)*
+
+- En el grupo, la prueba (los mismos 76.222 clientes) se abrió **dos veces** el 2026-11-05, con **dos modelos distintos**:
+  1. **19:09**, en `main`: LightGBM con parámetros de partida, sin variables nuevas y sin `Vintage` ni `Driving_License`.
+  2. **20:43:56**, en esta rama: el modelo de este informe (5 variables nuevas, parámetros optimizados).
+- **El modelo final es el segundo, y no se eligió mirando la prueba.** El criterio lo fijó el grupo el 2026-11-06 por alcance: el
+  modelo final **debe incluir las 5 variables nuevas** (decisión D15 en `reports/decisiones_del_grupo.md`). Las cifras de prueba del
+  modelo de `main` no se usaron para decidir nada.
+- **Qué significa para quien lea estas cifras:** cada modelo se evaluó una sola vez y nada se ajustó después de ver la prueba, así que
+  las cifras de la sección 3 siguen siendo honestas para este modelo. Pero que existan dos evaluaciones sobre la misma prueba es una
+  desviación de la regla "la prueba se abre una sola vez" (principio III de la constitución), y por eso se declara. Si se
+  hubiera elegido el de menor costo en la prueba, la cifra ganadora estaría sesgada a favor.
+- La constancia de las dos aperturas está en `reports/prueba_abierta.txt`. La prueba no se volverá a abrir.
+
 Intervalos con *bootstrap* de clientes (1.000 remuestreos; 1 fila = 1 cliente).
 
 | Métrica | Modelo final | Línea base (regla) | Intervalo del 95 % |

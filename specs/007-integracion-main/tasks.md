@@ -57,23 +57,23 @@ prueba.** Toda cifra de prueba se copia de `reports/07_metricas_test.json` (vers
 **Objetivo:** informes y registro de decisiones describen el modelo final, sin cifras del modelo de `main` como vigentes.
 **Prueba independiente:** paso 5 de `quickstart.md` y lectura de `reports/decisiones_del_grupo.md`.
 
-- [ ] T013 [US2] `reports/decisiones_del_grupo.md`: agregar el estado **[REEMPLAZADO]** a "Cómo leer los estados"; marcar D12, D14 y la
+- [x] T013 [US2] `reports/decisiones_del_grupo.md`: agregar el estado **[REEMPLAZADO]** a "Cómo leer los estados"; marcar D12, D14 y la
   decisión de la etapa 4 como `[REEMPLAZADO 2026-11-06] por D15` sin borrar su texto; agregar **D15** y cerrar **P12** exactamente como
   la sección 2 de `data-model.md`. Actualizar la tabla "Resumen".
-- [ ] T014 [P] [US2] `reports/07_validacion.md`: agregar una sección "La prueba en el grupo" que diga que se abrió dos veces el
+- [x] T014 [P] [US2] `reports/07_validacion.md`: agregar una sección "La prueba en el grupo" que diga que se abrió dos veces el
   2026-11-05 (19:09 con el modelo de `main`, 20:43 con el modelo final), que el modelo final se eligió por un criterio fijado sin
   comparar cifras de prueba (incluir las 5 variables nuevas) y que las cifras del modelo de `main` no se usan para decidir nada.
-- [ ] T015 [P] [US2] Revisar `reports/00_caso.md`, `reports/01_eda.md` y `especificaciones/02-eda.md` (versión de `main`): quitar o
+- [x] T015 [P] [US2] Revisar `reports/00_caso.md`, `reports/01_eda.md` y `especificaciones/02-eda.md` (versión de `main`): quitar o
   ajustar lo que cite secciones o cifras que solo existen en los notebooks 01–02 de `main` (por ejemplo, la sección 4.2 de señal de
   variables nuevas de `main` y el conteo de 304.887); conservar el resto.
-- [ ] T016 [US2] `especificacion-proyecto.md`: unir la sección 7 de ambas versiones (fusión de la rama + lo que agregó `main` que siga
+- [x] T016 [US2] `especificacion-proyecto.md`: unir la sección 7 de ambas versiones (fusión de la rama + lo que agregó `main` que siga
   siendo cierto) y agregar la entrada "2026-11-06 · integración de `main`: modelo final = rama (D15)".
-- [ ] T017 [P] [US2] `models/ficha_modelo.md`: estructura de `main`; variables (base + 5 nuevas, con `Gender`, `Vintage`,
+- [x] T017 [P] [US2] `models/ficha_modelo.md`: estructura de `main`; variables (base + 5 nuevas, con `Gender`, `Vintage`,
   `Driving_License`, sin canal), parámetros del ensayo #13, 304.238 clientes de entrenamiento y cifras de prueba copiadas de
   `reports/07_metricas_test.json`; mantener los límites y la auditoría por género y edad (`reports/07_segmentos.csv`).
-- [ ] T018 [P] [US2] `reports/prueba_abierta.txt`: dejar las dos aperturas (19:09 modelo de `main`; 20:43, usuario, commit `e94c0cb`,
+- [x] T018 [P] [US2] `reports/prueba_abierta.txt`: dejar las dos aperturas (19:09 modelo de `main`; 20:43, usuario, commit `e94c0cb`,
   76.222 filas, modelo final), cada una en su línea.
-- [ ] T019 [US2] `reports/informe_tecnico.md` y `presentacion/ejecutiva.md` (máximo 5 diapositivas): estructura de `main`, modelo, variables,
+- [x] T019 [US2] `reports/informe_tecnico.md` y `presentacion/ejecutiva.md` (máximo 5 diapositivas): estructura de `main`, modelo, variables,
   decisiones y cifras del modelo final (de `07_metricas_test.json`); mencionar la doble apertura de la prueba y que `champion` en
   Databricks sigue en el modelo de `main` hasta T009 de `006-registro-modelo`. Ejecutar el paso 5 de `quickstart.md`.
 

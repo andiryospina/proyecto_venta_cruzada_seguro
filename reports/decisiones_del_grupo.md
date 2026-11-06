@@ -10,10 +10,12 @@
 | **[DECIDIDO]** | Se resolvió con evidencia de este proyecto. Se puede cambiar, pero hace falta evidencia nueva. |
 | **[ADOPTADO]** | Propuesta que ya se aplicó y funcionó, o regla por defecto vigente hasta que el grupo diga lo contrario. |
 | **[PENDIENTE: dato externo]** | No se puede resolver con estos datos. Tiene valor de trabajo y responsable. |
+| **[REEMPLAZADO]** | Dejó de estar vigente por una decisión posterior, que se indica. Se conserva el texto original como historia. |
 
 ## Resumen
 
-- **14 decisiones cerradas o adoptadas** (D01 a D14) y **12 pendientes** (P01 a P12).
+- **15 decisiones** (D01 a D15; D12 y D14 **reemplazadas** por D15) y **12 pendientes** (P01 a P12; **P12 cerrada**).
+- **Actualizado el 2026-11-06 (`specs/007-integracion-main`):** el grupo decidió que el **modelo final es el de la rama de Andiry**, porque debe incluir las **5 variables nuevas** (D15). El código oficial de `src/` pasa a ser el de esa rama. **Las cifras de D01 a D11 y de P01 a P04 se midieron con el código anterior de `main`** (etapas 4 a 6 de la compañera) y se conservan como historia; las del modelo final están en `reports/04_features.md` a `reports/07_validacion.md` y en `models/ficha_modelo.md`. Detalle de la integración: `reports/integracion_main.md`.
 - **Actualizado el 2026-11-05:** el grupo decidió **eliminar `Policy_Sales_Channel`** (posible fuga) y **conservar `Gender`**; las etapas 3 a 6 se reejecutaron y las cifras de abajo son las nuevas.
 - **Ninguna de las pendientes bloquea el modelado.** Solo **P03** (si se exige explicar cada llamada) debe quedar resuelta **antes de abrir la prueba cerrada** en la etapa 7, porque decide cuál modelo se confirma.
 - **La que más mueve las cifras es P01 (el valor de R)**, y aun así las etapas 5 y 6 mostraron que **no cambia los finalistas ni el umbral de forma relevante** (R entre 2 y 12).
@@ -35,9 +37,10 @@
 | **D09** | **Escala de reporte:** todo se expresa por 100.000 clientes | **[DECIDIDO]** | Es una convención para comparar, **no un pronóstico** de campaña. Cambiar la escala multiplica las unidades pero no cambia ninguna conclusión | nb 04, 05, 06 |
 | **D10** | **Modelo para la validación final:** LightGBM como **principal**, regresión logística como **alternativa explicable**. Si se exige explicar cada llamada (P03), se despliega la regresión | **[ADOPTADO]** por defecto | En reservados la regresión cuesta +0,0028 más, intervalo [+0,0002; +0,0055]: LightGBM es mejor con confianza del 95 %, por poco; la diferencia (≈ 280 unidades por 100.000, menos del 1 %) no justifica perder la explicación si se necesita | nb 05 §10, nb 06 §8 y §11, `reports/06_optimizacion.md` |
 | **D11** | **Criterio de reemplazo del modelo:** reentrenar si la tasa real de aceptación se aleja de la predicha más de un 10 % relativo durante 2 campañas | **[ADOPTADO]** por defecto | Propuesta de monitoreo; el modelo está calibrado en validación (diferencia máxima 0,010 en LightGBM). El 10 % y las 2 campañas son un punto de partida: se ajustan con datos reales de producción | nb 05 §10.1, nb 06 §11.2 |
-| **D12** | **Variables retiradas del modelo:** `Vintage`, `Driving_License` (más `id`). **`Gender` se conserva** por decisión del grupo (2026-11-05) | **[DECIDIDO por el grupo]** | Quitar `Vintage` y la licencia no cambia el costo (0,3322 frente a 0,3326); quitar además `Gender` tampoco (0,3327), así que conservarla no cuesta nada medible. La app pide 7 datos. Como el género entra directo al modelo, se audita por género y edad en la etapa 7 y Legal debe aprobar su uso | nb 04 §9, `reports/04_features.md` |
+| **D12** | **Variables retiradas del modelo:** `Vintage`, `Driving_License` (más `id`). **`Gender` se conserva** por decisión del grupo (2026-11-05) | ~~[DECIDIDO por el grupo]~~ **[REEMPLAZADO 2026-11-06] por D15**: el modelo final conserva `Vintage` y `Driving_License`; `Gender` sigue | Quitar `Vintage` y la licencia no cambia el costo (0,3322 frente a 0,3326); quitar además `Gender` tampoco (0,3327), así que conservarla no cuesta nada medible. La app pide 7 datos. Como el género entra directo al modelo, se audita por género y edad en la etapa 7 y Legal debe aprobar su uso | nb 04 §9, `reports/04_features.md` |
 | **D13** | **`Policy_Sales_Channel` se elimina** en la limpieza (decisión 8 del EDA: posible fuga, el canal de contacto puede no conocerse antes de decidir) | **[DECIDIDO por el grupo]** | Cuesta ≈ 0,008 por cliente (LightGBM 0,3326 sin canal frente a 0,3245 con canal; ≈ 800 unidades por 100.000 clientes, unas 3 veces el ruido). Si la aseguradora confirma que el canal se conoce al llamar, se puede volver a medir con y sin (P11) | `src/proyecto/data/cleaning.py`, nb 03, nb 04 §8 |
-| **D14** | **Mantener los parámetros de partida de LightGBM** (no adoptar los de la búsqueda de Optuna de Andiry) y dejar su mejora como siguiente paso | **[ADOPTADO]** | Su búsqueda (40 ensayos) baja el costo de 0,3327 a 0,3303 (IC 95 % [−0,0042; −0,0006]), ≈ 240 unidades por 100.000 clientes, del orden del ruido (≈ 230). Se calculó sobre un entrenamiento con 649 clientes menos (P12) y la prueba cerrada ya se abrió con los parámetros de partida (2026-11-05 19:09), así que cambiarlos obligaría a reentrenar, volver a registrar en Databricks y declarar un cambio posterior a la prueba | `reports/06_optimizacion.md`, `specs/004-optimizacion/` |
+| **D14** | **Mantener los parámetros de partida de LightGBM** (no adoptar los de la búsqueda de Optuna de Andiry) y dejar su mejora como siguiente paso | ~~[ADOPTADO]~~ **[REEMPLAZADO 2026-11-06] por D15**: el modelo final usa los parámetros de Optuna (ensayo #13) | Su búsqueda (40 ensayos) baja el costo de 0,3327 a 0,3303 (IC 95 % [−0,0042; −0,0006]), ≈ 240 unidades por 100.000 clientes, del orden del ruido (≈ 230). Se calculó sobre un entrenamiento con 649 clientes menos (P12) y la prueba cerrada ya se abrió con los parámetros de partida (2026-11-05 19:09), así que cambiarlos obligaría a reentrenar, volver a registrar en Databricks y declarar un cambio posterior a la prueba | `reports/06_optimizacion.md`, `specs/004-optimizacion/` |
+| **D15** | **Modelo final = el de la rama de Andiry:** LightGBM con las **5 variables nuevas** (`uninsured_with_damage`, `damage_x_vehicle_age`, `is_young_customer`, `age_peak_distance`, `premium_per_age`), sin `Policy_Sales_Channel` (D13), con `Gender`, `Vintage` y `Driving_License`, parámetros de Optuna (ensayo #13). **Reemplaza** a D12, a D14 y a la conclusión de la etapa 4 de `main` ("ninguna variable nueva mejora al modelo", que se refería a **otras** 5 ideas, distintas de estas) | **[DECIDIDO por el grupo 2026-11-06]** | Motivo: el grupo exige que el modelo final incluya las variables nuevas. **No se eligió comparando cifras de prueba**: la prueba ya se había abierto con los dos modelos (19:09 y 20:43 del 2026-11-05) y eso se declara en `reports/07_validacion.md` §3.1. En la prueba: costo 0,3312, IC 95 % [0,3263; 0,3364]; frente a la regla de negocio, −0,0408, IC 95 % [−0,0453; −0,0362] | `reports/07_validacion.md`, `models/ficha_modelo.md`, `specs/007-integracion-main/` |
 
 ---
 
@@ -55,7 +58,7 @@
 | **Valor de trabajo vigente** | **R = 5** (hipótesis; umbral 16,7 %) |
 | **Por qué no se pudo resolver** | Es un dato económico de la aseguradora; no sale de ningún dato del dataset |
 | **Qué cambia si es otro** | **Los finalistas no cambian** con R entre 2 y 12 (LightGBM y XGBoost siempre 1.º y 2.º). Cambia el umbral (R = 3 → 25 %; R = 4 → 20 %; R = 6 → 14,3 %; R = 8 → 11,1 %) y el costo absoluto. Usar por error el umbral de R = 4 o R = 6 cuando fuera R = 5 sube el costo a ≈ 0,331 o ≈ 0,328, a menos de 0,005 del mínimo. Con R ≤ 3, la regla "llamar si hubo daño" deja de llamar |
-| **Dónde se actualiza** | Constante `COST_FALSE_NEGATIVE` en `src/proyecto/models/metrics.py` y volver a ejecutar los notebooks 05 y 06 |
+| **Dónde se actualiza** | `COST_MATRIX` en `src/proyecto/config.py` (antes `COST_FALSE_NEGATIVE` en `metrics.py`, que se quitó en la integración del 2026-11-06); un R distinto obliga a decidir el umbral de nuevo **con validación**, no con la prueba |
 
 ### P02 · Capacidad real de llamadas del equipo comercial
 
@@ -95,7 +98,9 @@
 | **Valor de trabajo vigente** | Se **elimina** (D13) |
 | **Qué cambia si se conoce** | Se puede volver a medir con y sin canal: con él LightGBM costaba 0,3245 en validación cruzada frente a 0,3326 sin él (≈ 800 unidades por 100.000 clientes) |
 
-### P12 · ¿Por qué el entrenamiento de Andiry tiene 649 clientes menos?
+### P12 · ¿Por qué el entrenamiento de Andiry tiene 649 clientes menos? — **[CERRADO 2026-11-06]**
+
+> **Respuesta:** son **perfiles repetidos** (misma fila y misma respuesta con distinto `id`) que aparecen al eliminar `Policy_Sales_Channel`. La limpieza de la rama los quita **solo del entrenamiento**, después de partir (`drop_duplicate_rows` en `src/proyecto/data/split.py`); la prueba queda tal como llega. Con D15, el entrenamiento oficial es el de 304.238 clientes. Lo que sigue es el texto original.
 
 | | |
 |---|---|
@@ -174,4 +179,4 @@
 | P09 · Hipótesis del daño | Negocio | | |
 | P10 · Aprobaciones | Instructor y grupo | | |
 | P11 · Canal de venta | Negocio / Ventas | | |
-| P12 · 649 clientes de prima 2.630 | Andiry y el grupo | | |
+| P12 · 649 clientes de prima 2.630 | Andiry y el grupo | Cerrado: perfiles repetidos al quitar el canal; se quitan del entrenamiento (D15) | 2026-11-06 |
