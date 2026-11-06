@@ -45,8 +45,8 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 
 ## 5. Riesgos
 
-- Fuga de información posible: no se ve una columna posterior a la decisión; `Vintage` (días como cliente) no muestra relación con el objetivo (correlación -0,001); se medirá el modelo con y sin ella en la etapa 4.
-- Sesgos o equidad: `Gender` y `Age`.
+- Fuga de información posible: `Policy_Sales_Channel` (canal de contacto) puede no conocerse antes de decidir a quién llamar; **se eliminó** (D13, **P11**). `Vintage` no mostró relación con el objetivo y se retiró (sin costo medible).
+- Sesgos o equidad: `Gender` y `Age`. **`Gender` se conserva en el modelo** por decisión del grupo (D12), con auditoría por género y edad en la prueba cerrada (casi no se llama a menores de 26 ni a mayores de 65) y aprobación de Legal pendiente.
 - Datos faltantes o de mala calidad: 0 nulos. En `Annual_Premium`, el 17 % de las filas vale exactamente 2.630 (parece un mínimo impuesto) y el máximo es 540.165 contra un percentil 99 de 72.963.
 - Límites de lo que el modelo puede decir: ordena clientes por probabilidad de aceptar; no explica por qué compran ni mide el efecto de llamar.
 
@@ -63,4 +63,7 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 
 | Fecha | Decisión | Motivo |
 |---|---|---|
-| | | |
+| 2026-10-31 | Eliminar `Policy_Sales_Channel` (D13) | Posible fuga: puede no conocerse antes de llamar. Cuesta ≈ 800 unidades por 100.000 clientes |
+| 2026-11-05 | Conservar `Gender` (D12) | Quitarla no tiene costo medible; el grupo decidió mantenerla. Exige auditoría de equidad y aprobación de Legal |
+| 2026-11-05 | Modelo final: LightGBM con parámetros de partida, umbral 16,7 % (D08, D10) | La optimización no fue demostrablemente mejor; en la prueba cerrada cuesta 0,3317 frente a 0,3967 de la regla simple |
+| 2026-11-05 | Registrar en MLflow local por ahora | No hay perfil de Databricks configurado; pendiente repetir el cuaderno 08 allá |

@@ -35,7 +35,7 @@ Marquen lo que aplica a su dataset. Lo que no aplique se tacha **con una razón*
 | 3.5 Vacíos que significan algo | ☐ sí ☒ no: 0 nulos en `train.csv` | | |
 | 3.6 Duplicados | ☒ sí ☐ no: | filas completas (0 encontradas) | |
 | 3.7 Fechas y orden temporal | ☐ sí ☒ no: no hay columnas de fecha | | |
-| 3.8 Categorías raras / alta cardinalidad | ☒ sí ☐ no: | `Region_Code` (53), `Policy_Sales_Channel` (155), `Driving_License` (812 filas con 0) | |
+| 3.8 Categorías raras / alta cardinalidad | ☒ sí ☐ no: | `Region_Code` (53), `Policy_Sales_Channel` (155; **se eliminó después por posible fuga, D13**), `Driving_License` (812 filas con 0) | |
 | 3.9 Identidad y datos personales | ☒ sí ☐ no: no hay datos de identidad; revisar `Gender` y `Age` por equidad | | |
 
 ## 3. Lo que medimos (se llena mientras corre el notebook)
@@ -61,7 +61,7 @@ Marquen lo que aplica a su dataset. Lo que no aplique se tacha **con una razón*
 | 2 | `Previously_Insured`: acepta 22,5 % de quienes no tenían seguro y 0,1 % de quienes sí | Conservarla y confirmar que no es fuga | Es la señal más fuerte; si es demasiado perfecta hay que revisarla | _(por definir)_ |
 | 3 | `Vehicle_Damage`: acepta 23,8 % con daño previo y 0,5 % sin él | Convertir Yes/No a 0/1 dentro del `Pipeline` | Variable binaria en texto | _(por definir)_ |
 | 4 | `Annual_Premium`: 17 % vale 2.630; máx. 540.165 vs p99 72.963 | Marcar el valor 2.630 con una columna indicadora y tratar los extremos (recorte o logaritmo) | Parece un mínimo impuesto y los extremos distorsionan los modelos lineales | _(por definir)_ |
-| 5 | `Region_Code` (53 valores) y `Policy_Sales_Channel` (155) son números pero son categorías | Tratarlas como categóricas, agrupando las raras | Sus valores no tienen orden numérico | _(por definir)_ |
+| 5 | `Region_Code` (53 valores) y `Policy_Sales_Channel` (155) son números pero son categorías | Tratarlas como categóricas, agrupando las raras (el canal se eliminó después, D13) | Sus valores no tienen orden numérico | _(por definir)_ |
 
 ## 5. Criterios de cierre
 
