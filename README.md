@@ -1,4 +1,4 @@
-# Venta cruzada de seguros
+# Venta cruzada inteligente: predicción del interés en seguro de vehículo
 
 > Predecir qué clientes con seguro de salud aceptarán un seguro de vehículo, para que el equipo comercial priorice a quién llamar. _(Borrador: el grupo confirma el nombre y el caso.)_
 
@@ -40,8 +40,17 @@ Nació de la rama `feature/estudiantes` del repositorio del curso (ver `LEEME-PR
 clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/montaje-proyecto.md`.
 
 ## Equipo
+
+**Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro
+
 | Integrante | Rol |
 |---|---|
-| | |
+| Ricardo González (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
+| Carolina Orejuela Perea | **[PENDIENTE: rol]** |
+| Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
+| Katherin Andrea Tabares | **[PENDIENTE: rol]** |
+| Jhonatan Rojas Cardona | **[PENDIENTE: rol]** |
+
+*Nombre de la startup:* **[PENDIENTE]**
 
 Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/) · Decisiones del grupo y su estado: [`reports/decisiones_del_grupo.md`](reports/decisiones_del_grupo.md)

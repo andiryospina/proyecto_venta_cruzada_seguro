@@ -1,4 +1,4 @@
-# Informe técnico — Venta cruzada de seguro de vehículo
+# Informe técnico — Venta cruzada inteligente: predicción del interés en seguro de vehículo
 
 > **BORRADOR para revisión del grupo (actualizado el 2026-11-06).** Ensamblado a partir de los informes de `reports/`; las cifras de la
 > prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`. Se entrega el domingo 15 de noviembre (hito H4).
@@ -6,7 +6,7 @@
 > **Integración (2026-11-06, `specs/007-integracion-main`):** el grupo tenía dos modelos finales; quedó el que incluye las 5 variables nuevas
 > (D15 en `reports/decisiones_del_grupo.md`). Este informe describe **ese** modelo. Qué se tomó de cada rama: `reports/integracion_main.md`.
 
-**Grupo:** **[PENDIENTE: P07]** (integrantes y roles) · **Repositorio:** `andiryospina/proyecto_venta_cruzada_seguro` · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
+**Grupo:** Ricardo González (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (roles: **[PENDIENTE: P07]**; nombre de la startup: **[PENDIENTE]**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
 ## Resumen ejecutivo
 
@@ -114,7 +114,7 @@ Cinco modelos y dos líneas base, con los mismos datos (base + 5 nuevas), los mi
 
 > Fuente: `reports/09_despliegue.md`.
 
-Enlace público: https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ (Streamlit Community Cloud, desplegada desde una copia idéntica del `main` en el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`; comprobado sin sesión: abre el formulario y responde; **faltan por anotar** las pruebas de los casos normal, límite y «no sé»). La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
+Enlace público: https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ (Streamlit Community Cloud, desplegada desde una copia idéntica del `main` en el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`; probada en el enlace público el 2026-11-06: caso normal → LLAMAR (0,71), caso límite → NO LLAMAR (0,01) y «no sé» responde sin errores; detalle en `reports/09_despliegue.md`). La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
 
 ## 9. Riesgos, límites y siguientes pasos
 
@@ -144,7 +144,7 @@ streamlit run app/streamlit_app.py
 
 - [x] Las **9 secciones** tienen contenido y cada decisión lleva su motivo (la 7 y la 8 tienen pasos pendientes, declarados).
 - [x] Las cifras de la prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`.
-- [ ] Completar integrantes, roles y nombre de la startup (el enlace de la app ya está).
+- [ ] Completar los roles de cada integrante y el nombre de la startup (integrantes, repositorio y enlace de la app ya están).
 - [x] Registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`): versión 2, alias `champion`.
 - [x] No hay credenciales, `.env` ni datos personales.
 - [ ] El enlace de la app abre en una ventana privada.

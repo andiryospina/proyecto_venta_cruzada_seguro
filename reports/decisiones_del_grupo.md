@@ -133,9 +133,9 @@
 
 | | |
 |---|---|
-| **Qué falta** | Nombres, roles (datos, modelado, app, negocio), nombre de la startup y enlace del repositorio público |
+| **Qué falta** | Los **roles** de cada integrante (datos, modelado, app, negocio) y el **nombre de la startup**. **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
 | **Quién lo cierra** | El grupo |
-| **Dónde va** | `especificacion-proyecto.md` §1 y `README.md` |
+| **Dónde va** | `especificacion-proyecto.md` §1, `README.md` e `informe_tecnico.md` |
 
 ### P08 · Qué datos nuevos pedir a la aseguradora
 
@@ -174,7 +174,7 @@
 | P04 · Piso de contacto | Comercial + Legal | | |
 | P05 · Fuente y licencia | Grupo | | |
 | P06 · Caso de negocio | Negocio | | |
-| P07 · Integrantes y repositorio | Grupo | | |
+| P07 · Roles y nombre de la startup | Grupo | | |
 | P08 · Datos nuevos | Negocio + TI | | |
 | P09 · Hipótesis del daño | Negocio | | |
 | P10 · Aprobaciones | Instructor y grupo | | |

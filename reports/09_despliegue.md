@@ -15,7 +15,7 @@
 | Repo, rama y archivo principal | `rigonzalezre-dot/proyecto_venta_cruzada_seguro` (fork de Ricardo, idéntico al `main` de `andiryospina/proyecto_venta_cruzada_seguro`), rama `main`, `app/streamlit_app.py`. Se despliega desde el fork porque Andiry es la dueña del repositorio oficial y Ricardo no tiene permisos de administrador allí |
 | Versión de Python elegida | ☐ 3.12  ☐ otra → motivo: _______________ |
 | ¿Se comprobó en una **ventana privada**? | ☒ sí, sin sesión (navegador sin ventana y sin cookies, 2026-11-06): abre sin pedir inicio de sesión. **Falta** que una persona lo confirme en su navegador |
-| ¿Se desplegó? | ☒ sí (2026-11-06). Comprobado en el enlace público: carga el formulario de 9 datos, el modelo se carga y **«Evaluar» con los valores por defecto responde NO LLAMAR** (costo esperado 0,35, «el modelo está seguro»), igual que en local. **Faltan por anotar** los casos normal, límite y «no sé» del apartado 3 |
+| ¿Se desplegó? | ☒ sí (2026-11-06). Comprobado en el enlace público: carga el formulario de 9 datos, el modelo se carga y **«Evaluar» con los valores por defecto responde NO LLAMAR** (costo esperado 0,35, «el modelo está seguro»), igual que en local. Los casos normal, límite y «no sé» se probaron en el enlace público (apartado 3) |
 
 ## 2. Decisiones de despliegue y su motivo
 
@@ -33,10 +33,10 @@
 
 | Caso | Datos usados | Resultado esperado | Resultado real |
 |---|---|---|---|
-| Normal | Hombre de 34 años, región 28, prima 31.000, 150 días como cliente, con licencia, vehículo de 1-2 años, con daño, sin seguro previo | LLAMAR | Probado en local (notebook 09): 39,1 % de probabilidad → LLAMAR. **Falta probar en el enlace público** |
-| Límite (cambia la decisión) | El mismo cliente con seguro previo y sin daño | NO LLAMAR | Probado en local: 0,3 % → NO LLAMAR. **Falta probar en el enlace público** |
-| Inválido (debe rechazarse con un mensaje claro) | Edad de 150 años | Error claro | Probado en local: la función de predicción responde «Age: debe estar entre 18 y 100»; en el formulario el campo de edad no admite más de 100. **Falta probar en el enlace público** |
-| Con un campo en «No sé» | Edad y género en «no sé» | Responde con valores neutros | Probado en local: responde (36,7 % → LLAMAR). **Falta probar en el enlace público** |
+| Normal | Con daño en el vehículo y sin seguro previo (los demás datos, los del formulario) | LLAMAR | **En el enlace público** (2026-11-06, Ricardo): **LLAMAR, probabilidad 0,71**. En local, con 34 años, hombre, licencia «Sí», prima 31.000 y 150 días como cliente, el modelo da 0,39: la probabilidad cambia con los demás datos, no se anotaron los exactos de la prueba pública |
+| Límite (cambia la decisión) | El mismo cliente con seguro previo y sin daño | NO LLAMAR | **En el enlace público** (2026-11-06, Ricardo): **NO LLAMAR, probabilidad 0,01**. En local: 0,002 a 0,003 |
+| Inválido (debe rechazarse con un mensaje claro) | Edad fuera de 18-100 | Error claro | El formulario limita la edad a 18-100, así que no deja escribir 150; si se llama a la función con 150 o 200 se rechaza con «Age: debe estar entre 18 y 100» (probado en local). **No se probó en el enlace público** |
+| Con un campo en «No sé» | Casilla «No sé» en la edad | Responde con un valor neutro | **En el enlace público** (2026-11-06, Ricardo): responde igual, sin errores |
 
 ## 4. Problemas encontrados y plan B
 
