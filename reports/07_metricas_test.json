@@ -1,194 +1,142 @@
 {
   "decisiones": {
-    "modelo_final": "LightGBM",
-    "parametros": "partida",
-    "parametros_valores": {
-      "n_estimators": 200,
-      "learning_rate": 0.08,
+    "modelo_final": "lightgbm",
+    "parametros": {
+      "n_estimators": 186,
+      "learning_rate": 0.031476986256212196,
       "num_leaves": 31,
-      "min_child_samples": 100,
-      "subsample": 0.8,
-      "colsample_bytree": 0.8,
-      "reg_lambda": 0.0
+      "min_child_samples": 137,
+      "subsample": 0.9430233324921596,
+      "colsample_bytree": 0.6010355988956476,
+      "reg_lambda": 0.477956771635593
     },
-    "variables": "sin Policy_Sales_Channel (D13), sin Vintage ni Driving_License, con Gender (D12)",
+    "variables": "base + 5 nuevas (use_engineered=True), con Gender, sin Policy_Sales_Channel",
+    "entrenamiento_final": "todo train.parquet",
     "calibrar": false,
-    "metrica_principal": "costo esperado por cliente (R = 5)",
-    "regla_de_decision": "llamar si P(compra) > 1/(R+1) = 0.1667",
-    "decidido_el": "2026-11-05 19:09"
+    "metrica_principal": "costo esperado por cliente, matriz [[0, 1], [5, 0]] (menor es mejor)",
+    "regla_de_decision": "llamar si P(interesado) > 1/6 = 0.1667 (umbral fijo, sale de la matriz)",
+    "linea_base": "regla: Previously_Insured = 0 y Vehicle_Damage = Yes",
+    "lectura": "el modelo es mejor que la línea base solo si todo el IC 95 % de (costo modelo − costo línea base) está bajo cero",
+    "decidido_el": "2026-11-05T20:43:52"
+  },
+  "calibracion_reserva": {
+    "sin_calibrar": {
+      "cost": 0.3302918748356561,
+      "cost_at_05": 0.6131343676045228,
+      "contact_rate": 0.36435708651064946,
+      "pr_auc": 0.353049785145324,
+      "roc_auc": 0.8506409355490765,
+      "capture_20": 0.5594383106442277,
+      "capture_30": 0.7724300568120913,
+      "capture_50": 0.9901382784864401,
+      "recall": 0.8796226819594812,
+      "precision": 0.2961065204055858,
+      "f1": 0.4430646293396685,
+      "balanced_accuracy": 0.7936498867830404,
+      "log_loss": 0.2678497360847997,
+      "brier": 0.0877200363580531
+    },
+    "calibrado": {
+      "cost": 0.3303970549566132,
+      "cost_at_05": 0.6129503023928478,
+      "contact_rate": 0.3681698658953458,
+      "pr_auc": 0.3514459230916164,
+      "roc_auc": 0.850445643247224,
+      "capture_20": 0.5605102368957016,
+      "capture_30": 0.7712509379354701,
+      "capture_50": 0.9900310858612927,
+      "recall": 0.8846607353414085,
+      "precision": 0.29471842302610435,
+      "f1": 0.44214079074252655,
+      "balanced_accuracy": 0.7943481704909827,
+      "log_loss": 0.2677695739353534,
+      "brier": 0.08776121546943
+    },
+    "log_loss_diferencia": {
+      "valor": -8.016214944632947e-05,
+      "ic95": [
+        -0.00025449678920281795,
+        9.567814396351513e-05
+      ]
+    }
   },
   "prueba": {
     "clientes": 76222,
-    "abierta_el": "La prueba se abrió por primera vez el 2026-11-05 19:09.",
-    "metricas": {
-      "modelo final (LightGBM)": {
-        "roc_auc": 0.8518643856038326,
-        "pr_auc": 0.35330157695980957,
-        "recall_top": 0.5630485977306786,
-        "lift_top": 2.815242988653393,
-        "balanced_accuracy": 0.7921292631082143,
-        "precision_1": 0.29597711554477313,
-        "recall_0": 0.7092852870813398,
-        "recall_1": 0.8749732391350888,
-        "f1_macro": 0.6319272951256758,
-        "contact_rate": 0.3623232137703025,
-        "log_loss": 0.2672189221320542,
-        "brier": 0.08747056165457569,
-        "cost": 0.33170213324237097,
-        "cost_top": 0.3987693841673008
-      },
-      "baseline: llamar si hubo daño": {
-        "roc_auc": 0.7708888717312052,
-        "pr_auc": 0.23572656541592965,
-        "recall_top": 0.3942410618711197,
-        "lift_top": 1.9712053093555983,
-        "balanced_accuracy": 0.7708888717312052,
-        "precision_1": 0.23805065792895408,
-        "recall_0": 0.5619019138755981,
-        "recall_1": 0.9798758295868123,
-        "f1_macro": 0.550630933960221,
-        "contact_rate": 0.5045000131195718,
-        "log_loss": 0.292424690367831,
-        "brier": 0.09396185962858984,
-        "cost": 0.3967358505418383,
-        "cost_top": 0.5229067723229514
-      },
-      "alternativa: regresión logística": {
-        "roc_auc": 0.848491480281724,
-        "pr_auc": 0.34366175414508576,
-        "recall_top": 0.555983729394134,
-        "lift_top": 2.77991864697067,
-        "balanced_accuracy": 0.7903188633879614,
-        "precision_1": 0.2934544540591002,
-        "recall_0": 0.7057715311004785,
-        "recall_1": 0.8748661956754442,
-        "f1_macro": 0.629303919538266,
-        "contact_rate": 0.365393193566162,
-        "log_loss": 0.26903437198648594,
-        "brier": 0.08799038166703892,
-        "cost": 0.33485083046889347,
-        "cost_top": 0.40396473459106297
-      }
-    },
-    "costo_por_cliente": {
-      "modelo final (LightGBM)": {
-        "media": 0.33170213324237097,
-        "ic95_bajo": 0.32636213953976545,
-        "ic95_alto": 0.33692437878827636
-      },
-      "baseline: llamar si hubo daño": {
-        "media": 0.3967358505418383,
-        "ic95_bajo": 0.39273372517121036,
-        "ic95_alto": 0.40060743617328326
-      },
-      "alternativa: regresión logística": {
-        "media": 0.33485083046889347,
-        "ic95_bajo": 0.32981061898139646,
-        "ic95_alto": 0.3402472383301409
-      }
-    },
-    "modelo_menos_baseline": {
-      "media": -0.06503371729946734,
-      "ic95": [
-        -0.07003457007163286,
-        -0.06070327464511558
+    "tasa_interesados": 0.12256303954238934,
+    "modelo": {
+      "cost": 0.33122982865839257,
+      "cost_at_05": 0.6126971215659521,
+      "contact_rate": 0.3649996064128467,
+      "pr_auc": 0.3530592910946025,
+      "roc_auc": 0.851526324016199,
+      "capture_20": 0.5640119888674802,
+      "capture_30": 0.7787411689145793,
+      "capture_50": 0.9891886105758938,
+      "recall": 0.8792549775208734,
+      "precision": 0.2952445994033284,
+      "f1": 0.4420525791782149,
+      "balanced_accuracy": 0.7930440557460827,
+      "log_loss": 0.2675382973419049,
+      "brier": 0.08752352292263665,
+      "cost_ic95": [
+        0.326257182965548,
+        0.33640057988507255
       ]
     },
-    "modelo_menos_regresion": {
-      "media": -0.003148697226522526,
-      "ic95": [
-        -0.005983180708981659,
-        -0.0005897247513841154
+    "linea_base": {
+      "cost": 0.37203169688541365,
+      "cost_at_05": 0.6128151977119467,
+      "contact_rate": 0.47790664112723363,
+      "pr_auc": 0.24773182444805336,
+      "roc_auc": 0.7845789315551827,
+      "capture_20": 0.4080496681652751,
+      "capture_30": 0.6182830229073004,
+      "capture_50": 0.9783772211517876,
+      "recall": 0.9773067865553414,
+      "precision": 0.2506382628270239,
+      "f1": 0.3989599947562761,
+      "balanced_accuracy": 0.7845789315551827,
+      "log_loss": 0.2864126873284528,
+      "brier": 0.09252639376401894,
+      "cost_ic95": [
+        0.3681738868043347,
+        0.37594231324289573
       ]
     },
-    "porcentaje_llamado": 0.3623232137703025
-  },
-  "segmentos": {
-    "genero": [
-      {
-        "Gender": "Female",
-        "clientes": 34913,
-        "tasa real": 0.10219688941082118,
-        "% llamados": 0.29619339501045455,
-        "recall (compradores llamados)": 0.8452914798206278,
-        "precisión (llamados que compran)": 0.29165457886084517,
-        "compradores no llamados": 552
+    "diferencia_costo": {
+      "valor": -0.04080186822702107,
+      "ic95": [
+        -0.04527695416021621,
+        -0.0361837789614547
+      ]
+    },
+    "mejor_que_linea_base": true,
+    "sensibilidad": {
+      "3_a_1": {
+        "modelo": 0.3016320747290808,
+        "linea_base": 0.3664689984518905
       },
-      {
-        "Gender": "Male",
-        "clientes": 41309,
-        "tasa real": 0.13977583577428648,
-        "% llamados": 0.4182139485342177,
-        "recall (compradores llamados)": 0.8933148597159681,
-        "precisión (llamados que compran)": 0.29856448251910167,
-        "compradores no llamados": 616
+      "5_a_1": {
+        "modelo": 0.33122982865839257,
+        "linea_base": 0.37203169688541365
+      },
+      "10_a_1": {
+        "modelo": 0.405224213481672,
+        "linea_base": 0.3859384429692215
       }
-    ],
-    "edad": [
-      {
-        "tramo de edad": "20-25",
-        "clientes": 22838,
-        "tasa real": 0.035554777125842894,
-        "% llamados": 0.057448112794465364,
-        "recall (compradores llamados)": 0.33251231527093594,
-        "precisión (llamados que compran)": 0.20579268292682926,
-        "compradores no llamados": 542
-      },
-      {
-        "tramo de edad": "26-35",
-        "clientes": 14595,
-        "tasa real": 0.11229873244261733,
-        "% llamados": 0.30996916752312437,
-        "recall (compradores llamados)": 0.9176327028676022,
-        "precisión (llamados que compran)": 0.33244916003536695,
-        "compradores no llamados": 135
-      },
-      {
-        "tramo de edad": "36-45",
-        "clientes": 14118,
-        "tasa real": 0.21674458138546537,
-        "% llamados": 0.6546961325966851,
-        "recall (compradores llamados)": 0.980718954248366,
-        "precisión (llamados que compran)": 0.3246781348047171,
-        "compradores no llamados": 59
-      },
-      {
-        "tramo de edad": "46-55",
-        "clientes": 12299,
-        "tasa real": 0.1943247418489308,
-        "% llamados": 0.6486706236279373,
-        "recall (compradores llamados)": 0.9811715481171548,
-        "precisión (llamados que compran)": 0.29393331662070693,
-        "compradores no llamados": 45
-      },
-      {
-        "tramo de edad": "56-65",
-        "clientes": 6772,
-        "tasa real": 0.14574719432959243,
-        "% llamados": 0.5606910809214413,
-        "recall (compradores llamados)": 0.92806484295846,
-        "precisión (llamados que compran)": 0.24124308664735317,
-        "compradores no llamados": 71
-      },
-      {
-        "tramo de edad": "66+",
-        "clientes": 5600,
-        "tasa real": 0.08107142857142857,
-        "% llamados": 0.13625,
-        "recall (compradores llamados)": 0.3039647577092511,
-        "precisión (llamados que compran)": 0.18086500655307994,
-        "compradores no llamados": 316
-      }
-    ]
+    }
   },
-  "shap_importancia": {
-    "Previously_Insured": 2.3242478538814306,
-    "Vehicle_Damage": 1.0280120858429074,
-    "Region_Code": 0.3472302307918931,
-    "Age": 0.3275725093049497,
-    "Vehicle_Age": 0.12902932852778065,
-    "Gender": 0.090406090260706,
-    "Annual_Premium": 0.08621165927547408,
-    "Premium_is_minimum": 0.016406386513068222
-  }
+  "shap_top10": {
+    "x7": 1.318366950622554,
+    "x11": 0.8432077026374721,
+    "x8": 0.40793274977175425,
+    "x3": 0.1813771084119695,
+    "x12": 0.11384697652413397,
+    "x1": 0.10592128478260557,
+    "x9": 0.05946598468469172,
+    "x41": 0.04595908958647857,
+    "x0": 0.0433918954185174,
+    "x4": 0.03202273942886864
+  },
+  "prueba_abierta": "Prueba abierta una sola vez (specs/005-validacion)\nfecha: 2026-11-05T20:43:56\nusuario: andir\ncommit: e94c0cb\narchivo: test.parquet (76222 filas)\n"
 }

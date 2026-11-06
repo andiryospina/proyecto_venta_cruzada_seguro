@@ -1,1 +1,5 @@
-La prueba se abrió por primera vez el 2026-11-05 19:09.
+Constancia de apertura de la prueba (76.222 clientes). Se abrió DOS veces en el grupo, con dos modelos distintos:
+1. 2026-11-05 19:09 · modelo de main (sin variables nuevas, parámetros de partida) · archivo holdout.parquet · ya no es el modelo final
+2. 2026-11-05T20:43:56 · usuario: andir · commit: e94c0cb · archivo: test.parquet (76222 filas) · modelo final (specs/005-validacion)
+El modelo final se eligió por un criterio fijado sin comparar cifras de prueba (debe incluir las 5 variables nuevas; D15 en
+reports/decisiones_del_grupo.md). Integración: specs/007-integracion-main (2026-11-06). No se volverá a abrir.

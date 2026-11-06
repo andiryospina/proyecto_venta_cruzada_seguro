@@ -1,121 +1,105 @@
-"""Pruebas de la optimización: espacios de búsqueda, equivalencia con el torneo, costo por cliente e intervalo."""
+"""Pruebas de la optimización (specs/004-optimizacion): espacio de búsqueda, objetivos, búsqueda e intervalos."""
 import numpy as np
 import optuna
 import pytest
+from sklearn.metrics import average_precision_score
 
-from proyecto.models.metrics import cost_per_client
-from proyecto.models.train import tournament_candidates
+from proyecto.models.train import make_folds, split_xy
 from proyecto.models.tuning import (
-    FINALISTS,
-    SPACES,
-    START_PARAMS,
-    bootstrap_interval,
-    build_tuned_pipeline,
-    evaluate_pipeline,
-    per_client_cost,
+    OBJECTIVES,
+    bootstrap_cost_difference,
+    bootstrap_metric_difference,
+    lgbm_space,
+    make_lgbm,
+    tune,
 )
-from proyecto.data import split as sp
+from test_models import _clean_sample
 
-from test_features import make_clean_frame
-
-optuna.logging.set_verbosity(optuna.logging.WARNING)
-
-
-@pytest.mark.parametrize("finalist", FINALISTS)
-def test_start_parameters_lie_inside_the_search_space(finalist):
-    """Los parámetros de partida deben ser un punto válido de la búsqueda; si no, la búsqueda no los puede comparar."""
-    study = optuna.create_study(direction="minimize")
-    study.enqueue_trial(START_PARAMS[finalist])
-    trial = study.ask()
-    assert SPACES[finalist](trial) == START_PARAMS[finalist]
+EXPECTED_RANGES = {
+    "n_estimators": (150, 800),
+    "learning_rate": (0.01, 0.2),
+    "num_leaves": (15, 127),
+    "min_child_samples": (20, 500),
+    "subsample": (0.6, 1.0),
+    "colsample_bytree": (0.5, 1.0),
+    "reg_lambda": (1e-3, 10.0),
+}
 
 
-@pytest.mark.parametrize("finalist", FINALISTS)
-def test_random_trials_stay_inside_the_declared_ranges_and_build_a_pipeline(finalist):
-    frame = make_clean_frame(400, seed=4)
-    X, y = frame.drop(columns="Response"), frame["Response"]
-    study = optuna.create_study(direction="minimize", sampler=optuna.samplers.RandomSampler(seed=0))
-    for _ in range(4):
-        params = SPACES[finalist](study.ask())
-        pipe = build_tuned_pipeline(finalist, params).fit(X, y)
-        assert pipe.predict_proba(X.head(10)).shape == (10, 2)
+def test_lgbm_space_returns_seven_params_inside_their_ranges():
+    study = optuna.create_study(sampler=optuna.samplers.RandomSampler(seed=0))
+    for _ in range(20):
+        params = lgbm_space(study.ask())
+        assert set(params) == set(EXPECTED_RANGES)
+        for name, (low, high) in EXPECTED_RANGES.items():
+            assert low <= params[name] <= high, name
 
 
-def test_start_pipelines_reproduce_the_tournament_candidates_exactly():
-    """Lo que la optimización llama 'partida' debe ser lo mismo que se midió en el torneo."""
-    frame = make_clean_frame(500, seed=5)
-    X, y = frame.drop(columns="Response"), frame["Response"]
-    candidates = tournament_candidates()
-    for finalist, name in (("lightgbm", "LightGBM"), ("regresion_logistica", "regresión logística")):
-        mine = build_tuned_pipeline(finalist, START_PARAMS[finalist]).fit(X, y).predict_proba(X)[:, 1]
-        theirs = candidates[name].fit(X, y).predict_proba(X)[:, 1]
-        assert np.allclose(mine, theirs), finalist
+def test_make_lgbm_never_balances_classes():
+    """Balancear movería las probabilidades y dejaría de valer el umbral 1/6."""
+    model = make_lgbm({"n_estimators": 10})
+    assert model.get_params()["class_weight"] is None
+    assert model.get_params().get("scale_pos_weight", 1.0) == 1.0
+    assert not model.get_params().get("is_unbalance", False)
+    assert model.get_params()["subsample_freq"] == 1
 
 
-def test_unknown_finalist_is_rejected():
-    with pytest.raises(ValueError, match="finalista desconocido"):
-        build_tuned_pipeline("bosque", {})
+def test_objectives_have_a_direction_and_cost_minimizes():
+    assert OBJECTIVES["cost"] == "minimize" and OBJECTIVES["pr_auc"] == "maximize"
+    assert set(OBJECTIVES.values()) <= {"minimize", "maximize"}
 
 
-def test_evaluate_pipeline_returns_one_row_per_fold():
-    frame = make_clean_frame(600, seed=6)
-    X, y = frame.drop(columns="Response"), frame["Response"]
-    folds = sp.stratified_folds(frame, n_splits=3)
-    table = evaluate_pipeline(build_tuned_pipeline("regresion_logistica", START_PARAMS["regresion_logistica"]), X, y, folds)
-    assert len(table) == 3 and {"cost", "pr_auc", "log_loss"} <= set(table.columns)
+def test_tune_rejects_unknown_metric():
+    with pytest.raises(ValueError, match="no soportada"):
+        tune(None, None, None, n_trials=1, metric="inventada")
 
 
-# --- costo por cliente
-def test_per_client_cost_averages_to_the_cost_per_client_metric():
-    y = np.array([1, 1, 0, 0, 0, 1])
-    proba = np.array([0.9, 0.05, 0.4, 0.01, 0.2, 0.5])
-    cost = per_client_cost(y, proba)
-    assert cost.mean() == pytest.approx(cost_per_client(y, (proba >= 1 / 6).astype(int)))
-    assert cost.tolist() == [0.0, 5.0, 1.0, 0.0, 1.0, 0.0]
+def test_tune_runs_small_study_without_mlflow():
+    X, y = split_xy(_clean_sample(n=600))
+    folds = make_folds(X, y, n_splits=3)
+    study = tune(X, y, folds, n_trials=2, log=False)
+    assert len(study.trials) == 2
+    assert study.direction == optuna.study.StudyDirection.MINIMIZE
+    assert 0 <= study.best_value <= 5   # el costo por cliente está entre 0 y el costo máximo de la matriz
+    assert "pr_auc" in study.best_trial.user_attrs   # las demás métricas quedan guardadas en el ensayo
 
 
-# --- intervalo por cliente
-def test_interval_of_a_constant_improvement_is_narrow_and_below_zero():
-    low, high = bootstrap_interval(np.full(500, -0.01), np.arange(500))
-    assert low == pytest.approx(-0.01) and high == pytest.approx(-0.01)
+def test_tune_resumes_from_storage(tmp_path):
+    X, y = split_xy(_clean_sample(n=400))
+    folds = make_folds(X, y, n_splits=3)
+    db = tmp_path / "study.db"
+    tune(X, y, folds, n_trials=1, log=False, storage=db)
+    study = tune(X, y, folds, n_trials=2, log=False, storage=db)   # solo hace el ensayo que falta
+    assert len(study.trials) == 2
 
 
-def test_interval_of_pure_noise_contains_zero():
+def test_bootstrap_cost_difference_is_zero_for_identical_models():
     rng = np.random.default_rng(0)
-    low, high = bootstrap_interval(rng.normal(0, 1, 2000), np.arange(2000))
-    assert low < 0 < high
+    y = rng.integers(0, 2, 500)
+    proba = rng.uniform(0, 1, 500)
+    assert bootstrap_cost_difference(y, proba, proba, n_boot=200) == (0.0, 0.0, 0.0)
 
 
-def test_interval_resamples_whole_clients_not_rows():
-    """Con 2 clientes de 50 filas cada uno y efectos opuestos, remuestrear clientes da un intervalo ancho; remuestrear filas, no."""
-    diff = np.concatenate([np.full(50, -1.0), np.full(50, 1.0)])
-    clients = np.concatenate([np.zeros(50), np.ones(50)])
-    by_client = bootstrap_interval(diff, clients, n=500)
-    by_row = bootstrap_interval(diff, np.arange(100), n=500)
-    assert (by_client[1] - by_client[0]) > 3 * (by_row[1] - by_row[0])
+def test_bootstrap_cost_difference_detects_a_clearly_better_model():
+    rng = np.random.default_rng(1)
+    y = rng.binomial(1, 0.15, 2000)
+    good = np.where(y == 1, 0.9, 0.05)    # casi siempre acierta
+    bad = np.where(y == 1, 0.05, 0.9)     # casi siempre se equivoca
+    diff, low, high = bootstrap_cost_difference(y, good, bad, n_boot=300)
+    assert diff < 0 and low <= diff <= high and high < 0   # todo el intervalo bajo cero: A cuesta menos
 
 
-def test_interval_is_reproducible_with_the_same_seed():
-    diff = np.random.default_rng(1).normal(-0.01, 0.5, 300)
-    assert bootstrap_interval(diff, np.arange(300), seed=3) == bootstrap_interval(diff, np.arange(300), seed=3)
+def test_bootstrap_cost_difference_is_reproducible():
+    rng = np.random.default_rng(2)
+    y = rng.binomial(1, 0.2, 800)
+    a, b = rng.uniform(0, 1, 800), rng.uniform(0, 1, 800)
+    assert bootstrap_cost_difference(y, a, b, n_boot=100) == bootstrap_cost_difference(y, a, b, n_boot=100)
 
 
-def test_run_search_always_measures_the_starting_configuration_first_and_respects_the_budget():
-    from proyecto.models.tuning import run_search
-
-    frame = make_clean_frame(700, seed=10)
-    X, y = frame.drop(columns="Response"), frame["Response"]
-    folds = sp.stratified_folds(frame, n_splits=3)
-    seen = []
-    study = run_search("regresion_logistica", X, y, folds, n_trials=4, on_trial=lambda study, trial: seen.append(trial.number))
-    assert len(study.trials) == 4 and seen == [0, 1, 2, 3]                    # presupuesto exacto y un aviso por ensayo
-    assert study.trials[0].params == START_PARAMS["regresion_logistica"]      # el ensayo 0 es la partida
-    assert {"cost_sd", "pr_auc", "log_loss"} <= set(study.trials[0].user_attrs)
-    assert study.best_value <= study.trials[0].value                           # el mejor nunca es peor que la partida
-
-
-def test_run_search_rejects_an_unknown_finalist():
-    from proyecto.models.tuning import run_search
-
-    with pytest.raises(ValueError, match="finalista desconocido"):
-        run_search("bosque", None, None, None)
+def test_bootstrap_metric_difference_detects_a_better_ranker():
+    rng = np.random.default_rng(3)
+    y = rng.binomial(1, 0.15, 1500)
+    good = np.clip(y * 0.6 + rng.uniform(0, 0.4, 1500), 0, 1)
+    bad = rng.uniform(0, 1, 1500)
+    diff, low, high = bootstrap_metric_difference(y, good, bad, average_precision_score, n_boot=100)
+    assert diff > 0.3 and low > 0   # todo el intervalo sobre cero: A ordena mejor

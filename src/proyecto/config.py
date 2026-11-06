@@ -1,9 +1,6 @@
 """Constantes del proyecto de venta cruzada de seguro de vehículo.
 
 Cada valor sale de una decisión escrita en `especificaciones/03-preprocesamiento.md` o en `reports/01_eda.md`.
-
-Nota: este módulo viene de la rama de la compañera (`companera/main`) y hoy **no lo importa** el código del proyecto (la limpieza y las
-variables usan constantes propias en `data/cleaning.py` y `features/engineering.py`). Se conserva como referencia de esa implementación.
 """
 from pathlib import Path
 
@@ -54,7 +51,7 @@ SEED = 42
 
 # Atípicos y categorías raras (se aprenden SOLO de entrenamiento, dentro del Pipeline)
 PREMIUM_CAP_QUANTILE = 0.999          # decisión de negocio: recortar al p99,9, no borrar filas
-RARE_CATEGORY_MIN_FREQUENCY = 0.0033  # ≈ 1.000 de 304.887 filas de entrenamiento
+RARE_CATEGORY_MIN_FREQUENCY = 0.0033  # ≈ 1.000 de 304.710 filas de entrenamiento
 
 # Variables que entran al modelo, por tipo (id y Response quedan fuera)
 NUMERIC_FEATURES = ["Age", "Vintage"]
@@ -83,3 +80,20 @@ TUNE_HOLDOUT = 0.25
 TUNE_SEED = 7           # semilla de la reserva (distinta de SEED para no repetir la partición de prueba)
 TUNE_FOLDS = 3          # pliegues dentro de la búsqueda: menos que el torneo para que cada ensayo tarde poco
 TUNE_TRIALS = 40        # presupuesto de ensayos, fijado antes de empezar
+
+# Validación final (specs/005-validacion): elecciones aprobadas por el grupo ANTES de abrir la prueba
+# Tramos de edad para el análisis por segmento: (etiqueta, edad mínima incluida). El primero coincide con YOUNG_AGE.
+AGE_BANDS = [("18-29", 18), ("30-44", 30), ("45-59", 45), ("60+", 60)]
+MIN_REGION_SIZE = 1000              # regiones con menos clientes en la prueba se agrupan como "otras"
+SENSITIVITY_RATIOS = (3, 5, 10)     # costo de perder un interesado frente a una llamada sin éxito (5 es el supuesto)
+TEST_MARKER = ROOT / "reports" / "prueba_abierta.txt"   # constancia de que la prueba ya se abrió (una sola vez)
+
+# App e inferencia (specs/007-integracion-main): lo POSIBLE en el mundo real para cada dato del formulario (límites incluidos).
+# Es conocimiento del grupo, no de los datos: fuera de estos rangos la app se niega a predecir.
+INPUT_VALID_RANGE = {
+    "Age": VALID_RANGE["Age"],        # 18 a 100 años (decisión del EDA)
+    "Annual_Premium": (1, 10_000_000),  # una prima <= 0 es imposible; la cola alta es real (máx. visto 540.165).
+                                        # 10 millones es un tope PRÁCTICO sin dato que lo respalde: PENDIENTE de confirmar por el grupo
+    "Region_Code": (0, 52),           # los 53 códigos de región que existen en los datos (0 a 52)
+    "Vintage": (0, 36_500),           # días como cliente: no negativo; 100 años como tope práctico (máx. visto 299)
+}

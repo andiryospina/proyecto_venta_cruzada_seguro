@@ -1,70 +1,178 @@
 # Validación e interpretación
 
-> Resultado de `notebooks/07_validacion_interpretacion.ipynb`, ejecutado el 2026-11-05. Modelo **sin `Policy_Sales_Channel` y con `Gender`** (decisiones D12 y D13).
-> Todo lo que está aquí se puede sostener ante una pregunta del instructor; las decisiones congeladas están en `reports/07_decisiones_congeladas.json` y las métricas en `reports/07_metricas_test.json`.
+> Cifras de `notebooks/07_validacion_interpretacion.ipynb`, ejecutado una sola vez el 2026-11-05 (salidas en
+> `reports/07_metricas_test.json`, `07_segmentos.csv`, `07_calibracion.png`, `07_shap.png`, `07_shap_nombres.csv`).
+> Especificación: `specs/005-validacion/spec.md`.
 
 ## 1. Decisiones congeladas (escritas ANTES de abrir la prueba)
 
 | Decisión | Valor | Cómo se decidió (con qué datos) |
 |---|---|---|
-| Modelo final | **LightGBM** | Menor costo en el torneo (0,3326) y mejor que la regresión en clientes reservados (intervalo [+0,0002; +0,0055]); decisión D10, con la regresión como alternativa explicable |
-| Parámetros (optimizados o de partida) | **De partida** (200 árboles, tasa 0,08, 31 hojas, 100 clientes mínimos por hoja, `subsample` 0,8, `colsample_bytree` 0,8, `reg_lambda` 0) | Etapa 6: la optimización no fue demostrablemente mejor (intervalo [-0,0021; +0,0018], cruza el cero) |
-| Variables | Sin `Policy_Sales_Channel` (D13), sin `Vintage` ni `Driving_License`, **con `Gender`** (D12) | Etapa 4 y decisión del grupo del 2026-11-05 |
-| ¿Calibrar las probabilidades? | **No** | Con el 25 % de clientes reservados del entrenamiento: calibrar no mejora el log loss (-0,00005) ni el costo (+0,0002), y la mayor diferencia predicha-real por decil empeora (0,008 → 0,016) |
-| Métrica principal | Costo esperado por cliente (R = 5) | D01 |
-| Regla de decisión | Llamar si P(compra) > 1/(R+1) = 0,1667 | D08 |
-| **Fecha y hora en que se congelaron** | **2026-11-05 19:09** | Guardado en `reports/07_decisiones_congeladas.json` antes de cargar la prueba |
+| Modelo final | LightGBM | Torneo (`reports/05_torneo.md`): menor costo en validación cruzada (0,3324) y el más rápido de los árboles |
+| Parámetros (optimizados o de partida) | Optimizados (`reports/06_best_params.json`): 186 árboles, tasa 0,0315, 31 hojas, `min_child_samples` 137, `subsample` 0,943, `colsample_bytree` 0,601, `reg_lambda` 0,478 | Etapa 06: en 76.060 clientes reservados, IC 95 % de (optimizado − partida) = [−0,0042; −0,0006], todo bajo cero |
+| Variables | Base + 5 nuevas, con `Gender`, sin `Policy_Sales_Channel` | Specs 002 a 004 |
+| ¿Calibrar las probabilidades? | **No** | Reserva de la etapa 06 con la regla escrita (sección 2) |
+| Métrica principal | Costo esperado por cliente, matriz `[[0, 1], [5, 0]]` | `especificacion-proyecto.md`, sección 4 |
+| Regla de decisión | Llamar si P(interesado) > 1/6 (umbral fijo, sale de la matriz) | Spec 004 |
+| Línea base | Regla de negocio: `Previously_Insured = 0` y `Vehicle_Damage = Yes` | Mejor estrategia sin modelo |
+| Regla de lectura | El modelo es mejor solo si todo el IC 95 % de (costo modelo − costo línea base) está bajo cero | Spec 005 |
+| **Fecha y hora en que se congelaron** | **2026-11-05 20:43:52** (`reports/07_decisiones_congeladas.json`) | 4 segundos **antes** de abrir la prueba |
 
-## 2. Calibración (con clientes reservados, no con la prueba)
+## 2. Calibración (con entidades reservadas, no con la prueba)
 
-- ¿Se evaluó? ☒ sí
-- Resultado y decisión: LightGBM sin calibrar ya está bien calibrado (mayor diferencia entre probabilidad predicha y real en un decil: 0,008). La regresión isotónica no mejora log loss (0,2672 en ambos) ni Brier (0,0874) y hace peor la mayor diferencia por decil (0,016). **No se calibra.**
+- ¿Se evaluó? ☒ sí ☐ no. Misma reserva de la etapa 06 (25 % del entrenamiento, estratificado, semilla 7): ambos modelos
+  entrenados con 228.178 clientes y medidos en 76.060.
+- Regla escrita antes de mirar (con la enmienda del 2026-11-05): calibrar solo si (1) todo el IC 95 % de (log loss calibrado −
+  sin calibrar) está bajo cero **y** (2) el costo no sube.
+- Resultado: log loss −0,00008, IC 95 % [−0,00025; +0,00010] → **cruza el cero, la condición 1 no se cumple**. Costo +0,0001
+  (0,3304 frente a 0,3303) → **la condición 2 tampoco**. **Decisión: no se calibra.** LightGBM sin balanceo de clases ya da
+  probabilidades bien calibradas (curva en `reports/07_calibracion.png`), por eso la isotónica no aporta.
 
 ## 3. La prueba, abierta **una sola vez**
 
-- Fecha y hora en que se abrió (la marca está en `reports/prueba_abierta.txt`): **2026-11-05 19:09**. 76.222 clientes; tasa de aceptación 12,26 %.
-- ¿Se cambió algo del modelo después de verla? ☒ **no.** **Declaración:** la primera ejecución del notebook falló en la sección de SHAP por un error de escritura en el código (el nombre de una variable), **después** de haber abierto la prueba y calculado las métricas. Se corrigió ese error de código y se volvió a ejecutar todo el notebook. El modelo, sus parámetros y las decisiones no cambiaron (semillas fijas); las cifras de la segunda ejecución son las mismas. La marca de apertura conserva la hora de la primera ejecución.
+- Fecha y hora en que se abrió: **2026-11-05 20:43:56** (`reports/prueba_abierta.txt`), 76.222 clientes, 12,26 % interesados.
+  Ningún cliente de la prueba está en el entrenamiento (comprobado en el notebook).
+- ¿Se cambió algo del modelo después de verla? ☒ no ☐ sí. Lo único hecho después es **de presentación**: los nombres de las
+  variables de SHAP salieron como `x0…x62` y se recuperaron del modelo guardado (`07_shap_nombres.csv`), sin volver a usar la prueba.
+- La marca registra el commit `e94c0cb`; el código de esta etapa (`src/proyecto/models/validation.py` y el notebook 07) aún no
+  estaba en un commit en ese momento.
 
-| Métrica | Modelo final (LightGBM) | Baseline (llamar si hubo daño) | Alternativa (regresión) | Intervalo del 95 % (clientes) del modelo final |
-|---|---|---|---|---|
-| **Costo por cliente (principal)** | **0,3317** | 0,3967 | 0,3349 | [0,3264; 0,3369] |
-| PR-AUC (control 1) | 0,3533 | 0,2357 | 0,3437 | no calculado |
-| ROC-AUC (control 2) | 0,8519 | 0,7709 | 0,8485 | no calculado |
-| Costo si solo se llama al 20 % mejor puntuado | 0,3988 | 0,5229 | 0,4040 | no calculado |
-| Recall de compradores | 0,875 | 0,980 | 0,875 | — |
-| Precisión (llamados que compran) | 0,296 | 0,238 | 0,294 | — |
-| % de clientes contactados | 36,2 % | 50,5 % | 36,5 % | — |
-| Log loss / Brier | 0,2672 / 0,0875 | 0,2924 / 0,0940 | 0,2690 / 0,0880 | — |
+### 3.1 La prueba en el grupo: se abrió dos veces *(agregado el 2026-11-06, `specs/007-integracion-main`)*
 
-**¿Mejora al baseline con confianza?** **Sí.** Modelo menos baseline: **-0,0650 por cliente**, intervalo del 95 % **[-0,0700; -0,0607]**: todo el intervalo queda por debajo de cero. Son **≈ 6.500 unidades de llamada ahorradas por cada 100.000 clientes** (16,4 %). Coincide con la validación cruzada (0,3326), así que no hay señal de sobreajuste.
-**Contra la regresión:** -0,0031, intervalo **[-0,0060; -0,0006]**: LightGBM es mejor con confianza del 95 %, por una diferencia pequeña (≈ 310 unidades por 100.000 clientes, menos del 1 %).
+- En el grupo, la prueba (los mismos 76.222 clientes) se abrió **dos veces** el 2026-11-05, con **dos modelos distintos**:
+  1. **19:09**, en `main`: LightGBM con parámetros de partida, sin variables nuevas y sin `Vintage` ni `Driving_License`.
+  2. **20:43:56**, en esta rama: el modelo de este informe (5 variables nuevas, parámetros optimizados).
+- **El modelo final es el segundo, y no se eligió mirando la prueba.** El criterio lo fijó el grupo el 2026-11-06 por alcance: el
+  modelo final **debe incluir las 5 variables nuevas** (decisión D15 en `reports/decisiones_del_grupo.md`). Las cifras de prueba del
+  modelo de `main` no se usaron para decidir nada.
+- **Qué significa para quien lea estas cifras:** cada modelo se evaluó una sola vez y nada se ajustó después de ver la prueba, así que
+  las cifras de la sección 3 siguen siendo honestas para este modelo. Pero que existan dos evaluaciones sobre la misma prueba es una
+  desviación de la regla "la prueba se abre una sola vez" (principio III de la constitución), y por eso se declara. Si se
+  hubiera elegido el de menor costo en la prueba, la cifra ganadora estaría sesgada a favor.
+- La constancia de las dos aperturas está en `reports/prueba_abierta.txt`. La prueba no se volverá a abrir.
+
+Intervalos con *bootstrap* de clientes (1.000 remuestreos; 1 fila = 1 cliente).
+
+| Métrica | Modelo final | Línea base (regla) | Intervalo del 95 % |
+|---|---|---|---|
+| **Costo por cliente** (principal, menor es mejor) | **0,3312** | 0,3720 | modelo [0,3263; 0,3364] · regla [0,3682; 0,3759] |
+| **Diferencia de costo (modelo − regla)** | **−0,0408** | | **[−0,0453; −0,0362]** |
+| % de la base a llamar | 36,5 % | 47,8 % | |
+| Recall (interesados que se llaman) | 87,9 % | 97,7 % | |
+| Precisión (de los llamados, cuántos se interesan) | 29,5 % | 25,1 % | |
+| PR-AUC (técnica principal) | 0,353 | 0,248* | |
+| ROC-AUC | 0,852 | 0,785* | |
+| % de interesados al llamar al 20 / 30 / 50 % | 56,4 / 77,9 / 98,9 % | 40,8 / 61,8 / 97,8 %* | |
+
+\* La regla solo da dos probabilidades distintas: sus métricas de ordenamiento son de referencia, no comparables 1 a 1.
+
+**¿Mejora a la línea base con confianza?** **Sí.** Todo el intervalo de la diferencia está bajo cero: el modelo ahorra unas
+408 unidades de costo por cada 10.000 clientes (1 unidad = una llamada sin éxito) y llama a 11 puntos menos de la base.
+El costo en la prueba (0,3312) es casi igual al de la reserva de la etapa 06 (0,3303): no hay señales de sobreajuste.
 
 ## 4. Errores y carga de trabajo
 
-| Segmento | Casos | Tasa real | % que el modelo marca | Recall | Precisión | Compradores no llamados |
-|---|---|---|---|---|---|---|
-| Mujeres | 34.913 | 10,2 % | 29,6 % | 84,5 % | 29,2 % | 552 |
-| Hombres | 41.309 | 14,0 % | 41,8 % | 89,3 % | 29,9 % | 616 |
-| 20-25 años | 22.838 | 3,6 % | **5,7 %** | **33,3 %** | 20,6 % | 542 |
-| 26-35 | 14.595 | 11,2 % | 31,0 % | 91,8 % | 33,2 % | 135 |
-| 36-45 | 14.118 | 21,7 % | 65,5 % | 98,1 % | 32,5 % | 59 |
-| 46-55 | 12.299 | 19,4 % | 64,9 % | 98,1 % | 29,4 % | 45 |
-| 56-65 | 6.772 | 14,6 % | 56,1 % | 92,8 % | 24,1 % | 71 |
-| 66 o más | 5.600 | 8,1 % | **13,6 %** | **30,4 %** | 18,1 % | 316 |
+| Segmento | Casos | Costo | % que el modelo llama | % real de interesados | Recall |
+|---|---|---|---|---|---|
+| **General** | 76.222 | 0,331 | 36,5 % | 12,3 % | 87,9 % |
+| Gender: hombre | 41.309 | 0,367 | 42,1 % | 14,0 % | 89,8 % |
+| Gender: mujer | 34.913 | 0,289 | 29,9 % | 10,2 % | 85,0 % |
+| **Edad 18–29** | 31.037 | 0,168 | 8,1 % | 4,1 % | **48,3 %** |
+| Edad 30–44 | 18.848 | 0,425 | 60,3 % | 20,5 % | 97,8 % |
+| Edad 45–59 | 17.060 | 0,480 | 65,4 % | 19,2 % | 98,5 % |
+| **Edad 60+** | 9.277 | 0,416 | 30,0 % | 10,0 % | **64,0 %** |
+| Región 28 (la más grande) | 21.263 | 0,445 | 56,7 % | 18,8 % | 94,2 % |
+| Regiones con < 1.000 clientes ("otras") | 16.859 | 0,319 | 28,5 % | 9,4 % | 77,4 % |
+| **Región 37** | 1.112 | 0,319 | 17,9 % | 8,6 % | **56,3 %** |
+| Región 36 / 15 / 47 | 1.732 / 2.731 / 1.555 | 0,26 / 0,24 / 0,32 | 19,8 / 18,8 / 25,5 % | 8,3 / 6,6 / 10,0 % | 70,1 / 71,0 / 72,3 % |
 
-- **¿Hay un segmento al que le va peor?** Sí: **20-25 años y 66 o más** (recall de 33 % y 30 %). Compran poco (3,6 % y 8,1 %) y llamarlos no compensa con R = 5, pero 542 y 316 compradores reales de la prueba no reciben la oferta. Es una decisión de **política comercial**, no un fallo del modelo (**P04**). Confirma lo visto en validación cruzada.
-- **Género:** el modelo **usa `Gender`** y llama más a los hombres (41,8 % frente a 29,6 %), pero compran más (14,0 % frente a 10,2 %) y la **precisión es parecida** (29,9 % y 29,2 %): una llamada rinde casi igual. La brecha de recall es de 4,8 puntos (89,3 % frente a 84,5 %). Al usar el género directamente, **Legal debe aprobar su uso**.
-- **Carga de trabajo:** el modelo marca al **36,2 %** de los clientes y en realidad compra el 12,3 %: **≈ 3 llamadas por cada comprador real**. Es el costo de querer encontrar al 87,5 % de los compradores con R = 5.
+Las 19 regiones con su detalle están en `reports/07_segmentos.csv`.
+
+- **¿Hay un segmento al que le va peor?** Sí: los **jóvenes de 18 a 29 años** (el modelo encuentra solo a la mitad de los
+  interesados) y los **mayores de 60** (64 %). Tienen tasas de interés bajas (4 % y 10 %), así que pocos clientes de esos grupos
+  superan el umbral de 1/6 y el modelo casi no los llama. Es coherente con el costo (llamar a todos los jóvenes costaría más de lo
+  que se recupera), pero quiere decir que **la mitad de los jóvenes interesados no recibirá la llamada**. Lo mismo, en menor medida,
+  en regiones con baja tasa de interés (37, 36, 15, 47 y las pequeñas). La región 37 tiene solo ≈ 96 interesados: su recall es poco preciso.
+- **Carga de trabajo:** el modelo pide llamar al **36,5 %** de la base para un 12,3 % de interesados: **3,4 llamadas por interesado
+  encontrado**, frente a 4,0 con la regla (que llama al 47,8 %). El costo ya cuenta las llamadas sin éxito, pero la cifra hay que
+  contrastarla con la capacidad real de los asesores: si solo pueden llamar al 20 %, conviene ordenar la lista por probabilidad
+  (captura del 56 % de los interesados) en vez de usar el umbral.
+- **Sensibilidad al supuesto de costo** (misma decisión, umbral 1/6 sin tocar):
+
+  | Perder un interesado cuesta… | Modelo | Regla | Diferencia |
+  |---|---|---|---|
+  | 3 llamadas | 0,302 | 0,367 | −0,065 (gana el modelo) |
+  | **5 llamadas (supuesto)** | **0,331** | **0,372** | **−0,041 (gana el modelo)** |
+  | 10 llamadas | 0,405 | 0,386 | **+0,019 (gana la regla)** |
+
+  **La ventaja del modelo depende del supuesto 5 a 1.** Si una venta perdida vale 10 llamadas, la regla (que llama a casi todos los
+  que podrían interesarse) cuesta menos. En ese caso el umbral correcto sería 1/11, no 1/6: habría que **volver a decidirlo con
+  validación**, nunca con esta prueba.
 
 ## 5. Interpretación
 
-- **Variables que más pesan** (SHAP, impacto medio absoluto, escala logit): `Previously_Insured` 2,32; `Vehicle_Damage` 1,03; `Region_Code` 0,35; `Age` 0,33; `Vehicle_Age` 0,13; `Gender` 0,09; `Annual_Premium` 0,09; `Premium_is_minimum` 0,02. **Para el negocio:** la decisión depende sobre todo de dos preguntas: si el cliente ya tiene seguro de vehículo (casi nunca compra) y si el vehículo tuvo un daño (compra mucho más). Región y edad afinan el orden dentro de esos grupos. El género aporta poco.
-- **Dos clientes concretos:** a un hombre de 31 años sin seguro previo y con daño (P = 52 %) se le llama sobre todo por `Previously_Insured` (+1,96) y `Vehicle_Damage` (+1,13); a una mujer de 79 años con seguro previo y sin daño (P ≈ 0 %) no se le llama por `Previously_Insured` (-2,62), la edad (-0,92) y la ausencia de daño (-0,88).
-- **Límite de la explicación:** SHAP explica al modelo, no al mundo; no dice si el modelo acertó, y las variables correlacionadas (`Previously_Insured` y `Vehicle_Damage`, `Age` y `Vehicle_Age`) se reparten el crédito. Que el daño "cause" la compra es una hipótesis del negocio, no algo que los datos prueben (**P09**).
-- **Atributos sensibles o de uso regulado:** `Gender` (usado directamente por decisión del grupo) y `Age` (la edad cambia mucho el trato: casi no se llama a los de 20-25 y 66+). **Qué se hace:** auditoría por género y edad (sección 4), aprobación de Legal sobre el género y definición de un piso de contacto por edad.
+- **Variables que más pesan** (|SHAP| promedio en 5.000 clientes de la prueba, `07_shap_nombres.csv`):
+  1. `Previously_Insured` (1,32): quien ya tiene seguro de vehículo casi nunca se interesa;
+  2. `uninsured_with_damage` (0,84) y `Vehicle_Damage` (0,41): sin seguro y con daño previo, el perfil de la regla de negocio;
+  3. `age_peak_distance` (0,18) y `Age` (0,11): el interés tiene forma de campana con máximo entre 35 y 50 años;
+  4. `damage_x_vehicle_age` (0,11), `Vehicle_Age` (0,06), región 28 (0,05), `Annual_Premium` (0,04), `premium_per_age` (0,03).
+
+  Para el negocio: el modelo es, en esencia, **la regla de negocio refinada por edad, antigüedad del vehículo y región**. Por eso
+  llama a menos gente que la regla sin perder muchos interesados.
+- **Límite de la explicación:** SHAP explica **cómo decide el modelo**, no por qué un cliente se interesa ni si el modelo acertó.
+  `Previously_Insured`, `Vehicle_Damage` y las variables nuevas que se construyen con ellas están correlacionadas y **se reparten el
+  crédito**: el peso de cada una por separado no se debe leer como su efecto. Ninguna importancia es causa.
+- **Atributos sensibles:** `Age`, `Gender` y `Region_Code` entran al modelo.
+  - `Age` pesa mucho y produce las diferencias de recall de la sección 4 (jóvenes y mayores).
+  - `Gender` **no** está entre las 10 variables con más peso. El modelo llama más a hombres (42 % frente a 30 %), pero en
+    proporción a su interés real (14 % frente a 10 %); el recall es parecido (90 % frente a 85 %).
+  - `Region_Code` puede ser un sustituto de nivel socioeconómico.
+  - **Qué haría falta antes de producción:** revisión legal del uso de edad y género para decidir contactos comerciales; medir el
+    modelo **sin `Gender`** con validación (no con esta prueba) y quitarlo si el costo no empeora de forma distinguible; y vigilar el
+    recall por edad y región en cada campaña.
 
 ## 6. Conclusión
 
-- **¿El modelo sirve para la decisión del caso?** Sí, con condiciones: reduce el costo de contacto un **16,4 %** frente a la mejor regla sin modelo (intervalo claramente fuera del cero) y la cifra de la prueba coincide con la validación. **Condiciones:** (1) Legal aprueba el uso de `Gender`; (2) el grupo define la política para los de 20-25 y 66 o más; (3) se confirma R (**P01**) y que el canal de venta se conoce o no al llamar (**P11**; sin él el modelo cuesta ≈ 800 unidades más por 100.000 clientes).
-- **Qué NO debe hacerse con él:** no usarlo para negar un seguro ni para excluir por edad o género (solo ordena a quién llamar primero); no aplicarlo a otra aseguradora, otro país o otra época sin revalidar; no reportar el costo como dinero sin confirmar R; no volver a abrir la prueba para ajustar el modelo.
-- **Lo que no se evaluó:** estabilidad en el tiempo, deriva de los datos, comportamiento en otras regiones o aseguradoras y el efecto real de una campaña (el dataset es histórico, no experimental).
+- **¿El modelo sirve para la decisión del caso?** **Sí, con condiciones.** Con el supuesto de costo 5 a 1, ordena y filtra la lista
+  mejor que la regla de negocio con confianza del 95 %: menos llamadas (36,5 % de la base) y menor costo por cliente (−0,041). Condiciones:
+  1. **validar el supuesto 5 a 1** con el margen real de una póliza frente al costo de una llamada: con 10 a 1 ya no supera a la regla;
+  2. **revisar el uso de edad y género** (sección 5);
+  3. aceptar que **pierde a la mitad de los jóvenes interesados** y a un tercio de los mayores de 60 interesados, o diseñar una
+     campaña aparte para ellos.
+- **Qué NO debe hacerse con él:**
+  - usarlo para fijar precios o negar el seguro: solo ordena una lista de llamadas;
+  - leerlo como compra efectiva: predice **interés declarado**;
+  - leer SHAP como causa ("los jóvenes no quieren seguro");
+  - cambiar el umbral o el modelo mirando estos resultados de prueba: cualquier ajuste se decide con validación y se mide con datos nuevos.
+- **Lo que no se evaluó:** el comportamiento en campañas futuras (cambios de producto o de precio), el modelo sin `Gender`, y la
+  calibración por segmento.
+## 7. Revisión de fuga (subagente `auditor-de-fuga`, 2026-11-05)
+
+**Veredicto: sin fuga evidente; ningún hallazgo crítico ni medio.** Revisó 7 puntos y los 7 salen sin problema, con evidencia:
+- las decisiones no usaron la prueba y su hora es anterior a la apertura;
+- la calibración usó solo la reserva, que es la misma de la etapa 06: el costo sin calibrar coincide, 0,33029;
+- todo lo que aprende de los datos está dentro del `Pipeline`;
+- las constantes del EDA salen de la porción de exploración;
+- la línea base aprende solo con el entrenamiento;
+- nada calculado después de abrir la prueba cambió el modelo ni el umbral;
+- `Policy_Sales_Channel` está fuera del modelo y `Vintage` se conoce antes de decidir;
+- la partición por fila es válida.
+
+Las métricas de la prueba y de la reserva son casi iguales (ROC-AUC 0,8515 frente a 0,8506).
+
+Observaciones menores, que se aceptan como límites:
+1. **La reserva se usó dos veces** (parámetros en la etapa 06 y calibración en la 07). No toca la prueba y, como la decisión fue
+   "no calibrar", no tiene efecto práctico.
+2. **Las marcas de tiempo las escribe el propio notebook**, y el commit `e94c0cb` de la marca no contiene el código de esta etapa.
+   **Corregido:** el código, la marca y `07_decisiones_congeladas.json` quedaron en el commit `cdda173` (rama `005-validacion`).
+3. **Los nombres de SHAP salieron genéricos**; ya están traducidos en `07_shap_nombres.csv` (sección 5).
+4. **Hay perfiles idénticos con distinto `id` a ambos lados de la partición.** Son clientes distintos, no fuga estricta, y son pocos
+   (269 filas repetidas en el EDA, 649 sin el canal). Pueden hacer las métricas apenas optimistas.
+
+El auditor no pudo verificar de forma independiente que nadie abrió `test.parquet` antes de esta etapa: se apoya en el código y en la marca.
+
+## 8. Seguimiento
+
+- **MLflow:** la ejecución quedó en **MLflow local** (`mlflow_local.db`, run `231873a7c3ff45d798252037407d9451`), no en
+  Databricks, porque el `.env` de quien ejecutó tenía `MLFLOW_FORCE_LOCAL` y la conexión comentada. No se repite (sería abrir la prueba
+  otra vez); las cifras están completas en `reports/07_metricas_test.json` y el registro del modelo (etapa 08) se hará en Databricks.
