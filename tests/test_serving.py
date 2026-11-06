@@ -96,6 +96,23 @@ def test_unknown_category_raises_a_clear_error():
         ServingModel(Recorder(), build_defaults(to_raw(clean))).predict_proba(raw)
 
 
+def test_non_integer_region_is_rejected_not_rounded():
+    """Una región es una etiqueta: 28,7 no es "casi la 29", es un dato mal escrito."""
+    clean = make_clean()
+    raw = to_raw(clean).head(1).assign(Region_Code=28.7)
+    with pytest.raises(InputValidationError, match="Region_Code"):
+        ServingModel(Recorder(), build_defaults(to_raw(clean))).predict_proba(raw)
+
+
+def test_integer_region_written_as_float_is_accepted():
+    """28.0 (como llega a veces desde un formulario) sí es la región 28."""
+    clean = make_clean()
+    recorder = Recorder()
+    raw = to_raw(clean).head(1).assign(Region_Code=28.0)
+    ServingModel(recorder, build_defaults(to_raw(clean))).predict_proba(raw)
+    assert recorder.seen["Region_Code"].iloc[0] == 28
+
+
 def test_build_defaults_uses_median_for_numbers_and_mode_for_categories():
     raw = pd.DataFrame({
         "Age": [20.0, 30.0, 70.0], "Annual_Premium": [2630.0, 30000.0, 40000.0], "Region_Code": [3, 28, 28],

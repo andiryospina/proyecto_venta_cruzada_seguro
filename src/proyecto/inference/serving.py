@@ -79,9 +79,14 @@ class ServingModel:
             if unknown:
                 raise InputValidationError(f"{col}: valor desconocido {unknown}; se esperaba uno de {sorted(mapping)}")
 
+        # Una región es una etiqueta, no una cantidad: 28,7 no se redondea a 29, se rechaza (28.0 sí vale como 28)
+        region = pd.to_numeric(filled["Region_Code"])
+        if (region != region.round()).any():
+            raise InputValidationError(f"Region_Code: debe ser un código entero; llegó {sorted(set(region[region != region.round()]))}")
+
         clean = pd.DataFrame(index=df.index)
         clean["Age"] = pd.to_numeric(filled["Age"]).astype(float)
-        clean["Region_Code"] = pd.to_numeric(filled["Region_Code"]).round()
+        clean["Region_Code"] = region
         clean["Annual_Premium"] = pd.to_numeric(filled["Annual_Premium"]).astype(float)
         clean["Vintage"] = pd.to_numeric(filled["Vintage"]).astype(float)
         for col, mapping in CATEGORY_TRANSLATION.items():
@@ -95,4 +100,10 @@ class ServingModel:
         return self.pipeline.predict_proba(self._to_clean(df))
 
     def predict(self, df: pd.DataFrame) -> np.ndarray:
+        """Clase MÁS PROBABLE (equivale a un umbral de 0,5). **No es la decisión del proyecto.**
+
+        La decisión de llamar usa el umbral de costo 1/6 (matriz [[0, 1], [5, 0]]): para eso está
+        `proyecto.inference.predict.predict_with_scores`, que es lo que usa la app. Este método existe solo porque
+        scikit-learn espera que un modelo lo tenga.
+        """
         return self.predict_proba(df).argmax(axis=1)

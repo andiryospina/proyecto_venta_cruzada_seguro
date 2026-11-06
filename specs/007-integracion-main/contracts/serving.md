@@ -20,3 +20,4 @@ notebook 09 no cambian su manera de usarlo); cambian las columnas.
 4. **Categoría desconocida:** lanza `InputValidationError`.
 5. **`build_defaults`:** mediana y moda correctas en una tabla pequeña conocida.
 6. **Traducción columna por columna** *(agregada en T020)*: el modelo recibe exactamente `CLEAN_COLUMNS` con los mismos valores que la tabla limpia.
+7. **Región no entera** *(agregada tras la revisión T029)*: `Region_Code = 28.7` lanza `InputValidationError`; `28.0` se acepta como 28.

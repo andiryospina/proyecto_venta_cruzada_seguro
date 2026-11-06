@@ -132,7 +132,7 @@ uv venv --python 3.12 .venv
 uv pip install --python .venv/Scripts/python.exe -r requirements.txt   # en Mac/Linux: .venv/bin/python
 # colocar el CSV de entrenamiento en data/raw/ (ver notebooks/03_preprocesamiento.ipynb)
 # ejecutar en orden los notebooks 03_preprocesamiento a 09_inferencia (los 01 y 02 son de caso y EDA)
-PYTHONUTF8=1 python -m pytest           # 119 pruebas
+PYTHONUTF8=1 python -m pytest           # 121 pruebas
 streamlit run app/streamlit_app.py
 ```
 

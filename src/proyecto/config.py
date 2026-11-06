@@ -87,3 +87,13 @@ AGE_BANDS = [("18-29", 18), ("30-44", 30), ("45-59", 45), ("60+", 60)]
 MIN_REGION_SIZE = 1000              # regiones con menos clientes en la prueba se agrupan como "otras"
 SENSITIVITY_RATIOS = (3, 5, 10)     # costo de perder un interesado frente a una llamada sin éxito (5 es el supuesto)
 TEST_MARKER = ROOT / "reports" / "prueba_abierta.txt"   # constancia de que la prueba ya se abrió (una sola vez)
+
+# App e inferencia (specs/007-integracion-main): lo POSIBLE en el mundo real para cada dato del formulario (límites incluidos).
+# Es conocimiento del grupo, no de los datos: fuera de estos rangos la app se niega a predecir.
+INPUT_VALID_RANGE = {
+    "Age": VALID_RANGE["Age"],        # 18 a 100 años (decisión del EDA)
+    "Annual_Premium": (1, 10_000_000),  # una prima <= 0 es imposible; la cola alta es real (máx. visto 540.165).
+                                        # 10 millones es un tope PRÁCTICO sin dato que lo respalde: PENDIENTE de confirmar por el grupo
+    "Region_Code": (0, 52),           # los 53 códigos de región que existen en los datos (0 a 52)
+    "Vintage": (0, 36_500),           # días como cliente: no negativo; 100 años como tope práctico (máx. visto 299)
+}

@@ -73,7 +73,7 @@ decidir**. Aun así es una desviación del principio III de la constitución y s
 
 | Qué | Resultado |
 |---|---|
-| Pruebas (`PYTHONUTF8=1 python -m pytest -q`) | 119 en verde (113 de la rama + 6 de `test_serving.py`) |
+| Pruebas (`PYTHONUTF8=1 python -m pytest -q`) | 121 en verde (113 de la rama + 8 de `test_serving.py`) |
 | Modelo final carga con el código integrado | Sí; entradas con `Gender`, `Vintage`, `Driving_License`, sin `Policy_Sales_Channel`; calcula las 5 variables nuevas |
 | `train.parquet` | 304.238 filas |
 | `model.joblib` frente a `final_pipeline.joblib` | Diferencia máxima de probabilidades 0 en 200 clientes de entrenamiento |
@@ -106,13 +106,13 @@ no hay cifras inventadas ni secretos.
 | Hallazgo | Severidad | Qué pasa en la app (comprobado el 2026-11-06) | Estado |
 |---|---|---|---|
 | `serving.py` no valida números escritos como texto (`ValueError` en vez de `InputValidationError`) | Media | `predict_with_scores` valida antes: «Age: hay valores que no son números» | Cubierto en la app; abierto si se usa `ServingModel` directamente |
-| `Region_Code` 28,7 se redondea a 29 sin avisar | Media | **Pasa** por `predict_with_scores` (responde). En el formulario no ocurre: el campo de región solo admite enteros. La región 90 sí se rechaza («debe estar entre 0 y 52») | **Abierto** |
+| `Region_Code` 28,7 se redondea a 29 sin avisar | Media | Pasaba por `predict_with_scores`. En el formulario no ocurría (el campo solo admite enteros). La región 90 ya se rechazaba | **Corregido**: `serving.py` rechaza una región no entera («Region_Code: debe ser un código entero»); 28.0 sigue valiendo como 28. Dos pruebas nuevas |
 | Si falta una columna, sale un `KeyError` poco claro | Media | `predict_with_scores` responde «Faltan columnas: Vintage» | Cubierto en la app |
 | Distingue mayúsculas y espacios («male» se rechaza) | Baja | Rechazo claro; el formulario usa listas cerradas | Aceptado: es mejor fallar que adivinar |
 | En un empate, `mode()` elige el primero por orden alfabético | Baja | — | Aceptado |
-| `ServingModel.predict` usa umbral 0,5, no 1/6 | Baja | La app usa `predict_with_scores` (umbral de costo) | **Abierto**: aclararlo en el docstring |
+| `ServingModel.predict` usa umbral 0,5, no 1/6 | Baja | La app usa `predict_with_scores` (umbral de costo) | **Corregido**: el docstring dice que es la clase más probable (0,5) y no la decisión del proyecto |
 | Las pruebas usan un modelo de juguete, no el real | Baja | La equivalencia con el modelo real está en el notebook 09 (diferencia 0) | Aceptado |
-| `RANGOS_POSIBLES` (topes de 10.000.000 de prima y 36.500 días) y el aviso de uso responsable viven en el notebook, no en `config.py` ni en `reports/` | Baja | — | **Abierto**: el tope de prima es una elección práctica sin dato que la respalde; el grupo debe confirmarlo |
+| `RANGOS_POSIBLES` (topes de 10.000.000 de prima y 36.500 días) y el aviso de uso responsable viven en el notebook, no en `config.py` ni en `reports/` | Baja | — | **Corregido**: los rangos pasan a `INPUT_VALID_RANGE` en `config.py`, cada uno con su motivo; el notebook 09 los lee de ahí (esquema idéntico). **Sigue pendiente** que el grupo confirme el tope de 10.000.000 de prima, que no tiene dato que lo respalde |
 
 Casos que las pruebas no cubren (sugeridos por el revisor): región no entera o negativa, textos con espacios, las 9 columnas en "no sé",
 varias filas con vacíos distintos, una tabla vacía y una prima de 2.630 escrita como texto. Con muchos "no sé", la app arma un perfil
