@@ -45,11 +45,11 @@ clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/mont
 
 | Integrante | Rol |
 |---|---|
-| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
-| Carolina Orejuela Perea | **[PENDIENTE: rol]** |
-| Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
-| Katherin Andrea Tabares | **[PENDIENTE: rol]** |
-| Jhonatan Rojas Cardona | **[PENDIENTE: rol]** |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | Integración y validación final de `main`, registro en Databricks, app y despliegue, documentación (35 de los 53 commits del repositorio) |
+| Carolina Orejuela Perea | **[PENDIENTE: el grupo asigna el rol]** |
+| Jessica Andiry Ospina Valencia | Modelado: variables, torneo, optimización con Optuna, validación y registro del modelo final (ramas `005`, `006` y `007`) |
+| Katherin Andrea Tabares | **[PENDIENTE: el grupo asigna el rol]** |
+| Jhonatan Rojas Cardona | **[PENDIENTE: el grupo asigna el rol]** |
 
 *Nombre de la startup:* **[PENDIENTE]**
 

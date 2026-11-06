@@ -14,7 +14,7 @@
 
 ## Resumen
 
-- **15 decisiones** (D01 a D15; D12 y D14 **reemplazadas** por D15) y **12 pendientes** (P01 a P12; **P12 cerrada**).
+- **15 decisiones** (D01 a D15; D12 y D14 **reemplazadas** por D15) y **12 pendientes** (P01 a P12; **P12 cerrada**). **El 2026-11-06 el grupo adoptó la opción recomendada de P01, P02, P03, P04, P06, P08, P09 y P11 como supuestos declarados**: siguen marcadas «por confirmar» porque ninguna tiene aún respuesta de la aseguradora, de Legal ni del instructor. Siguen abiertas P05 (licencia), P07 (roles y nombre de la startup) y P10 (aprobaciones).
 - **Actualizado el 2026-11-06 (`specs/007-integracion-main`):** el grupo decidió que el **modelo final es el de la rama de Andiry**, porque debe incluir las **5 variables nuevas** (D15). El código oficial de `src/` pasa a ser el de esa rama. **Las cifras de D01 a D11 y de P01 a P04 se midieron con el código anterior de `main`** (etapas 4 a 6 de la compañera) y se conservan como historia; las del modelo final están en `reports/04_features.md` a `reports/07_validacion.md` y en `models/ficha_modelo.md`. Detalle de la integración: `reports/integracion_main.md`.
 - **Actualizado el 2026-11-05:** el grupo decidió **eliminar `Policy_Sales_Channel`** (posible fuga) y **conservar `Gender`**; las etapas 3 a 6 se reejecutaron y las cifras de abajo son las nuevas.
 - **Ninguna de las pendientes bloquea el modelado.** Solo **P03** (si se exige explicar cada llamada) debe quedar resuelta **antes de abrir la prueba cerrada** en la etapa 7, porque decide cuál modelo se confirma.
@@ -48,7 +48,9 @@
 
 > **Bloquea el modelado:** ninguna. **Bloquea abrir la prueba cerrada:** solo P03.
 
-### P01 · Valor de R (cuánto cuesta no llamar a un comprador frente a una llamada inútil)
+### P01 · Valor de R (cuánto cuesta no llamar a un comprador frente a una llamada inútil) — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se mantiene **R = 5** como supuesto declarado (umbral 16,7 %). Si el instructor o la aseguradora dan otro valor, se usa ese y se repiten los cuadernos 05 a 07.
 
 | | |
 |---|---|
@@ -60,7 +62,9 @@
 | **Qué cambia si es otro** | **Los finalistas no cambian** con R entre 2 y 12 (LightGBM y XGBoost siempre 1.º y 2.º). Cambia el umbral (R = 3 → 25 %; R = 4 → 20 %; R = 6 → 14,3 %; R = 8 → 11,1 %) y el costo absoluto. Usar por error el umbral de R = 4 o R = 6 cuando fuera R = 5 sube el costo a ≈ 0,331 o ≈ 0,328, a menos de 0,005 del mínimo. Con R ≤ 3, la regla "llamar si hubo daño" deja de llamar |
 | **Dónde se actualiza** | `COST_MATRIX` en `src/proyecto/config.py` (antes `COST_FALSE_NEGATIVE` en `metrics.py`, que se quitó en la integración del 2026-11-06); un R distinto obliga a decidir el umbral de nuevo **con validación**, no con la prueba |
 
-### P02 · Capacidad real de llamadas del equipo comercial
+### P02 · Capacidad real de llamadas del equipo comercial — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se **opera por umbral** (≈ 36 % de la base) y se presenta la tabla de costo por capacidad (20 %, 30 %, 35 %, 40 %, 50 %). Limitar a 20 % cuesta ≈ 7.000 unidades más por 100.000 clientes (cifra de la versión anterior de `main`).
 
 | | |
 |---|---|
@@ -69,7 +73,9 @@
 | **Valor de trabajo vigente** | Operar por umbral, dimensionando para **≈ 36 %** de la base |
 | **Qué cambia si es otra** | Cada capacidad tiene un costo medido (por 100.000 clientes): **20 %** → 40.333 unidades y 55,7 % de los compradores encontrados; **30 %** → 34.592 y 77,1 %; **35 %** → **33.307** y 85,6 %; **40 %** → 33.682 y 91,9 %; **50 %** → 38.578. **Limitar a 20 % cuesta ≈ 7.000 unidades más** y pierde el 44 % de los compradores. Entre 30 % y 40 % el costo es casi plano |
 
-### P03 · ¿Se exige explicar cada llamada? (el único que debe cerrarse antes de la etapa 7)
+### P03 · ¿Se exige explicar cada llamada? (el único que debe cerrarse antes de la etapa 7) — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** **LightGBM** es el modelo principal (modelo final, D15). Si Legal o el instructor exigen explicar cada llamada, el modelo desplegado pasa a la regresión logística (costaba ≈ 0,8 % más en la versión anterior; hay que remedirlo con el modelo final).
 
 | | |
 |---|---|
@@ -79,7 +85,9 @@
 | **Qué cambia si se exige** | El modelo desplegado pasa a ser la regresión logística. Costo: **≈ 260 a 280 unidades por 100.000 clientes** (≈ 0,8 % del costo total). La regresión se explica con una fórmula: quien ya tiene seguro tiene un 98 % menos de posibilidades de comprar (razón de odds 0,016) y quien tuvo un daño tiene 7,3 veces más |
 | **Por qué debe cerrarse antes de la etapa 7** | La prueba cerrada se abre **una sola vez** para confirmar la cifra del modelo elegido; elegir el modelo **después** de verla la invalidaría |
 
-### P04 · Piso de contacto para clientes de 20-25 años y de 66 o más
+### P04 · Piso de contacto para clientes de 20-25 años y de 66 o más — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se **mantiene el modelo** (prioriza por rentabilidad esperada), se documenta que casi no llama a los clientes más jóvenes ni a los mayores (ver `reports/07_validacion.md`) y se recomienda al negocio una **oferta distinta** para esos grupos, no más llamadas. No se fija un mínimo de contacto.
 
 | | |
 |---|---|
@@ -89,7 +97,9 @@
 | **Evidencia** | LightGBM llama solo al **5,6 %** de los de 20-25 años (recall 33 %) y al **15,6 %** de los de 66 o más (recall 35 %); en el entrenamiento **2.157 compradores jóvenes y 1.225 mayores no son llamados**. No es un fallo del modelo: estos grupos compran poco (3,5 % y 8,4 %) y llamarlos no compensa con R = 5 |
 | **Qué se mide después** | La auditoría completa por género y edad con la prueba cerrada, en la etapa 7. Como `Gender` entra al modelo (D12), Legal debe aprobar su uso |
 
-### P11 · ¿El canal de venta se conoce antes de decidir a quién llamar?
+### P11 · ¿El canal de venta se conoce antes de decidir a quién llamar? — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se **sigue sin el canal de venta** (decisión conservadora, D13). Solo cambia si la aseguradora confirma que se conoce antes de llamar; entonces se vuelve a medir con y sin canal.
 
 | | |
 |---|---|
@@ -112,6 +122,8 @@
 
 ### P05 · Fuente, enlace y licencia del dataset
 
+> **Intento de cierre 2026-11-06:** se consultó la página de Kaggle del conjunto y **no se pudo leer el campo *License***; solo hay una mención de terceros (GPL-2) sin verificar. **Sigue pendiente:** una persona del grupo debe abrir la página en el navegador y copiar el campo *License*. Si no permite redistribuir, hay que quitar `dataset.csv` y los Parquet del repositorio público.
+
 | | |
 |---|---|
 | **Qué falta** | Confirmar el enlace del conjunto, su autor y su licencia |
@@ -120,7 +132,9 @@
 | **Qué no se pudo verificar** | **La licencia.** La búsqueda no llegó a la página primaria; solo una referencia de terceros menciona GPL-2, **sin confirmar**. No se afirma |
 | **Por qué importa** | El repositorio de la compañera ya contiene `dataset.csv`: confirmar la licencia antes de mantenerlo en un repositorio público |
 
-### P06 · El caso de negocio en palabras de la aseguradora
+### P06 · El caso de negocio en palabras de la aseguradora — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se **mantiene la hipótesis** del caso (decide el equipo comercial; pesa más no llamar a un interesado) y se declara como supuesto hasta que el instructor apruebe la ficha de caso.
 
 | | |
 |---|---|
@@ -133,11 +147,13 @@
 
 | | |
 |---|---|
-| **Qué falta** | Los **roles** de cada integrante (datos, modelado, app, negocio) y el **nombre de la startup**. **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
+| **Qué falta** | Los **roles** de Carolina Orejuela Perea, Katherin Andrea Tabares y Jhonatan Rojas Cardona (no tienen commits en el repositorio, así que no se les asignó ninguno) y el **nombre de la startup**. **Asignados según los commits (2026-11-06):** Ricardo (integración, registro, app, despliegue, documentación) y Jessica Andiry (modelado y validación). **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
 | **Quién lo cierra** | El grupo |
 | **Dónde va** | `especificacion-proyecto.md` §1, `README.md` e `informe_tecnico.md` |
 
-### P08 · Qué datos nuevos pedir a la aseguradora
+### P08 · Qué datos nuevos pedir a la aseguradora — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se adoptan como **siguientes pasos** (no como compromiso) los dos primeros datos de la lista: historial de contactos y vencimiento del seguro de vehículo actual.
 
 | | |
 |---|---|
@@ -146,7 +162,9 @@
 | **Por qué** | La segunda ronda de variables mostró que **el techo del modelo está en los datos**: 6 variables derivadas no mejoraron nada, y optimizar parámetros tampoco |
 | **Cómo se mediría** | Se agrega cada dato y se repite el experimento de la etapa 4 con la misma regla (mejora sobre ruido) |
 
-### P09 · Por qué el daño del vehículo lleva a comprar
+### P09 · Por qué el daño del vehículo lleva a comprar — **[ADOPTADO 2026-11-06: supuesto del grupo, por confirmar]**
+
+> **Adoptado el 2026-11-06 (opción recomendada, de acuerdo el grupo):** Se deja como **hipótesis**: el texto dice que el daño «se asocia con» comprar, no que lo cause. No cambia el modelo.
 
 | | |
 |---|---|
@@ -168,15 +186,15 @@
 
 | ID | Responsable | Decisión final | Fecha |
 |---|---|---|---|
-| P01 · R | Negocio / Finanzas | | |
-| P02 · Capacidad | Ventas | | |
-| P03 · Explicación individual | Legal + Negocio | | |
-| P04 · Piso de contacto | Comercial + Legal | | |
+| P01 · R | Negocio / Finanzas | Adoptado como supuesto del grupo: Supuesto R = 5; sin confirmación externa | 2026-11-06 |
+| P02 · Capacidad | Ventas | Adoptado como supuesto del grupo: Operar por umbral; capacidad real sin confirmar | 2026-11-06 |
+| P03 · Explicación individual | Legal + Negocio | Adoptado como supuesto del grupo: LightGBM principal; regresión si se exige explicación | 2026-11-06 |
+| P04 · Piso de contacto | Comercial + Legal | Adoptado como supuesto del grupo: Sin piso de contacto; recomendación documentada | 2026-11-06 |
 | P05 · Fuente y licencia | Grupo | | |
-| P06 · Caso de negocio | Negocio | | |
+| P06 · Caso de negocio | Negocio | Adoptado como supuesto del grupo: Hipótesis del caso; falta aprobar la ficha | 2026-11-06 |
 | P07 · Roles y nombre de la startup | Grupo | | |
-| P08 · Datos nuevos | Negocio + TI | | |
-| P09 · Hipótesis del daño | Negocio | | |
+| P08 · Datos nuevos | Negocio + TI | Adoptado como supuesto del grupo: Siguientes pasos: historial de contactos y vencimiento del seguro | 2026-11-06 |
+| P09 · Hipótesis del daño | Negocio | Adoptado como supuesto del grupo: Hipótesis; se redacta como asociación, no como causa | 2026-11-06 |
 | P10 · Aprobaciones | Instructor y grupo | | |
-| P11 · Canal de venta | Negocio / Ventas | | |
+| P11 · Canal de venta | Negocio / Ventas | Adoptado como supuesto del grupo: Sin canal de venta; falta confirmación | 2026-11-06 |
 | P12 · 649 clientes de prima 2.630 | Andiry y el grupo | Cerrado: perfiles repetidos al quitar el canal; se quitan del entrenamiento (D15) | 2026-11-06 |

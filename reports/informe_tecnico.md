@@ -6,7 +6,7 @@
 > **Integración (2026-11-06, `specs/007-integracion-main`):** el grupo tenía dos modelos finales; quedó el que incluye las 5 variables nuevas
 > (D15 en `reports/decisiones_del_grupo.md`). Este informe describe **ese** modelo. Qué se tomó de cada rama: `reports/integracion_main.md`.
 
-**Grupo:** Ricardo González Restrepo (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (roles: **[PENDIENTE: P07]**; nombre de la startup: **[PENDIENTE]**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
+**Grupo:** Ricardo González Restrepo (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (roles: Ricardo, integración, registro, app y despliegue; Jessica Andiry, modelado y validación; los demás **[PENDIENTE: P07]**; nombre de la startup: **[PENDIENTE]**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
 ## Resumen ejecutivo
 
