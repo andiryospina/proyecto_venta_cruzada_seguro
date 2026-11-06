@@ -6,12 +6,12 @@
 
 ## Fase 1 · Funciones de `src/` (primero la prueba)
 
-- [ ] T001 Escribir `tests/test_reporting.py` (debe fallar: el módulo no existe). Cubre: `read_*` con archivo ausente → `None`; `split_sections` (ignora `#` en
+- [x] T001 Escribir `tests/test_reporting.py` (debe fallar: el módulo no existe). Cubre: `read_*` con archivo ausente → `None`; `split_sections` (ignora `#` en
   código); `find_section` con subsecciones; `strip_title`; `pick_bullets`; `list_pending` (cerrada vs abierta); `format_number`/`format_percent`;
   `build_metric_cards` (valores iguales al JSON, omite claves ausentes, sin ceros inventados); `sensitivity_rows`; `segments_by_variable`.
-- [ ] T002 Crear `src/proyecto/reporting/__init__.py` y `documents.py`; las pruebas de documentos pasan.
-- [ ] T003 Crear `src/proyecto/reporting/metrics.py`; las pruebas de métricas pasan.
-- [ ] T004 Una prueba contra los **archivos reales** del repositorio: la sección 3.1, las viñetas de la ficha, la sección B con P01 a P12 y las tarjetas existen
+- [x] T002 Crear `src/proyecto/reporting/__init__.py` y `documents.py`; las pruebas de documentos pasan.
+- [x] T003 Crear `src/proyecto/reporting/metrics.py`; las pruebas de métricas pasan.
+- [x] T004 Una prueba contra los **archivos reales** del repositorio: la sección 3.1, las viñetas de la ficha, la sección B con P01 a P12 y las tarjetas existen
   (si alguien cambia un título, falla aquí y no en la nube).
 
 ## Fase 2 · Interfaz (Historias 1 a 5)
