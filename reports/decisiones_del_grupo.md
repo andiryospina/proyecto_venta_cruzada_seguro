@@ -13,7 +13,7 @@
 
 ## Resumen
 
-- **13 decisiones cerradas o adoptadas** (D01 a D13) y **11 pendientes de dato externo** (P01 a P11).
+- **14 decisiones cerradas o adoptadas** (D01 a D14) y **12 pendientes** (P01 a P12).
 - **Actualizado el 2026-11-05:** el grupo decidió **eliminar `Policy_Sales_Channel`** (posible fuga) y **conservar `Gender`**; las etapas 3 a 6 se reejecutaron y las cifras de abajo son las nuevas.
 - **Ninguna de las pendientes bloquea el modelado.** Solo **P03** (si se exige explicar cada llamada) debe quedar resuelta **antes de abrir la prueba cerrada** en la etapa 7, porque decide cuál modelo se confirma.
 - **La que más mueve las cifras es P01 (el valor de R)**, y aun así las etapas 5 y 6 mostraron que **no cambia los finalistas ni el umbral de forma relevante** (R entre 2 y 12).
@@ -37,6 +37,7 @@
 | **D11** | **Criterio de reemplazo del modelo:** reentrenar si la tasa real de aceptación se aleja de la predicha más de un 10 % relativo durante 2 campañas | **[ADOPTADO]** por defecto | Propuesta de monitoreo; el modelo está calibrado en validación (diferencia máxima 0,010 en LightGBM). El 10 % y las 2 campañas son un punto de partida: se ajustan con datos reales de producción | nb 05 §10.1, nb 06 §11.2 |
 | **D12** | **Variables retiradas del modelo:** `Vintage`, `Driving_License` (más `id`). **`Gender` se conserva** por decisión del grupo (2026-11-05) | **[DECIDIDO por el grupo]** | Quitar `Vintage` y la licencia no cambia el costo (0,3322 frente a 0,3326); quitar además `Gender` tampoco (0,3327), así que conservarla no cuesta nada medible. La app pide 7 datos. Como el género entra directo al modelo, se audita por género y edad en la etapa 7 y Legal debe aprobar su uso | nb 04 §9, `reports/04_features.md` |
 | **D13** | **`Policy_Sales_Channel` se elimina** en la limpieza (decisión 8 del EDA: posible fuga, el canal de contacto puede no conocerse antes de decidir) | **[DECIDIDO por el grupo]** | Cuesta ≈ 0,008 por cliente (LightGBM 0,3326 sin canal frente a 0,3245 con canal; ≈ 800 unidades por 100.000 clientes, unas 3 veces el ruido). Si la aseguradora confirma que el canal se conoce al llamar, se puede volver a medir con y sin (P11) | `src/proyecto/data/cleaning.py`, nb 03, nb 04 §8 |
+| **D14** | **Mantener los parámetros de partida de LightGBM** (no adoptar los de la búsqueda de Optuna de Andiry) y dejar su mejora como siguiente paso | **[ADOPTADO]** | Su búsqueda (40 ensayos) baja el costo de 0,3327 a 0,3303 (IC 95 % [−0,0042; −0,0006]), ≈ 240 unidades por 100.000 clientes, del orden del ruido (≈ 230). Se calculó sobre un entrenamiento con 649 clientes menos (P12) y la prueba cerrada ya se abrió con los parámetros de partida (2026-11-05 19:09), así que cambiarlos obligaría a reentrenar, volver a registrar en Databricks y declarar un cambio posterior a la prueba | `reports/06_optimizacion.md`, `specs/004-optimizacion/` |
 
 ---
 
@@ -93,6 +94,16 @@
 | **Quién lo cierra** | Negocio / Ventas |
 | **Valor de trabajo vigente** | Se **elimina** (D13) |
 | **Qué cambia si se conoce** | Se puede volver a medir con y sin canal: con él LightGBM costaba 0,3245 en validación cruzada frente a 0,3326 sin él (≈ 800 unidades por 100.000 clientes) |
+
+### P12 · ¿Por qué el entrenamiento de Andiry tiene 649 clientes menos?
+
+| | |
+|---|---|
+| **Qué falta** | Confirmar con Andiry por qué su `train.parquet` tiene 304.238 filas y el de esta rama 304.887 |
+| **Quién lo cierra** | Andiry y el grupo |
+| **Qué se sabe** | Las 649 filas que le faltan tienen **todas la prima mínima de 2.630** (tasa de compra 8,2 % frente a 12,3 % del total); la prueba de 76.222 clientes es idéntica en ambas versiones |
+| **Valor de trabajo vigente** | Se usan los 304.887 clientes (no se quitó ninguna fila: la prima 2.630 es un mínimo real del producto, decisión 4 del EDA) |
+| **Qué cambia si se quitan** | Habría que repetir las etapas 3 a 9 y las cifras de validación cambiarían; la comparación con su búsqueda de Optuna solo es válida con los mismos datos |
 
 ### P05 · Fuente, enlace y licencia del dataset
 
@@ -163,3 +174,4 @@
 | P09 · Hipótesis del daño | Negocio | | |
 | P10 · Aprobaciones | Instructor y grupo | | |
 | P11 · Canal de venta | Negocio / Ventas | | |
+| P12 · 649 clientes de prima 2.630 | Andiry y el grupo | | |

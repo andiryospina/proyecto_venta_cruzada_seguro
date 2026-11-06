@@ -106,6 +106,7 @@ Cinco modelos y dos líneas base, con los mismos datos y pliegues y parámetros 
 - **Límites de los datos:** un solo conjunto de una aseguradora, de época y país sin confirmar; licencia sin verificar **[P05]**.
 - **Uso responsable:** usa edad y género; **Legal debe aprobar el género [D12]** y el grupo definir un piso de contacto para 20-25 y 66 o más **[P04]**. Retirar el género no habría garantizado equidad, y conservarlo exige la auditoría de la sección 6.
 - **Supuestos por confirmar:** R = 5 **[P01]**, la capacidad de llamadas **[P02]**, si hay que explicar cada llamada **[P03]** (si sí, se despliega la regresión: cuesta ≈ 0,8 % más) y si el canal de venta se conoce antes de llamar **[P11]**.
+- **Mejora candidata ya explorada:** la optimización de LightGBM con Optuna de Andiry (40 ensayos) bajó el costo de 0,3327 a 0,3303 en datos reservados (≈ 240 unidades por 100.000 clientes, del orden del ruido). No se adoptó porque se calculó sobre un entrenamiento con 649 clientes menos **[P12]** y la prueba cerrada ya se abrió con los parámetros de partida **[D14]**; podría validarse como mejora futura.
 - **Siguiente mejora concreta:** conseguir datos nuevos (historial de contactos y vencimiento del seguro actual); vigilar en producción la tasa real de aceptación frente a la predicha y reentrenar si se aleja más de 10 % relativo durante 2 campañas (D11).
 
 ## Anexo: cómo reproducir el proyecto
