@@ -13,7 +13,8 @@
 
 ## Resumen
 
-- **12 decisiones cerradas o adoptadas** (D01 a D12) y **10 pendientes de dato externo** (P01 a P10).
+- **13 decisiones cerradas o adoptadas** (D01 a D13) y **11 pendientes de dato externo** (P01 a P11).
+- **Actualizado el 2026-11-05:** el grupo decidió **eliminar `Policy_Sales_Channel`** (posible fuga) y **conservar `Gender`**; las etapas 3 a 6 se reejecutaron y las cifras de abajo son las nuevas.
 - **Ninguna de las pendientes bloquea el modelado.** Solo **P03** (si se exige explicar cada llamada) debe quedar resuelta **antes de abrir la prueba cerrada** en la etapa 7, porque decide cuál modelo se confirma.
 - **La que más mueve las cifras es P01 (el valor de R)**, y aun así las etapas 5 y 6 mostraron que **no cambia los finalistas ni el umbral de forma relevante** (R entre 2 y 12).
 
@@ -25,16 +26,17 @@
 |---|---|---|---|---|
 | **D01** | **Métrica principal:** PR-AUC para elegir variables y modelos; **costo por cliente** (R = 5) como métrica de negocio | **[DECIDIDO]** | Usadas en las etapas 4 a 6 con resultados coherentes: LightGBM y XGBoost son 1.º y 2.º en costo y en PR-AUC. La PR-AUC no depende de R; el costo sí | `especificacion-proyecto.md`, nb 01, 04, 05, 06 |
 | **D02** | **Métricas secundarias:** recall y *lift* en el 20 % mejor puntuado, ROC-AUC, log loss, Brier, costo con R = 5 y revisión por grupos | **[DECIDIDO]** | Calculadas en cada pliegue (`technical_metrics`); explicaron por qué el bosque pierde pese a su ROC-AUC (calibración) | nb 05 §5, `reports/05_torneo.md` |
-| **D03** | **Qué resultado hace que el negocio diga "sirve":** costo por cliente menor que el de la regla "llamar si hubo daño" | **[DECIDIDO]** | **Cumplido en validación cruzada:** LightGBM 0,3245 frente a 0,398 (**18,5 % menos**, ≈ 7.400 unidades por 100.000 clientes). Se confirma con la prueba cerrada en la etapa 7 | nb 01 §4, nb 05 §8 |
-| **D04** | **Reglas R1 a R5** para agregar o retirar variables (evidencia, disponibilidad, complejidad, retiro, equidad) | **[ADOPTADO]** | Aplicadas sin cambios en las etapas 4 a 6: evitaron adoptar 4 ideas sin valor y 6 variables derivadas sin aporte; justificaron retirar `Vintage`, `Driving_License` y `Gender` sin costo medible, y conservar la prima (quitarla empeora 1,1 veces el ruido) | nb 04 §1.2, `reports/04_features.md` |
+| **D03** | **Qué resultado hace que el negocio diga "sirve":** costo por cliente menor que el de la regla "llamar si hubo daño" | **[DECIDIDO]** | **Cumplido en validación cruzada:** LightGBM 0,3326 frente a 0,398 (**16,4 % menos**, ≈ 6.500 unidades por 100.000 clientes). Se confirma con la prueba cerrada en la etapa 7 | nb 01 §4, nb 05 §8 |
+| **D04** | **Reglas R1 a R5** para agregar o retirar variables (evidencia, disponibilidad, complejidad, retiro, equidad) | **[ADOPTADO]** | Aplicadas sin cambios en las etapas 4 a 6: evitaron adoptar 4 ideas sin valor y 6 variables derivadas sin aporte; justificaron retirar `Vintage` y `Driving_License` sin costo medible, y conservar la prima (quitarla empeora 1,5 veces el ruido). `Gender` también se podía retirar sin costo, pero el grupo decidió conservarla (D12) | nb 04 §1.2, `reports/04_features.md` |
 | **D05** | **Criterios para elegir finalistas, en orden:** consistencia → costo → ranking → tiempo → explicabilidad | **[ADOPTADO]** | Aplicados en el torneo: LightGBM y regresión pasan; XGBoost se descarta (empate práctico, casi el doble de lento); bosque y árbol se descartan | nb 05 §1 y §10, `reports/05_torneo.md` |
-| **D06** | **Regla del intervalo:** usar parámetros optimizados solo si todo el intervalo del 95 % está por debajo de cero en clientes reservados | **[ADOPTADO]** | Evitó prometer una mejora falsa: la búsqueda vio 0,3270 → 0,3259 en LightGBM, pero en reservados la diferencia fue +0,0003, intervalo [-0,0017; +0,0023] | nb 06 §1 y §6, `reports/06_optimizacion.md` |
-| **D07** | **Umbral para agrupar canales raros:** menos de 100 clientes pasan a "otros" | **[DECIDIDO]** | Idea 8 (etapa 4): agrupar es neutral en desempeño (-0,07 y +0,08 veces el ruido); hay 99 canales raros que suman 0,73 % de los clientes; `test.csv` trae 2 canales que el entrenamiento no vio | nb 02, nb 04, `src/proyecto/features/engineering.py` |
-| **D08** | **Operar por umbral `1 ÷ (R + 1)` (16,7 %)**, dimensionando al equipo para ≈ 35 % de la base | **[DECIDIDO]** | Mínimo empírico 16,0 % (costo 0,3267 frente a 0,3270); banda de 15 % a 17,5 % varía menos de 0,001; en reservados mover el umbral da +0,0002, intervalo [-0,0011; +0,0015]. El umbral equivale a llamar al 35,0 % | nb 06 §7, `reports/06_best_params.json` |
+| **D06** | **Regla del intervalo:** usar parámetros optimizados solo si todo el intervalo del 95 % está por debajo de cero en clientes reservados | **[ADOPTADO]** | Evitó prometer una mejora falsa: la búsqueda vio 0,3331 → 0,3318 en LightGBM, pero en reservados la diferencia fue -0,0002, intervalo [-0,0021; +0,0018]; en la regresión, -0,0006, intervalo [-0,0020; +0,0009] | nb 06 §1 y §6, `reports/06_optimizacion.md` |
+| **D07** | **Umbral para agrupar regiones raras:** menos de 100 clientes pasan a "otros" | **[DECIDIDO]** | Idea 8 (etapa 4): agrupar es neutral (0,00 veces el ruido) porque hoy ninguna región tiene menos de 100 clientes; queda como protección ante regiones nuevas. El canal de venta ya no entra al modelo (D13) | nb 02, nb 04, `src/proyecto/features/engineering.py` |
+| **D08** | **Operar por umbral `1 ÷ (R + 1)` (16,7 %)**, dimensionando al equipo para ≈ 36 % de la base | **[DECIDIDO]** | Mínimo empírico 17,5 % (costo 0,3330 frente a 0,3331); banda de 15 % a 18 % varía menos de 0,001; en reservados mover el umbral da +0,0011, intervalo [-0,0004; +0,0027]. El umbral equivale a llamar al 36,0 % | nb 06 §7, `reports/06_best_params.json` |
 | **D09** | **Escala de reporte:** todo se expresa por 100.000 clientes | **[DECIDIDO]** | Es una convención para comparar, **no un pronóstico** de campaña. Cambiar la escala multiplica las unidades pero no cambia ninguna conclusión | nb 04, 05, 06 |
-| **D10** | **Modelo para la validación final:** LightGBM como **principal**, regresión logística como **alternativa explicable**. Si se exige explicar cada llamada (P03), se despliega la regresión | **[ADOPTADO]** por defecto | En reservados la regresión cuesta +0,0025 más, intervalo [-0,0006; +0,0052]: no se distinguen; la diferencia (≈ 250 unidades por 100.000, menos del 1 %) no justifica perder la explicación si se necesita | nb 05 §10, nb 06 §8 y §11, `reports/06_optimizacion.md` |
-| **D11** | **Criterio de reemplazo del modelo:** reentrenar si la tasa real de aceptación se aleja de la predicha más de un 10 % relativo durante 2 campañas | **[ADOPTADO]** por defecto | Propuesta de monitoreo; el modelo está calibrado en validación (diferencia máxima 0,008 en LightGBM). El 10 % y las 2 campañas son un punto de partida: se ajustan con datos reales de producción | nb 05 §10.1, nb 06 §11.2 |
-| **D12** | **Variables retiradas del modelo:** `Gender`, `Vintage`, `Driving_License` (más `id`) | **[ADOPTADO]** | Quitarlas no cambia el costo (0,3245 frente a 0,3252) y la app pide 7 datos en vez de 10. Retirar `Gender` **no garantiza equidad** (la edad y la región pueden actuar de sustitutos): se mide en la etapa 7 | nb 04 §9, `reports/04_features.md` |
+| **D10** | **Modelo para la validación final:** LightGBM como **principal**, regresión logística como **alternativa explicable**. Si se exige explicar cada llamada (P03), se despliega la regresión | **[ADOPTADO]** por defecto | En reservados la regresión cuesta +0,0028 más, intervalo [+0,0002; +0,0055]: LightGBM es mejor con confianza del 95 %, por poco; la diferencia (≈ 280 unidades por 100.000, menos del 1 %) no justifica perder la explicación si se necesita | nb 05 §10, nb 06 §8 y §11, `reports/06_optimizacion.md` |
+| **D11** | **Criterio de reemplazo del modelo:** reentrenar si la tasa real de aceptación se aleja de la predicha más de un 10 % relativo durante 2 campañas | **[ADOPTADO]** por defecto | Propuesta de monitoreo; el modelo está calibrado en validación (diferencia máxima 0,010 en LightGBM). El 10 % y las 2 campañas son un punto de partida: se ajustan con datos reales de producción | nb 05 §10.1, nb 06 §11.2 |
+| **D12** | **Variables retiradas del modelo:** `Vintage`, `Driving_License` (más `id`). **`Gender` se conserva** por decisión del grupo (2026-11-05) | **[DECIDIDO por el grupo]** | Quitar `Vintage` y la licencia no cambia el costo (0,3322 frente a 0,3326); quitar además `Gender` tampoco (0,3327), así que conservarla no cuesta nada medible. La app pide 7 datos. Como el género entra directo al modelo, se audita por género y edad en la etapa 7 y Legal debe aprobar su uso | nb 04 §9, `reports/04_features.md` |
+| **D13** | **`Policy_Sales_Channel` se elimina** en la limpieza (decisión 8 del EDA: posible fuga, el canal de contacto puede no conocerse antes de decidir) | **[DECIDIDO por el grupo]** | Cuesta ≈ 0,008 por cliente (LightGBM 0,3326 sin canal frente a 0,3245 con canal; ≈ 800 unidades por 100.000 clientes, unas 3 veces el ruido). Si la aseguradora confirma que el canal se conoce al llamar, se puede volver a medir con y sin (P11) | `src/proyecto/data/cleaning.py`, nb 03, nb 04 §8 |
 
 ---
 
@@ -60,8 +62,8 @@
 |---|---|
 | **Qué falta** | Cuántos clientes puede llamar el equipo por campaña |
 | **Quién lo cierra** | Ventas / Operaciones |
-| **Valor de trabajo vigente** | Operar por umbral, dimensionando para **≈ 35 %** de la base |
-| **Qué cambia si es otra** | Cada capacidad tiene un costo medido (por 100.000 clientes): **20 %** → 38.682 unidades y 57,9 % de los compradores encontrados; **30 %** → 33.408 y 78,7 %; **35 %** → **32.691** y 86,5 %; **40 %** → 33.262 y 92,5 %; **50 %** → 38.473. **Limitar a 20 % cuesta ≈ 6.000 unidades más** y pierde el 42 % de los compradores. Entre 30 % y 40 % el costo es casi plano |
+| **Valor de trabajo vigente** | Operar por umbral, dimensionando para **≈ 36 %** de la base |
+| **Qué cambia si es otra** | Cada capacidad tiene un costo medido (por 100.000 clientes): **20 %** → 40.333 unidades y 55,7 % de los compradores encontrados; **30 %** → 34.592 y 77,1 %; **35 %** → **33.307** y 85,6 %; **40 %** → 33.682 y 91,9 %; **50 %** → 38.578. **Limitar a 20 % cuesta ≈ 7.000 unidades más** y pierde el 44 % de los compradores. Entre 30 % y 40 % el costo es casi plano |
 
 ### P03 · ¿Se exige explicar cada llamada? (el único que debe cerrarse antes de la etapa 7)
 
@@ -70,7 +72,7 @@
 | **Qué falta** | Si la regulación, el área legal o el negocio exigen una explicación individual por cliente |
 | **Quién lo cierra** | Legal + Negocio |
 | **Valor de trabajo vigente** | **LightGBM principal; regresión como alternativa lista** (D10) |
-| **Qué cambia si se exige** | El modelo desplegado pasa a ser la regresión logística. Costo: **≈ 250 a 340 unidades por 100.000 clientes** (≈ 1 % del costo total; diferencia no demostrable en reservados). La regresión se explica con una fórmula: quien ya tiene seguro tiene un 98 % menos de posibilidades de comprar (razón de odds 0,018) y quien tuvo un daño tiene 6,8 veces más |
+| **Qué cambia si se exige** | El modelo desplegado pasa a ser la regresión logística. Costo: **≈ 260 a 280 unidades por 100.000 clientes** (≈ 0,8 % del costo total). La regresión se explica con una fórmula: quien ya tiene seguro tiene un 98 % menos de posibilidades de comprar (razón de odds 0,016) y quien tuvo un daño tiene 7,3 veces más |
 | **Por qué debe cerrarse antes de la etapa 7** | La prueba cerrada se abre **una sola vez** para confirmar la cifra del modelo elegido; elegir el modelo **después** de verla la invalidaría |
 
 ### P04 · Piso de contacto para clientes de 20-25 años y de 66 o más
@@ -80,8 +82,17 @@
 | **Qué falta** | Una política comercial: ¿hay un mínimo de contacto o una oferta distinta para estos grupos? |
 | **Quién lo cierra** | Comercial + Legal |
 | **Valor de trabajo vigente** | Ninguno: el modelo prioriza por rentabilidad esperada |
-| **Evidencia** | LightGBM llama solo al **5,8 %** de los de 20-25 años (recall 36 %) y al **16,7 %** de los de 66 o más (recall 40 %); en el entrenamiento **2.061 compradores jóvenes y 1.124 mayores no son llamados**. No es un fallo del modelo: estos grupos compran poco (3,5 % y 8,4 %) y llamarlos no compensa con R = 5 |
-| **Qué se mide después** | La auditoría completa por género y edad con la prueba cerrada, en la etapa 7 |
+| **Evidencia** | LightGBM llama solo al **5,6 %** de los de 20-25 años (recall 33 %) y al **15,6 %** de los de 66 o más (recall 35 %); en el entrenamiento **2.157 compradores jóvenes y 1.225 mayores no son llamados**. No es un fallo del modelo: estos grupos compran poco (3,5 % y 8,4 %) y llamarlos no compensa con R = 5 |
+| **Qué se mide después** | La auditoría completa por género y edad con la prueba cerrada, en la etapa 7. Como `Gender` entra al modelo (D12), Legal debe aprobar su uso |
+
+### P11 · ¿El canal de venta se conoce antes de decidir a quién llamar?
+
+| | |
+|---|---|
+| **Qué falta** | Confirmar con la aseguradora si `Policy_Sales_Channel` está disponible **antes** de la llamada o es resultado del contacto |
+| **Quién lo cierra** | Negocio / Ventas |
+| **Valor de trabajo vigente** | Se **elimina** (D13) |
+| **Qué cambia si se conoce** | Se puede volver a medir con y sin canal: con él LightGBM costaba 0,3245 en validación cruzada frente a 0,3326 sin él (≈ 800 unidades por 100.000 clientes) |
 
 ### P05 · Fuente, enlace y licencia del dataset
 
@@ -151,3 +162,4 @@
 | P08 · Datos nuevos | Negocio + TI | | |
 | P09 · Hipótesis del daño | Negocio | | |
 | P10 · Aprobaciones | Instructor y grupo | | |
+| P11 · Canal de venta | Negocio / Ventas | | |

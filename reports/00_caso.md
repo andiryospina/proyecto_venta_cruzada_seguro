@@ -7,7 +7,7 @@
 - **case_id:** `venta-cruzada-seguros`
 - **business_question:** Una aseguradora ya tiene clientes con seguro de salud y quiere ofrecerles además un seguro de vehículo.
   El equipo comercial decide a qué clientes llamar primero, usando la edad, la antigüedad del vehículo, si ya tienen seguro de
-  vehículo, si el vehículo tuvo daños, la prima anual, la región y el canal de venta. **[PENDIENTE: dato externo · P06]**
+  vehículo, si el vehículo tuvo daños, la prima anual, y la región. **[PENDIENTE: dato externo · P06]**
 - **dataset_source:** el esquema coincide con *Health Insurance Cross Sell Prediction* (Kaggle). **[PENDIENTE: dato externo · P05]**
 - **dataset_rows:** 381.109 en `train.csv` (más 127.037 en `test.csv`, sin objetivo)
 - **dataset_columns:** 12 en `train.csv` (11 variables más `Response`)

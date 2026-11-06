@@ -33,7 +33,8 @@ Se marca lo imposible; no se borran filas sin criterio. Hoy no se elimina ningun
 | 3 | `Vehicle_Damage` | Texto Yes/No | `Yes`→1, `No`→0; falla si aparece otro valor o un vacío | `encode_vehicle_damage` | `test_vehicle_damage_*` (3) |
 | 3 | `Vehicle_Age` | Texto con orden | `< 1 Year`→0, `1-2 Year`→1, `> 2 Years`→2; falla con otro valor | `encode_vehicle_age` | `test_vehicle_age_*` (2) |
 | 4 | `Annual_Premium` | 17 % vale exactamente 2.630 (el mínimo) | Agregar `Premium_is_minimum` = 1 si vale 2.630. **No se cambia la prima**; los extremos se tratan en la etapa 4 | `flag_minimum_premium` | `test_minimum_premium_is_flagged_not_changed` |
-| 5 | `Region_Code`, `Policy_Sales_Channel` | Códigos guardados como decimales (28.0) | Pasar a entero; falla si hay vacíos o decimales reales. Se tratan como **categorías** en la etapa 4 | `cast_code_columns` | `test_code_columns_*` (2) |
+| 5 | `Region_Code` | Código guardado como decimal (28.0) | Pasar a entero; falla si hay vacíos o decimales reales. Se trata como **categoría** en la etapa 4 | `cast_code_columns` | `test_code_columns_*` (2) |
+| 8 | `Policy_Sales_Channel` | Canal de contacto: puede no conocerse antes de decidir a quién llamar (posible fuga) | **Eliminarla** del todo (decisión del grupo, D13) | `drop_excluded_columns` | `test_clean_works_without_target_column` |
 | — | `Age`, `Driving_License`, `Previously_Insured`, `Annual_Premium`, `Vintage` | Valores imposibles | Edad entre 18 y 100; licencia y seguro previo solo 0/1; prima > 0; `Vintage` ≥ 0. Si hay alguno, **falla** (hoy hay 0) | `find_impossible_values` | `test_impossible_values_are_counted` |
 
 Las decisiones 1, 2, 6 y 7 del EDA no son limpieza: 1 es la partición (sección 1), 2 es solo una comprobación, 6 y 7 son de modelado (etapa 4).
@@ -52,9 +53,9 @@ Estas decisiones del EDA **dependen de los datos de entrenamiento**; si se calcu
 
 | Decisión | Por qué espera a la etapa 4 |
 |---|---|
-| Agrupar canales de venta raros en "otros" (umbral de 100 filas) | Qué canales son raros se decide **con el entrenamiento**; `test` también trae canales que no existen en train (141, 142) |
+| Agrupar regiones raras en "otros" (umbral de 100 filas) | Qué regiones son raras se decide **con el entrenamiento** (hoy ninguna lo es) |
 | Recortar o transformar los extremos de `Annual_Premium` | El corte (por ejemplo el percentil 99) se calcula con el entrenamiento |
-| Codificar `Gender`, región y canal (one-hot u otra) | El encoder aprende las categorías del entrenamiento |
+| Codificar `Gender` y región (one-hot u otra); `Gender` se conserva por decisión del grupo | El encoder aprende las categorías del entrenamiento |
 | Escalar variables numéricas | Depende de la media y la desviación del entrenamiento |
 | Tramos o no linealidad de `Age` | Es una decisión de modelo |
 | Con o sin `Vintage` | Se mide con validación (etapa 4) |
