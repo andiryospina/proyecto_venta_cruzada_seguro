@@ -14,8 +14,8 @@
 | Plataforma | Streamlit Community Cloud |
 | Repo, rama y archivo principal | `rigonzalezre-dot/proyecto_venta_cruzada_seguro` (fork de Ricardo, idéntico al `main` de `andiryospina/proyecto_venta_cruzada_seguro`), rama `main`, `app/streamlit_app.py`. Se despliega desde el fork porque Andiry es la dueña del repositorio oficial y Ricardo no tiene permisos de administrador allí |
 | Versión de Python elegida | ☐ 3.12  ☐ otra → motivo: _______________ |
-| ¿Se comprobó en una **ventana privada**? | ☐ sí  ☐ no |
-| ¿Se desplegó? | ☒ sí (2026-11-06) — **falta comprobar el enlace en ventana privada y anotar las pruebas del apartado 3** |
+| ¿Se comprobó en una **ventana privada**? | ☒ sí, sin sesión (navegador sin ventana y sin cookies, 2026-11-06): abre sin pedir inicio de sesión. **Falta** que una persona lo confirme en su navegador |
+| ¿Se desplegó? | ☒ sí (2026-11-06). Comprobado en el enlace público: carga el formulario de 9 datos, el modelo se carga y **«Evaluar» con los valores por defecto responde NO LLAMAR** (costo esperado 0,35, «el modelo está seguro»), igual que en local. **Faltan por anotar** los casos normal, límite y «no sé» del apartado 3 |
 
 ## 2. Decisiones de despliegue y su motivo
 

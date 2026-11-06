@@ -114,7 +114,7 @@ Cinco modelos y dos líneas base, con los mismos datos (base + 5 nuevas), los mi
 
 > Fuente: `reports/09_despliegue.md`.
 
-Enlace público: https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ (Streamlit Community Cloud, desplegada desde una copia idéntica del `main` en el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`; **falta anotar las pruebas del enlace**). La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
+Enlace público: https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ (Streamlit Community Cloud, desplegada desde una copia idéntica del `main` en el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`; comprobado sin sesión: abre el formulario y responde; **faltan por anotar** las pruebas de los casos normal, límite y «no sé»). La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
 
 ## 9. Riesgos, límites y siguientes pasos
 
