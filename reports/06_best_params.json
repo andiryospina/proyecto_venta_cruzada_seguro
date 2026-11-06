@@ -8,7 +8,7 @@
     "min_child_samples": 137,
     "subsample": 0.9430233324921596,
     "colsample_bytree": 0.6010355988956476,
-    "reg_lambda": 0.47795677163559325
+    "reg_lambda": 0.477956771635593
   },
   "parametros_optimizados": {
     "n_estimators": 186,
@@ -17,7 +17,7 @@
     "min_child_samples": 137,
     "subsample": 0.9430233324921596,
     "colsample_bytree": 0.6010355988956476,
-    "reg_lambda": 0.47795677163559325
+    "reg_lambda": 0.477956771635593
   },
   "parametros_partida": {
     "n_estimators": 300,
@@ -47,8 +47,8 @@
       0.007571028856273813
     ]
   },
-  "tracking": "local",
-  "experimento": "venta-cruzada-optimizacion",
-  "mlflow_parent_run_id": "b9f3537f921d4b509fc5e2a708b612e8",
-  "mlflow_check_run_id": "947a62003ee846ff8a7c693d2b40f377"
+  "tracking": "databricks (dentro del workspace)",
+  "experimento": "/Users/andiry.ospina@gmail.com/venta-cruzada-optimizacion",
+  "mlflow_parent_run_id": "54c0019c8cdf41a890bdb35340b0b3d6",
+  "mlflow_check_run_id": "c6497a6ee7274a48b99491bbd7ce00e6"
 }
