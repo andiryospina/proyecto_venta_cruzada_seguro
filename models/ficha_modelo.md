@@ -9,7 +9,7 @@
 Predice la probabilidad de que un cliente con seguro de salud acepte un **seguro de vehículo**, para que el equipo comercial decida **a quién llamar primero**. No decide si se vende o se niega un seguro.
 
 - **Modelo:** LightGBM (200 árboles, tasa de aprendizaje 0,08, 31 hojas), con el preprocesamiento dentro de un solo `Pipeline`. Parámetros de partida (la optimización no fue demostrablemente mejor).
-- **Registro:** `venta_cruzada_seguros` versión 1, alias `champion` (MLflow local, `mlflow_local.db`). La app usa el archivo `models/model.joblib`, exportado de esa versión.
+- **Registro:** `workspace.default.venta_cruzada_seguros` versión 1, alias `champion` (Databricks, Unity Catalog). La app usa el archivo `models/model.joblib`, exportado de esa versión.
 - **Regla de decisión:** llamar si la probabilidad de compra supera **1 ÷ (R + 1) = 16,7 %**, con R = 5 (perder a un comprador cuesta 5 veces una llamada inútil; **hipótesis por confirmar, P01**). Equivale a llamar a ≈ 36 % de los clientes.
 
 ## Datos de entrenamiento

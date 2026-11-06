@@ -1,17 +1,17 @@
 # Registro del modelo
 
-> Resultado de `notebooks/08_registro_modelo.ipynb`, ejecutado el 2026-11-05. Constancia en `reports/08_registro.json`.
+> Resultado de `notebooks/08_registro_modelo.ipynb`, ejecutado el 2026-11-05 contra **Databricks** (se había ejecutado antes en MLflow local como respaldo). Constancia en `reports/08_registro.json`.
 
 ## 1. Dónde quedó registrado
 
 | Dato | Valor |
 |---|---|
-| Plataforma | ☒ MLflow local (respaldo) → motivo: no hay conexión configurada con Databricks (sin `.env` con perfil); el registro funciona igual en `mlflow_local.db`. **Pendiente:** repetir el notebook con Databricks cuando el grupo tenga el perfil |
-| Experimento | `venta-cruzada-seguros-modelo-final` |
-| Nombre del modelo registrado | `venta_cruzada_seguros` |
+| Plataforma | ☒ Databricks (workspace `dbc-42fa3d87-63b6`, conexión por token personal) ☐ MLflow local |
+| Experimento | `/Users/ricardo.gonzalez1544@unaula.edu.co/venta-cruzada-seguros-modelo-final` |
+| Nombre del modelo registrado | `workspace.default.venta_cruzada_seguros` (Unity Catalog) |
 | Versión | 1 |
 | Alias | `champion` |
-| Quién lo registró y cuándo | Ejecución del notebook 08 desde la cuenta local `rigonzalezre`, 2026-11-05 19:12; ejecución `8a5c2e2177644ed4afe613249f958957` |
+| Quién lo registró y cuándo | `ricardo.gonzalez1544@unaula.edu.co`, 2026-11-05 19:36; ejecución `978b062c00f54eb785f11f28b62928a5` |
 
 ## 2. Qué se registró junto al modelo
 
@@ -32,4 +32,4 @@
 
 ## 5. Reproducibilidad
 
-- ¿Alguien de otro grupo podría recuperar el modelo con lo que dejamos escrito? ☐ sí  ☒ no → **qué falta:** el registro está en `mlflow_local.db` (no se versiona en Git). Otro grupo puede **regenerarlo** ejecutando los notebooks 03 a 08 en orden, o usar `models/model.joblib` (archivo exportado del `champion`). Para que sea recuperable por nombre desde cualquier equipo, hay que registrarlo en Databricks.
+- ¿Alguien de otro grupo podría recuperar el modelo con lo que dejamos escrito? ☐ sí  ☒ no → **qué falta:** quien no tenga acceso al workspace del registro no puede cargarlo por nombre. Puede **regenerarlo** ejecutando los notebooks 03 a 08 en orden, o usar `models/model.joblib` (archivo exportado del `champion`, que viaja en el repositorio). Para compartir el registro hay que dar permisos en Unity Catalog.

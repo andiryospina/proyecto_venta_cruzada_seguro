@@ -91,7 +91,7 @@ Cinco modelos y dos líneas base, con los mismos datos y pliegues y parámetros 
 
 > Fuente: `reports/08_registro.md`, `models/ficha_modelo.md`.
 
-- Modelo `venta_cruzada_seguros`, versión 1, alias `champion`, en **MLflow local** (no hay perfil de Databricks configurado; pendiente repetir el cuaderno 08 allá). Ida y vuelta comprobada: el modelo recuperado predice igual que el local.
+- Modelo `workspace.default.venta_cruzada_seguros`, versión 1, alias `champion`, en **Databricks (Unity Catalog)**. Ida y vuelta comprobada: el modelo recuperado predice igual que el local.
 - Exportado a `models/model.joblib` (capa `ServingModel` que traduce lo que escribe una persona a las columnas limpias) con su esquema en `models/input_schema.json`. Se comprobó que el archivo exportado da exactamente el costo medido en la prueba (0,331702).
 
 ## 8. Despliegue
@@ -119,7 +119,7 @@ pytest                                  # 118 pruebas
 streamlit run app/streamlit_app.py
 ```
 
-Los datos crudos no se versionan. `data/processed/` se regenera con el cuaderno 03. El registro de MLflow local (`mlflow_local.db`) no se versiona: se regenera ejecutando los cuadernos 03 a 08, o se usa `models/model.joblib`.
+Los datos crudos no se versionan. `data/processed/` se regenera con el cuaderno 03. El seguimiento de la etapa 6 está en `mlflow_local.db` (no se versiona) y el modelo final en Databricks: quien no tenga acceso regenera todo con los cuadernos 03 a 08, o usa `models/model.joblib`. Las credenciales van solo en `.env` (ignorado por Git).
 
 ---
 

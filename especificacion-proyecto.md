@@ -66,4 +66,4 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 | 2026-10-31 | Eliminar `Policy_Sales_Channel` (D13) | Posible fuga: puede no conocerse antes de llamar. Cuesta ≈ 800 unidades por 100.000 clientes |
 | 2026-11-05 | Conservar `Gender` (D12) | Quitarla no tiene costo medible; el grupo decidió mantenerla. Exige auditoría de equidad y aprobación de Legal |
 | 2026-11-05 | Modelo final: LightGBM con parámetros de partida, umbral 16,7 % (D08, D10) | La optimización no fue demostrablemente mejor; en la prueba cerrada cuesta 0,3317 frente a 0,3967 de la regla simple |
-| 2026-11-05 | Registrar en MLflow local por ahora | No hay perfil de Databricks configurado; pendiente repetir el cuaderno 08 allá |
+| 2026-11-05 | Registrar el modelo final en Databricks (Unity Catalog, alias `champion`) | Es la fuente de verdad; la app usa el archivo exportado `models/model.joblib` y no consulta Databricks |
