@@ -27,7 +27,7 @@
 ## Fase 3 · Verificación y entrega
 
 - [x] T011 Suite completa en verde (`pytest`, sin caché), con el número de pruebas.
-- [ ] T012 `git check-ignore -v` sobre cada archivo que la app lee: vacío. `git grep` de secretos sobre los cambios: vacío. `requirements.txt` sin cambios.
-- [ ] T013 Arrancar la app en local (puerto 8599), capturas con `cdp_check.py` (inicio y con `click`), revisarlas; cerrar el servidor.
-- [ ] T014 Revisión con las listas de los agentes (fuga, pruebas, código de la IA) y con `checklist-revision-ia.md`; anotar hallazgos.
-- [ ] T015 `speckit-analyze` a mano: coherencia entre spec, plan y tareas; commit final en la rama `008-app-streamlit` (sin `push`).
+- [x] T012 `git check-ignore -v` sobre cada archivo que la app lee: vacío. `git grep` de secretos sobre los cambios: vacío. `requirements.txt` sin cambios.
+- [x] T013 Arrancar la app en local (puerto 8599), capturas con `cdp_check.py` (inicio y con `click`), revisarlas; cerrar el servidor.
+- [x] T014 Revisión con las listas de los agentes (fuga, pruebas, código de la IA) y con `checklist-revision-ia.md`; anotar hallazgos.
+- [x] T015 `speckit-analyze` a mano: coherencia entre spec, plan y tareas; commit final en la rama `008-app-streamlit` (sin `push`).
