@@ -24,7 +24,7 @@ Fuera de esta etapa: la exportación a `models/model.joblib`, el esquema de entr
 | Elemento | Valor | De dónde sale |
 |---|---|---|
 | Modelo | El `Pipeline` completo de `models/final_pipeline.joblib` (variables nuevas + preprocesamiento + LightGBM), sin reentrenar | Etapa 07 |
-| Nombre en el registro | `venta_cruzada_lgbm` (en Databricks queda como `<catálogo>.<esquema>.venta_cruzada_lgbm`) | Elección de este borrador |
+| Nombre en el registro | `venta_cruzada_seguros` (en Databricks queda como `workspace.default.venta_cruzada_seguros`) | Nombre que ya usa el grupo (cambiado en 007, 2026-11-06; antes `venta_cruzada_lgbm`) |
 | Parámetros | Tipo de modelo y los 7 parámetros optimizados; umbral de decisión 1/6; si se calibró (no) | `reports/07_metricas_test.json` → `decisiones` |
 | Métricas de la prueba | Del modelo: costo por cliente y su IC 95 %, PR-AUC, ROC-AUC, recall, precisión, % contactado, captura al 20/30/50 %, log loss, Brier. De la comparación: costo de la línea base y la diferencia con su IC 95 % | `reports/07_metricas_test.json` → `prueba` (solo números; ninguna cifra escrita a mano) |
 | Firma y ejemplo de entrada | Las columnas con las que se entrenó el `Pipeline` (las de `train.parquet` sin `Response`) y 5 filas de ejemplo del **entrenamiento** | `data/processed/train.parquet` |
@@ -65,7 +65,7 @@ Experimento de MLflow: `venta-cruzada-registro`, **una** ejecución llamada `mod
 
 ## Supuestos
 
-- El nombre `venta_cruzada_lgbm` y el experimento `venta-cruzada-registro` son elecciones de este borrador; el grupo puede cambiarlos.
+- El nombre `venta_cruzada_seguros` (cambiado en 007, 2026-11-06; antes `venta_cruzada_lgbm`) y el experimento `venta-cruzada-registro` son elecciones de este borrador; el grupo puede cambiarlos.
 - Columnas de la firma: las 11 con las que se ajustó el `Pipeline` (`id`, `Gender`, `Age`, `Driving_License`, `Region_Code`,
   `Previously_Insured`, `Vehicle_Age`, `Vehicle_Damage`, `Annual_Premium`, `Vintage`, `is_min_premium`). `id` no la usa el modelo (se
   descarta dentro del `Pipeline`): en el plan se comprueba si el modelo predice sin ella; si es así, se quita de la firma. Que una
@@ -74,7 +74,7 @@ Experimento de MLflow: `venta-cruzada-registro`, **una** ejecución llamada `mod
 
 ## Criterios de aceptación
 
-1. El registro (Databricks o local) tiene el modelo `venta_cruzada_lgbm` con una versión que lleva el alias `champion`.
+1. El registro (Databricks o local) tiene el modelo `venta_cruzada_seguros` (cambiado en 007, 2026-11-06) con una versión que lleva el alias `champion`.
 2. La ejecución `modelo-final` tiene los parámetros, **todas** las métricas de la tabla (iguales a las de `07_metricas_test.json`), las
    etiquetas, la firma y el ejemplo de entrada.
 3. El modelo recuperado por el alias da las mismas probabilidades que el local en 200 clientes (diferencia máxima ≤ 1e-9).

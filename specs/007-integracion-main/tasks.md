@@ -7,35 +7,35 @@ prueba.** Toda cifra de prueba se copia de `reports/07_metricas_test.json` (vers
 
 ## Fase 1 · Preparación
 
-- [ ] T001 Confirmar que `006-registro-modelo` está limpia y al día (`git status -sb` sin cambios salvo `specs/007-integracion-main/`),
+- [x] T001 Confirmar que `006-registro-modelo` está limpia y al día (`git status -sb` sin cambios salvo `specs/007-integracion-main/`),
   hacer commit de `specs/007-integracion-main/` en `006-registro-modelo` y crear la rama `git switch -c 007-integracion-main`.
-- [ ] T002 `git fetch origin` y `git merge --no-commit --no-ff origin/main`. Guardar la lista de conflictos (`git diff --name-only
+- [x] T002 `git fetch origin` y `git merge --no-commit --no-ff origin/main`. Guardar la lista de conflictos (`git diff --name-only
   --diff-filter=U`) y comprobar que son los 8 de la spec; si aparece otro, detenerse y avisar.
 
 ## Fase 2 · Base: resolver la fusión (bloquea todo lo demás)
 
-- [ ] T003 Volver a la versión de la rama (**R**) con `git checkout HEAD -- <archivo>` en: `src/proyecto/config.py`,
+- [x] T003 Volver a la versión de la rama (**R**) con `git checkout HEAD -- <archivo>` en: `src/proyecto/config.py`,
   `src/proyecto/data/cleaning.py`, `src/proyecto/data/split.py`, `src/proyecto/features/__init__.py`,
   `src/proyecto/features/engineering.py`, `src/proyecto/features/preprocessing.py`, `src/proyecto/features/transformers.py`,
   `src/proyecto/models/train.py`, `src/proyecto/models/tuning.py`.
-- [ ] T004 R en pruebas: `tests/test_cleaning.py`, `tests/test_features.py`, `tests/test_models.py`, `tests/test_split.py`,
+- [x] T004 R en pruebas: `tests/test_cleaning.py`, `tests/test_features.py`, `tests/test_models.py`, `tests/test_split.py`,
   `tests/test_tuning.py`, `tests/test_preprocessing.py`.
-- [ ] T005 R en datos y notebooks: `data/processed/train.parquet` (debe tener 304.238 filas), `notebooks/01_caso_negocio.ipynb` a
+- [x] T005 R en datos y notebooks: `data/processed/train.parquet` (debe tener 304.238 filas), `notebooks/01_caso_negocio.ipynb` a
   `notebooks/08_registro_modelo.ipynb`.
-- [ ] T006 R en informes y especificaciones: `especificaciones/03-preprocesamiento.md`, `specs/002-variables/spec.md`,
+- [x] T006 R en informes y especificaciones: `especificaciones/03-preprocesamiento.md`, `specs/002-variables/spec.md`,
   `reports/04_features.md`, `reports/04_features_tabla.csv`, `reports/05_torneo.md`, `reports/06_optimizacion.md`,
   `reports/06_best_params.json`, `reports/07_decisiones_congeladas.json`, `reports/07_metricas_test.json`, `reports/07_validacion.md`,
   `reports/08_registro.md`. Para `especificacion-proyecto.md` y `reports/prueba_abierta.txt` tomar la versión de la rama como base
   (se completan en T016 y T018).
-- [ ] T007 Quitar (**Q**) con `git rm`: `src/proyecto/data/loading.py`, `src/proyecto/models/metrics.py`,
+- [x] T007 Quitar (**Q**) con `git rm`: `src/proyecto/data/loading.py`, `src/proyecto/models/metrics.py`,
   `src/proyecto/models/baselines.py`, `tests/test_tournament.py`, `reports/04_features_tabla_nuevas.csv`, `reports/05_torneo_tabla.csv`,
   `reports/08_registro.json`, `models/model.joblib`, `models/input_schema.json` (estos dos se regeneran en T023).
   `tests/test_serving.py` y `src/proyecto/inference/serving.py` se quedan temporalmente (se reescriben en T020–T021); si rompen la
   colección de pruebas, quitarlos de la ejecución con `--ignore` solo hasta T021.
-- [ ] T008 Confirmar que quedan de `main` (**M**) sin cambios: `pytest.ini`, `requirements.txt` (con `pyarrow==25.0.1`), `.gitignore`,
+- [x] T008 Confirmar que quedan de `main` (**M**) sin cambios: `pytest.ini`, `requirements.txt` (con `pyarrow==25.0.1`), `.gitignore`,
   `specs/README.md`, `src/proyecto/inference/predict.py`, `src/proyecto/inference/schema.py`, `tests/test_inference.py`,
   `app/streamlit_app.py`, `reports/06_mlflow_runs.csv`. `git diff --name-only --diff-filter=U` debe salir vacío.
-- [ ] T009 `PYTHONUTF8=1 python -m pytest -q --ignore=tests/test_serving.py`: las 113 pruebas de la rama en verde. Si falla, detenerse
+- [x] T009 `PYTHONUTF8=1 python -m pytest -q --ignore=tests/test_serving.py`: las 113 pruebas de la rama en verde. Si falla, detenerse
   (no seguir con archivos A).
 
 ## Fase 3 · Historia 1 (P1): un solo modelo final coherente 🎯 MVP
@@ -43,13 +43,13 @@ prueba.** Toda cifra de prueba se copia de `reports/07_metricas_test.json` (vers
 **Objetivo:** el repositorio tiene un solo modelo final (rama), que carga y predice, con el código de `src/` que lo construyó.
 **Prueba independiente:** pasos 1, 3 y 4 de `quickstart.md`.
 
-- [ ] T010 [US1] Comprobar que `models/final_pipeline.joblib` carga con el `src/` resultante y que `feature_names_in_` incluye
+- [x] T010 [US1] Comprobar que `models/final_pipeline.joblib` carga con el `src/` resultante y que `feature_names_in_` incluye
   `Gender`, `Vintage`, `Driving_License` y no `Policy_Sales_Channel` (paso 3 de `quickstart.md`); comprobar 304.238 filas en
   `data/processed/train.parquet` (paso 4).
-- [ ] T011 [US1] En `notebooks/08_registro_modelo.ipynb`, cambiar el nombre del modelo registrado de `venta_cruzada_lgbm` a
+- [x] T011 [US1] En `notebooks/08_registro_modelo.ipynb`, cambiar el nombre del modelo registrado de `venta_cruzada_lgbm` a
   `venta_cruzada_seguros` (solo esa constante); actualizar el mismo nombre en `specs/006-registro-modelo/spec.md` con una nota
   "(cambiado en 007, 2026-11-06)".
-- [ ] T012 [US1] Commit intermedio de la fusión resuelta: "Integra main: conserva el modelo final de la rama (código, datos y etapas
+- [x] T012 [US1] Commit intermedio de la fusión resuelta: "Integra main: conserva el modelo final de la rama (código, datos y etapas
   1–8)". Es el punto seguro al que volver.
 
 ## Fase 4 · Historia 2 (P1): las cifras y decisiones escritas dicen la verdad
