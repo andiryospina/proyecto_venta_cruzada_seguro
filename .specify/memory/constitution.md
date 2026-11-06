@@ -1,10 +1,7 @@
-# [NOMBRE DEL PROYECTO] — Constitución
+# Contacto Inteligente — Constitución
 
-> **Borrador sembrado con las reglas del curso.** Su primer trabajo con Spec Kit es **ajustarla a su grupo**:
-> ejecuten `/speckit-constitution` y pídanle, por ejemplo: *«Ajusta esta constitución a mi proyecto: nombre
-> `<proyecto>`, caso `<una frase>`, métrica `<métrica>`. Conserva los principios I a VII y agrega un
-> principio VIII con una regla propia del grupo»*. Todo lo que quede entre `[corchetes]` se llena.
-> Claude la lee antes de planear o programar: **lo que diga aquí manda** sobre sus suposiciones.
+> Constitución del curso **ajustada al proyecto** el 2026-11-06 (nombre, caso, unidad de análisis y métrica), a partir de decisiones ya tomadas y documentadas en `reports/decisiones_del_grupo.md`.
+> Claude la lee antes de planear o programar: **lo que diga aquí manda** sobre sus suposiciones. El grupo debe confirmarla.
 
 ## Principios
 
@@ -14,7 +11,7 @@
 reproducibilidad.
 
 ### II. Se parte por la unidad de análisis
-La unidad de análisis de este proyecto es **[una fila es …]** y la entidad que se repite es **[columna o «ninguna»]**.
+La unidad de análisis de este proyecto es **un cliente (una fila, `id` único)** y la entidad que se repite es **«ninguna»**.
 Si una entidad aparece en varias filas, la partición y la validación cruzada MUST hacerse por grupo
 (`GroupShuffleSplit`, `GroupKFold`, `StratifiedGroupKFold`), nunca por fila. Una prueba automática MUST verificar que
 ninguna entidad cae en dos particiones. *Razón:* partir por fila filtra información y infla la métrica.
@@ -46,7 +43,7 @@ inventado en el informe invalida todo lo demás.
 
 ## Restricciones del proyecto
 
-- **Caso:** [pregunta de negocio en una frase] · **Métrica principal:** [métrica y por qué] · **Tipo de problema:** [clasificación / regresión / clusterización].
+- **Caso:** ¿a qué clientes con seguro de salud conviene llamar primero para ofrecerles un seguro de vehículo? · **Métrica principal:** costo esperado por cliente con la matriz 5 a 1 (perder un interesado cuesta 5 veces una llamada inútil; R = 5 es un supuesto, P01), con la PR-AUC como métrica técnica, porque solo el 12,3 % de los clientes se interesa y la exactitud engaña · **Tipo de problema:** clasificación binaria.
 - **Entorno:** Python 3.12; dependencias fijadas en `requirements.txt`.
 - **Seguimiento de experimentos:** MLflow en Databricks (o local si no hay conexión); la app **no** consulta Databricks.
 - **App:** Streamlit, cargando `models/model.joblib` desde el repositorio.
@@ -66,4 +63,4 @@ Esta constitución prevalece sobre otras prácticas del proyecto. Una enmienda s
 justifica y se anota en la sección 7 de `especificacion-proyecto.md`. El instructor puede pedir aclaraciones sobre
 cualquier principio en los puntos de control.
 
-**Versión**: 0.1.0 (borrador) | **Ratificada**: [fecha] | **Última enmienda**: [fecha]
+**Versión**: 0.2.0 (ajustada al proyecto) | **Ratificada**: pendiente de confirmación del grupo | **Última enmienda**: 2026-11-06
