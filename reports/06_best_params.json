@@ -48,7 +48,7 @@
     ]
   },
   "tracking": "databricks (dentro del workspace)",
-  "experimento": "/Users/andiry.ospina@gmail.com/venta-cruzada-optimizacion",
+  "experimento": "venta-cruzada-optimizacion",
   "mlflow_parent_run_id": "54c0019c8cdf41a890bdb35340b0b3d6",
   "mlflow_check_run_id": "c6497a6ee7274a48b99491bbd7ce00e6"
 }
