@@ -150,7 +150,7 @@ Observaciones menores, que se aceptan como límites:
 1. **La reserva se usó dos veces** (parámetros en la etapa 06 y calibración en la 07). No toca la prueba y, como la decisión fue
    "no calibrar", no tiene efecto práctico.
 2. **Las marcas de tiempo las escribe el propio notebook**, y el commit `e94c0cb` de la marca no contiene el código de esta etapa.
-   Se corrige haciendo commit del código y de `07_decisiones_congeladas.json` y anotando aquí ese hash.
+   **Corregido:** el código, la marca y `07_decisiones_congeladas.json` quedaron en el commit `cdda173` (rama `005-validacion`).
 3. **Los nombres de SHAP salieron genéricos**; ya están traducidos en `07_shap_nombres.csv` (sección 5).
 4. **Hay perfiles idénticos con distinto `id` a ambos lados de la partición.** Son clientes distintos, no fuga estricta, y son pocos
    (269 filas repetidas en el EDA, 649 sin el canal). Pueden hacer las métricas apenas optimistas.
