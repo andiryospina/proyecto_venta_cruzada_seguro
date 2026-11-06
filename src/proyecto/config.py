@@ -77,3 +77,9 @@ COST_MATRIX = [[0, 1],
 
 # Validación cruzada: 5 pliegues estratificados (cada cliente aparece una sola vez: no hace falta agrupar)
 CV_FOLDS = 5
+
+# Optimización (specs/004-optimizacion): se reserva el 25 % del entrenamiento que la búsqueda no ve
+TUNE_HOLDOUT = 0.25
+TUNE_SEED = 7           # semilla de la reserva (distinta de SEED para no repetir la partición de prueba)
+TUNE_FOLDS = 3          # pliegues dentro de la búsqueda: menos que el torneo para que cada ensayo tarde poco
+TUNE_TRIALS = 40        # presupuesto de ensayos, fijado antes de empezar

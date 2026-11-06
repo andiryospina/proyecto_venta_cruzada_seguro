@@ -1,6 +1,6 @@
 # specs/
 
-Estas especificaciones (`001-preprocesamiento`, `002-variables`, `003-torneo`) vienen de la rama de la compañera (`companera/main`)
+Estas especificaciones (`001-preprocesamiento`, `002-variables`, `003-torneo`, `004-optimizacion`) vienen de la rama de la compañera (`companera/main`)
 y describen **su** implementación: `config.py`, `build_preprocessor()` en `features/preprocessing.py` y `add_features()`.
 
 La versión que usan los notebooks y las pruebas de este repositorio es otra: `clean()` en `src/proyecto/data/cleaning.py`,

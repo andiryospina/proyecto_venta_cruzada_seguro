@@ -101,6 +101,15 @@ El umbral de 16,7 % equivale a llamar al **36,0 %** de los clientes. Operar con 
 - **Ambos están bien calibrados** en los reservados.
 - **Lo que la regresión le dice al negocio:** quien **ya tiene seguro de vehículo** tiene un **98 % menos de posibilidades** de comprar (razón de odds 0,016); quien **tuvo un daño** tiene **7,3 veces más**; las regiones 0, 26, 50 y 48 restan (razones de odds de 0,58 a 0,65) y las regiones 11, 29 y 18 suman (1,50 a 1,60).
 
+## Búsqueda paralela de Andiry (`companera/main`, 2026-11-05)
+
+Andiry hizo su propia optimización de LightGBM (40 ensayos de Optuna, 76.060 clientes reservados, umbral fijo 1/6) y concluyó lo contrario: los parámetros optimizados bajan el costo de 0,3327 a 0,3303 (−0,0024; intervalo 95 % [−0,0042; −0,0006], todo por debajo de cero). Sus archivos quedan en el repositorio (`specs/004-optimizacion/`, `reports/06_comprobacion.csv`); su cuaderno, informe y `tuning.py` no se incorporaron porque esta rama ya tiene su propia etapa 6.
+
+**Por qué no cambia nuestra decisión, y qué sí queda abierto:**
+- Los resultados no son comparables todavía: su entrenamiento tiene **304.238 clientes** y el nuestro **304.887**. A su entrenamiento le faltan **649 clientes, todos con la prima mínima de 2.630** (el resto de la partición, incluida la prueba de 76.222 clientes, es idéntico). Hay que confirmar con ella por qué se quitaron.
+- Nuestra búsqueda usó 20 ensayos por finalista y no encontró una mejora demostrable; la de ella usó 40 en un solo modelo. Con más ensayos puede aparecer una mejora pequeña, pero es de **≈ 240 unidades por 100.000 clientes**, del orden del ruido (≈ 230).
+- **La prueba cerrada ya se abrió con los parámetros de partida (2026-11-05 19:09).** Cambiar ahora a parámetros optimizados obligaría a declararlo y la prueba ya no serviría como confirmación limpia; si el grupo lo quiere, hay que reentrenar y comparar solo con datos reservados del entrenamiento y dejarlo escrito como cambio posterior.
+
 ## Decisión
 
 - **Parámetros que se usarán a partir de ahora:** **los de partida** para los dos finalistas, porque ninguna optimización pasó la regla. Guardados en `reports/06_best_params.json`.
