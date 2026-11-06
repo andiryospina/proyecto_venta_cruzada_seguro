@@ -45,7 +45,7 @@ clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/mont
 
 | Integrante | Rol |
 |---|---|
-| Ricardo González (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
 | Carolina Orejuela Perea | **[PENDIENTE: rol]** |
 | Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
 | Katherin Andrea Tabares | **[PENDIENTE: rol]** |

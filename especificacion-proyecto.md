@@ -7,7 +7,7 @@
 
 | Integrante | Rol (datos / modelado / app / negocio) |
 |---|---|
-| Ricardo González (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
 | Carolina Orejuela Perea | **[PENDIENTE: rol]** |
 | Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
 | Katherin Andrea Tabares | **[PENDIENTE: rol]** |
