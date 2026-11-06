@@ -13,7 +13,7 @@ Crear `src/proyecto/features/engineering.py` siguiendo el ejemplo del curso. Deb
 
 ## Variables nuevas
 
-Todas se calculan **fila por fila**, con datos que se conocen **antes** de llamar al cliente. No aprenden nada de los datos y por eso no hay fuga. Las cifras se midieron en `data/processed/train.parquet` (304.238 filas); la prueba sigue cerrada.
+Todas se calculan **fila por fila**, con datos que se conocen **antes** de llamar al cliente. No aprenden nada de los datos y por eso no hay fuga. Las cifras se midieron en `data/processed/train.parquet` (304.887 filas); la prueba sigue cerrada.
 
 | Variable | Cálculo | Por qué podría ayudar | Evidencia |
 |---|---|---|---|

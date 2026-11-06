@@ -1,54 +1,96 @@
 {
-  "finalista": "lightgbm",
-  "decision": "optimizado",
-  "parametros": {
-    "n_estimators": 186,
-    "learning_rate": 0.031476986256212196,
-    "num_leaves": 31,
-    "min_child_samples": 137,
-    "subsample": 0.9430233324921596,
-    "colsample_bytree": 0.6010355988956476,
-    "reg_lambda": 0.477956771635593
+  "etapa": "06_optimizacion",
+  "presupuesto_por_finalista": 20,
+  "datos": {
+    "busqueda": 228665,
+    "reservados": 76222,
+    "pliegues_de_busqueda": 3,
+    "nota": "un cliente por fila (id unico): reservar por fila es reservar por cliente"
   },
-  "parametros_optimizados": {
-    "n_estimators": 186,
-    "learning_rate": 0.031476986256212196,
-    "num_leaves": 31,
-    "min_child_samples": 137,
-    "subsample": 0.9430233324921596,
-    "colsample_bytree": 0.6010355988956476,
-    "reg_lambda": 0.477956771635593
-  },
-  "parametros_partida": {
-    "n_estimators": 300,
-    "learning_rate": 0.05,
-    "num_leaves": 31
-  },
-  "busqueda": {
-    "metrica": "cost",
-    "ensayos": 40,
-    "pliegues": 3,
-    "mejor_ensayo": 13,
-    "costo_cv_mejor": 0.3326087474699185,
-    "costo_cv_partida": 0.3345896607791749
-  },
-  "reservado": {
-    "clientes": 76060,
-    "costo_partida": 0.33273731264790957,
-    "costo_optimizado": 0.3302918748356561,
-    "diferencia": -0.002445437812253484,
-    "intervalo_95": [
-      -0.004167762292926637,
-      -0.0006041283197475684
+  "regla_de_decision": "usar los parametros optimizados solo si todo el intervalo del 95 % de (optimizado - partida) esta por debajo de cero en los clientes reservados",
+  "umbral": {
+    "regla": "1 / (R + 1)",
+    "R": 5,
+    "valor": 0.1667,
+    "minimo_empirico": 0.175,
+    "banda_a_menos_de_0.001": [
+      0.15,
+      0.18
     ],
-    "pr_auc_diferencia": 0.004450836397729585,
-    "pr_auc_intervalo_95": [
-      0.0016148383569846271,
-      0.007571028856273813
+    "mantener_el_teorico": true,
+    "porcentaje_de_clientes_llamados": 0.36
+  },
+  "finalistas": {
+    "lightgbm": {
+      "parametros_a_usar": {
+        "n_estimators": 200,
+        "learning_rate": 0.08,
+        "num_leaves": 31,
+        "min_child_samples": 100,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.0
+      },
+      "decision": "de partida",
+      "parametros_de_partida": {
+        "n_estimators": 200,
+        "learning_rate": 0.08,
+        "num_leaves": 31,
+        "min_child_samples": 100,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "reg_lambda": 0.0
+      },
+      "mejor_encontrado": {
+        "n_estimators": 500,
+        "learning_rate": 0.034773043067021225,
+        "num_leaves": 12,
+        "min_child_samples": 295,
+        "subsample": 0.8600309920794306,
+        "colsample_bytree": 0.6191576808058824,
+        "reg_lambda": 3.179144658777483
+      },
+      "diferencia_en_reservados": -0.00021,
+      "intervalo_95": [
+        -0.00214,
+        0.00181
+      ]
+    },
+    "regresion_logistica": {
+      "parametros_a_usar": {
+        "C": 1.0,
+        "age_spline_knots": 6,
+        "profile_12": false
+      },
+      "decision": "de partida",
+      "parametros_de_partida": {
+        "C": 1.0,
+        "age_spline_knots": 6,
+        "profile_12": false
+      },
+      "mejor_encontrado": {
+        "C": 0.197187679528193,
+        "age_spline_knots": 12,
+        "profile_12": false
+      },
+      "diferencia_en_reservados": -0.0006,
+      "intervalo_95": [
+        -0.00199,
+        0.00088
+      ]
+    }
+  },
+  "comparacion_de_finalistas": {
+    "regresion_menos_lightgbm": 0.00281,
+    "intervalo_95": [
+      0.00017,
+      0.0055
     ]
   },
-  "tracking": "databricks (dentro del workspace)",
-  "experimento": "/Users/andiry.ospina@gmail.com/venta-cruzada-optimizacion",
-  "mlflow_parent_run_id": "54c0019c8cdf41a890bdb35340b0b3d6",
-  "mlflow_check_run_id": "c6497a6ee7274a48b99491bbd7ce00e6"
+  "tracking": {
+    "donde": "local",
+    "experimento": "venta-cruzada-seguros-optimizacion",
+    "ejecucion": "20261105-184315",
+    "ensayos_registrados": 40
+  }
 }

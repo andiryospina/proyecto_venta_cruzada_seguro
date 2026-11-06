@@ -1,0 +1,96 @@
+{
+  "numeric": [
+    "Age",
+    "Annual_Premium",
+    "Region_Code"
+  ],
+  "categorical": [
+    "Gender",
+    "Vehicle_Age",
+    "Vehicle_Damage",
+    "Previously_Insured"
+  ],
+  "class_names": [
+    "no interesado",
+    "interesado"
+  ],
+  "categories": {
+    "Gender": [
+      "Female",
+      "Male"
+    ],
+    "Vehicle_Age": [
+      "1-2 Year",
+      "< 1 Year",
+      "> 2 Years"
+    ],
+    "Vehicle_Damage": [
+      "No",
+      "Yes"
+    ],
+    "Previously_Insured": [
+      "No",
+      "Yes"
+    ]
+  },
+  "observed_range": {
+    "Age": [
+      20.0,
+      85.0
+    ],
+    "Annual_Premium": [
+      2630.0,
+      540165.0
+    ],
+    "Region_Code": [
+      0.0,
+      52.0
+    ]
+  },
+  "median": {
+    "Age": 36.0,
+    "Annual_Premium": 31697.0,
+    "Region_Code": 28.0
+  },
+  "integer_columns": [
+    "Age",
+    "Annual_Premium",
+    "Region_Code"
+  ],
+  "valid_range": {
+    "Age": [
+      18.0,
+      100.0
+    ],
+    "Annual_Premium": [
+      1.0,
+      10000000.0
+    ]
+  },
+  "labels": {
+    "Age": "Edad (años)",
+    "Annual_Premium": "Prima anual del seguro de salud",
+    "Region_Code": "Código de región",
+    "Gender": "Género",
+    "Vehicle_Age": "Antigüedad del vehículo",
+    "Vehicle_Damage": "¿El vehículo ha tenido daños?",
+    "Previously_Insured": "¿Ya tiene seguro de vehículo?"
+  },
+  "review_threshold": 0.0,
+  "cost_matrix": [
+    [
+      0.0,
+      1.0
+    ],
+    [
+      5.0,
+      0.0
+    ]
+  ],
+  "app_title": "¿A qué clientes conviene llamar? Venta cruzada de seguro de vehículo",
+  "decision_labels": {
+    "interesado": "LLAMAR",
+    "no interesado": "NO LLAMAR"
+  },
+  "responsible_use": "- Esta herramienta **ordena a quién llamar primero**; no decide si se vende o se niega un seguro.\n- Usa la **edad y el género** del cliente. Legal debe aprobar su uso; el modelo casi no llama a menores de 26 ni a mayores de 65.\n- Entrenada con datos históricos de una sola aseguradora: no la uses con otra población sin validarla de nuevo.\n- El costo asume que perder un comprador cuesta 5 veces una llamada inútil (hipótesis por confirmar).\n- Revisa los **límites del modelo** en `models/ficha_modelo.md`."
+}

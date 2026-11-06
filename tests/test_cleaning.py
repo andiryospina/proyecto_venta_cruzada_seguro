@@ -1,180 +1,152 @@
-"""Pruebas de la limpieza (especificaciones/03-preprocesamiento.md, sección 3). Datos hechos a mano."""
+"""Pruebas de la limpieza: una por regla, con un caso normal y uno sucio hecho a mano (no usan data/raw)."""
 import pandas as pd
 import pytest
 
-from proyecto.config import DROPPED_COLUMNS, ID_COL, RAW_COLUMNS
 from proyecto.data.cleaning import (
-    add_min_premium_flag,
-    cast_codes_to_int,
+    EXPECTED_COLUMNS,
+    cast_code_columns,
     clean,
-    drop_excluded_columns,
-    encode_categoricals,
-    flag_impossible_values,
-    load_raw,
+    drop_personal_columns,
+    encode_vehicle_age,
+    encode_vehicle_damage,
+    find_impossible_values,
+    find_test_csv,
+    find_train_csv,
+    flag_minimum_premium,
 )
 
 
-def raw_rows() -> pd.DataFrame:
-    """Tres clientes como llegan en el CSV crudo."""
-    return pd.DataFrame({
-        "id": [1, 2, 3],
-        "Gender": ["Male", "Female", "Male"],
-        "Age": [44, 21, 76],
-        "Driving_License": [1, 1, 0],
-        "Region_Code": [28.0, 3.0, 11.0],
-        "Previously_Insured": [0, 1, 0],
-        "Vehicle_Age": ["> 2 Years", "< 1 Year", "1-2 Year"],
-        "Vehicle_Damage": ["Yes", "No", "Yes"],
-        "Annual_Premium": [40454.0, 2630.0, 540165.0],
-        "Policy_Sales_Channel": [26.0, 152.0, 160.0],
-        "Vintage": [217, 27, 10],
-        "Response": [1, 0, 0],
-    })
+def make_rows(**overrides) -> pd.DataFrame:
+    """Dos clientes válidos; `overrides` reemplaza columnas completas para fabricar casos sucios."""
+    data = {
+        "id": [1, 2], "Gender": ["Male", "Female"], "Age": [44, 29], "Driving_License": [1, 1],
+        "Region_Code": [28.0, 3.0], "Previously_Insured": [0, 1], "Vehicle_Age": ["> 2 Years", "< 1 Year"],
+        "Vehicle_Damage": ["Yes", "No"], "Annual_Premium": [40454.0, 2630.0], "Policy_Sales_Channel": [26.0, 152.0],
+        "Vintage": [217, 10], "Response": [1, 0],
+    }
+    data.update(overrides)
+    return pd.DataFrame(data)
 
 
-# --- load_raw -------------------------------------------------------------------------------------
-
-def test_load_raw_reads_expected_columns(tmp_path):
-    path = tmp_path / "dataset.csv"
-    raw_rows().to_csv(path, index=False)
-    df = load_raw(path)
-    assert list(df.columns) == RAW_COLUMNS
-    assert len(df) == 3
+# Regla 3 · Vehicle_Damage Yes/No -> 1/0
+def test_vehicle_damage_is_converted_to_binary():
+    out = encode_vehicle_damage(make_rows())
+    assert out["Vehicle_Damage"].tolist() == [1, 0]
 
 
-def test_load_raw_rejects_unexpected_columns(tmp_path):
-    path = tmp_path / "dataset.csv"
-    raw_rows().assign(Name="Ana").to_csv(path, index=False)
-    with pytest.raises(ValueError, match="Columnas inesperadas"):
-        load_raw(path)
+def test_vehicle_damage_rejects_unknown_value():
+    with pytest.raises(ValueError, match="desconocidos"):
+        encode_vehicle_damage(make_rows(Vehicle_Damage=["Yes", "Maybe"]))
 
 
-def test_no_personal_columns(tmp_path):
-    """Cargar y limpiar solo deja las columnas esperadas (ninguna con datos personales)."""
-    path = tmp_path / "dataset.csv"
-    raw_rows().to_csv(path, index=False)
-    out = clean(load_raw(path))
-    assert set(out.columns) == (set(RAW_COLUMNS) - set(DROPPED_COLUMNS)) | {"is_min_premium"}
+def test_vehicle_damage_rejects_missing_value():
+    with pytest.raises(ValueError, match="vacíos"):
+        encode_vehicle_damage(make_rows(Vehicle_Damage=["Yes", None]))
 
 
-# --- drop_excluded_columns ------------------------------------------------------------------------
-
-def test_drop_excluded_columns():
-    """Policy_Sales_Channel (canal de contacto, posible fuga) no sale de la limpieza."""
-    out = drop_excluded_columns(raw_rows())
-    assert "Policy_Sales_Channel" not in out.columns
-    assert len(out.columns) == len(RAW_COLUMNS) - 1
-
-
-def test_clean_removes_channel():
-    assert "Policy_Sales_Channel" not in clean(raw_rows()).columns
+# Regla 3 · Vehicle_Age conserva el orden 0-1-2
+def test_vehicle_age_keeps_natural_order():
+    rows = make_rows(id=[1, 2, 3], Gender=["a", "b", "c"], Age=[30, 30, 30], Driving_License=[1, 1, 1],
+                     Region_Code=[1.0, 1.0, 1.0], Previously_Insured=[0, 0, 0],
+                     Vehicle_Age=["< 1 Year", "1-2 Year", "> 2 Years"], Vehicle_Damage=["Yes"] * 3,
+                     Annual_Premium=[1.0] * 3, Policy_Sales_Channel=[1.0] * 3, Vintage=[1, 1, 1], Response=[0, 0, 0])
+    assert encode_vehicle_age(rows)["Vehicle_Age"].tolist() == [0, 1, 2]
 
 
-# --- cast_codes_to_int ----------------------------------------------------------------------------
-
-def test_cast_codes_to_int():
-    out = cast_codes_to_int(raw_rows())
-    assert out["Region_Code"].tolist() == [28, 3, 11]
-    assert str(out["Region_Code"].dtype) == "Int64"
+def test_vehicle_age_rejects_unknown_value():
+    with pytest.raises(ValueError, match="desconocidos"):
+        encode_vehicle_age(make_rows(Vehicle_Age=["> 2 Years", "3 Years"]))
 
 
-def test_cast_codes_rejects_fraction():
-    dirty = raw_rows()
-    dirty.loc[0, "Region_Code"] = 28.5
-    with pytest.raises(ValueError, match="Region_Code"):
-        cast_codes_to_int(dirty)
+# Regla 5 · el código de región pasa a entero
+def test_code_columns_become_integers():
+    out = cast_code_columns(make_rows())
+    assert out["Region_Code"].tolist() == [28, 3]
+    assert str(out["Region_Code"].dtype) == "int64"
 
 
-# --- encode_categoricals --------------------------------------------------------------------------
-
-def test_encode_categoricals():
-    out = encode_categoricals(raw_rows())
-    assert out["Gender"].tolist() == [1, 0, 1]
-    assert out["Vehicle_Damage"].tolist() == [1, 0, 1]
-    assert out["Vehicle_Age"].tolist() == [2, 0, 1]
+def test_code_columns_reject_missing_or_fractional_codes():
+    with pytest.raises(ValueError, match="vacíos"):
+        cast_code_columns(make_rows(Region_Code=[28.0, None]))
+    with pytest.raises(ValueError, match="no enteros"):
+        cast_code_columns(make_rows(Region_Code=[28.5, 3.0]))
 
 
-def test_encode_rejects_unknown():
-    dirty = raw_rows()
-    dirty.loc[1, "Vehicle_Age"] = "3 Years"
-    with pytest.raises(ValueError, match="Vehicle_Age"):
-        encode_categoricals(dirty)
+# Regla 4 · marca de la prima mínima (se marca, no se cambia)
+def test_minimum_premium_is_flagged_not_changed():
+    rows = make_rows()
+    out = flag_minimum_premium(rows)
+    assert out["Premium_is_minimum"].tolist() == [0, 1]
+    assert out["Annual_Premium"].tolist() == rows["Annual_Premium"].tolist()
 
 
-# --- add_min_premium_flag -------------------------------------------------------------------------
-
-def test_add_min_premium_flag():
-    out = add_min_premium_flag(raw_rows())
-    assert out["is_min_premium"].tolist() == [0, 1, 0]
-    assert out["Annual_Premium"].tolist() == [40454.0, 2630.0, 540165.0]   # el valor se conserva
+# Valores imposibles: se detectan y se cuentan
+def test_no_impossible_values_in_normal_rows():
+    assert find_impossible_values(make_rows()) == {}
 
 
-# --- flag_impossible_values -----------------------------------------------------------------------
-
-def test_flag_impossible_values():
-    dirty = raw_rows()
-    dirty["Age"] = [44, 5, 130]                 # 5 y 130 años son imposibles
-    dirty["Annual_Premium"] = [40454.0, -10.0, 0.0]
-    dirty["Vintage"] = [217, -1, 10]
-    dirty["Driving_License"] = [1, 2, 0]        # 2 no es binario
-    out = flag_impossible_values(dirty)
-    assert out["Age"].isna().tolist() == [False, True, True]
-    assert out["Annual_Premium"].isna().tolist() == [False, True, True]
-    assert out["Vintage"].isna().tolist() == [False, True, False]
-    assert out["Driving_License"].isna().tolist() == [False, True, False]
-    assert len(out) == 3                         # no se borran filas
+def test_impossible_values_are_counted():
+    problems = find_impossible_values(make_rows(Age=[150, 29], Previously_Insured=[0, 2], Vintage=[-1, 10]))
+    assert problems == {"Age fuera de rango": 1, "Previously_Insured distinto de 0/1": 1, "Vintage negativo": 1}
 
 
-def test_flag_impossible_values_keeps_limits():
-    """Los límites del rango son válidos: 18 y 100 años, antigüedad 0, prima mínima 2.630."""
-    edge = raw_rows()
-    edge["Age"] = [18, 100, 50]
-    edge["Vintage"] = [0, 10, 299]
-    out = flag_impossible_values(edge)
-    assert out[["Age", "Vintage", "Annual_Premium"]].notna().all().all()
+# Datos personales: ninguna columna personal sobrevive
+def test_no_personal_columns():
+    rows = make_rows().assign(nombre=["Ana", "Luis"], documento=["1", "2"])
+    out = drop_personal_columns(rows, columns=("nombre", "documento"))
+    assert not {"nombre", "documento"} & set(out.columns)
 
 
-def test_add_min_premium_flag_only_exact_value():
-    """Solo la prima exactamente 2.630 se marca; 2.630,5 o un vacío no."""
-    dirty = raw_rows()
-    dirty["Annual_Premium"] = [2630.5, float("nan"), 2630.0]
-    assert add_min_premium_flag(dirty)["is_min_premium"].tolist() == [0, 0, 1]
+# Función completa
+def test_clean_is_complete_and_does_not_modify_input():
+    rows = make_rows()
+    before = rows.copy(deep=True)
+    out = clean(rows)
+    pd.testing.assert_frame_equal(rows, before)          # no toca el original
+    assert len(out) == len(rows)                          # no pierde filas
+    assert out["Vehicle_Damage"].tolist() == [1, 0]
+    assert out["Vehicle_Age"].tolist() == [2, 0]
+    assert out["Premium_is_minimum"].tolist() == [0, 1]
+    assert out["Response"].tolist() == [1, 0]             # el objetivo no se altera
 
 
-def test_clean_with_missing_inputs():
-    """Si llegan vacíos en el crudo, clean() los conserva como vacíos sin fallar ni borrar filas."""
-    dirty = raw_rows()
-    dirty["Age"] = dirty["Age"].astype(float)
-    dirty.loc[0, "Age"] = float("nan")
-    dirty.loc[1, "Region_Code"] = float("nan")
-    out = clean(dirty)
-    assert len(out) == 3
-    assert out["Age"].isna().tolist() == [True, False, False]
-    assert out["Region_Code"].isna().tolist() == [False, True, False]
+def test_clean_works_without_target_column():
+    out = clean(make_rows().drop(columns="Response"))
+    assert "Response" not in out.columns
+    assert set(EXPECTED_COLUMNS) - {"Policy_Sales_Channel"} <= set(out.columns)
+    assert "Policy_Sales_Channel" not in out.columns            # decisión 8 del EDA: se elimina por posible fuga
 
 
-def test_flag_impossible_values_keeps_high_premium():
-    """La prima alta es real (decisión de negocio): no se marca como vacía."""
-    out = flag_impossible_values(raw_rows())
-    assert out["Annual_Premium"].notna().all()
+def test_clean_rejects_missing_columns():
+    with pytest.raises(ValueError, match="Faltan columnas"):
+        clean(make_rows().drop(columns="Age"))
 
 
-# --- clean ----------------------------------------------------------------------------------------
-
-def test_clean_keeps_rows():
-    raw = raw_rows()
-    out = clean(raw)
-    assert len(out) == len(raw)
-    assert out[ID_COL].tolist() == raw[ID_COL].tolist()
+def test_clean_rejects_impossible_values():
+    with pytest.raises(ValueError, match="imposibles"):
+        clean(make_rows(Age=[150, 29]))
 
 
-def test_clean_leaves_no_text_columns():
-    out = clean(raw_rows())
-    assert all(pd.api.types.is_numeric_dtype(out[c]) for c in out.columns)
+# Ubicación del CSV: la plantilla del curso y el repo con un único dataset.csv deben funcionar
+def test_find_train_csv_prefers_course_layout(tmp_path):
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "train.csv").write_text("id")
+    (tmp_path / "dataset.csv").write_text("id")
+    assert find_train_csv(tmp_path) == tmp_path / "data" / "raw" / "train.csv"
 
 
-def test_clean_does_not_modify_input():
-    raw = raw_rows()
-    before = raw.copy()
-    clean(raw)
-    pd.testing.assert_frame_equal(raw, before)
+def test_find_train_csv_falls_back_to_dataset_csv_in_root(tmp_path):
+    (tmp_path / "dataset.csv").write_text("id")
+    assert find_train_csv(tmp_path) == tmp_path / "dataset.csv"
+
+
+def test_find_train_csv_fails_with_a_clear_message(tmp_path):
+    with pytest.raises(FileNotFoundError, match="dataset.csv"):
+        find_train_csv(tmp_path)
+
+
+def test_find_test_csv_is_optional(tmp_path):
+    assert find_test_csv(tmp_path) is None
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+    (tmp_path / "data" / "raw" / "test.csv").write_text("id")
+    assert find_test_csv(tmp_path) == tmp_path / "data" / "raw" / "test.csv"

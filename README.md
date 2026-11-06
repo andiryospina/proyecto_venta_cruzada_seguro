@@ -1,8 +1,10 @@
-# Nombre del proyecto
+# Venta cruzada de seguros
 
-> Una frase: qué problema de negocio resuelve este proyecto y para quién.
+> Predecir qué clientes con seguro de salud aceptarán un seguro de vehículo, para que el equipo comercial priorice a quién llamar. _(Borrador: el grupo confirma el nombre y el caso.)_
 
 **App desplegada:** _enlace público de Streamlit (se completa en la clase 5)_
+
+**Estado (2026-11-05):** etapas 1 a 9 completas en local. Modelo final: LightGBM, costo 0,3317 por cliente en la prueba frente a 0,3967 de la regla "llamar si hubo daño". Ver [`reports/07_validacion.md`](reports/07_validacion.md) y [`models/ficha_modelo.md`](models/ficha_modelo.md). Orden para reproducir: notebooks 03 a 09 y `pytest`.
 
 ## Qué contiene
 Estructura obligatoria del curso. Cada carpeta tiene un propósito:
@@ -42,4 +44,4 @@ clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/mont
 |---|---|
 | | |
 
-Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/)
+Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/) · Decisiones del grupo y su estado: [`reports/decisiones_del_grupo.md`](reports/decisiones_del_grupo.md)

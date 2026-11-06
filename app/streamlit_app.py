@@ -84,7 +84,7 @@ def build_form(schema: dict) -> dict:
 
 
 def main() -> None:
-    st.set_page_config(page_title="Mi proyecto", page_icon="🧭", layout="wide")
+    st.set_page_config(page_title="Venta cruzada de seguros", page_icon="🧭", layout="wide")
 
     if not MODEL_PATH.exists() or not SCHEMA_PATH.exists():
         st.title("Mi proyecto")
@@ -116,7 +116,8 @@ def main() -> None:
     class_names = schema["class_names"]
     left, right = st.columns(2)
     with left:
-        st.metric("Resultado sugerido", str(first["decision"]))
+        decision_labels = schema.get("decision_labels", {})
+        st.metric("Resultado sugerido", decision_labels.get(str(first["decision"]), str(first["decision"])))
         detail = f"Clase más probable: **{first['most_likely']}**"
         if "expected_cost" in result.columns:
             detail += f" · costo esperado de esta decisión: **{first['expected_cost']:.2f}**"

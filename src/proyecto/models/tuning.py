@@ -1,139 +1,121 @@
-"""Optimización de hiperparámetros de LightGBM con Optuna, registrando cada ensayo en MLflow (specs/004-optimizacion).
+"""Optimización de los finalistas: espacios de búsqueda, pipeline con parámetros y comprobación honesta.
 
-Adaptado de `material-del-curso/ejemplo-creditsight/src/creditsight/models/tuning.py` a nuestro problema BINARIO:
-- se optimiza el costo de negocio (matriz 5 a 1) con el umbral FIJO de 1/6: el umbral no se busca aquí;
-- cada cliente aparece una sola vez, así que el bootstrap remuestrea filas (= clientes);
-- solo se optimiza LightGBM, el finalista del torneo (reports/05_torneo.md).
-La prueba (data/processed/test.parquet) NO se usa aquí.
+La búsqueda solo ve una parte del entrenamiento (`busqueda`); la otra parte (`reservado`) sirve para **comprobar** si lo
+encontrado es real, porque la mejor puntuación de una búsqueda es **optimista**: es el máximo de muchas estimaciones con ruido.
 """
-from pathlib import Path
-
-import mlflow
 import numpy as np
 import optuna
 import pandas as pd
 from lightgbm import LGBMClassifier
+from sklearn.base import clone
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 
-from proyecto.config import COST_MATRIX, SEED
-from proyecto.models.train import build_pipeline, decide, evaluate_folds
+from proyecto.models.metrics import COST_FALSE_NEGATIVE, COST_FALSE_POSITIVE, decision_threshold, technical_metrics
+from proyecto.models.train import RANDOM_STATE, TOURNAMENT_FEATURES, TOURNAMENT_FEATURES_LINEAR, build_pipeline
 
-MODEL_NAME = "lightgbm"
-STAGE_TAG = "06_optimizacion"
+FINALISTS = ("lightgbm", "regresion_logistica")
 
-# Métricas de `metrics_from_proba` que se pueden optimizar y en qué dirección.
-OBJECTIVES = {
-    "cost": "minimize",          # negocio: costo esperado por cliente (decide)
-    "pr_auc": "maximize",        # técnica principal: ¿quedan los interesados al principio de la lista?
-    "roc_auc": "maximize",
-    "capture_30": "maximize",    # % de interesados al llamar al 30 % de la base
-    "log_loss": "minimize",      # calidad de las probabilidades (importa: el umbral se aplica a la probabilidad)
-    "brier": "minimize",
+# Parámetros de PARTIDA: exactamente los del torneo (etapa 5). Son la referencia que la optimización debe vencer.
+START_PARAMS = {
+    "lightgbm": {"n_estimators": 200, "learning_rate": 0.08, "num_leaves": 31, "min_child_samples": 100,
+                 "subsample": 0.8, "colsample_bytree": 0.8, "reg_lambda": 0.0},
+    "regresion_logistica": {"C": 1.0, "age_spline_knots": 6, "profile_12": False},
 }
 
 
-def lgbm_space(trial: optuna.Trial) -> dict:
-    """Hiperparámetros de un ensayo. Los rangos rodean los valores de partida del torneo (ver specs/004-optimizacion/plan.md)."""
+def lightgbm_space(trial) -> dict:
+    """Espacio de búsqueda de LightGBM: cada rango lleva conocimiento del algoritmo, y todos incluyen el valor de partida."""
     return {
-        "n_estimators": trial.suggest_int("n_estimators", 150, 800),
-        "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
-        "num_leaves": trial.suggest_int("num_leaves", 15, 127),
-        "min_child_samples": trial.suggest_int("min_child_samples", 20, 500),
-        "subsample": trial.suggest_float("subsample", 0.6, 1.0),
-        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
-        "reg_lambda": trial.suggest_float("reg_lambda", 1e-3, 10.0, log=True),
+        "n_estimators": trial.suggest_int("n_estimators", 100, 500, step=50),                # cuántos árboles
+        "learning_rate": trial.suggest_float("learning_rate", 0.02, 0.2, log=True),          # cuánto corrige cada árbol (escala log)
+        "num_leaves": trial.suggest_int("num_leaves", 8, 64),                                  # complejidad de cada árbol
+        "min_child_samples": trial.suggest_int("min_child_samples", 20, 400, log=True),      # mínimo de clientes por hoja
+        "subsample": trial.suggest_float("subsample", 0.6, 1.0),                              # fracción de clientes por árbol
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),                # fracción de columnas por árbol
+        "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 10.0),                           # penalización de pesos grandes
     }
 
 
-def make_lgbm(params: dict, random_state: int = SEED) -> LGBMClassifier:
-    """LightGBM sin balanceo de clases: balancear movería las probabilidades y el umbral 1/6 dejaría de valer.
+def logistic_space(trial) -> dict:
+    """Espacio de la regresión logística: fuerza de la regularización y flexibilidad de la edad y de los perfiles."""
+    return {
+        "C": trial.suggest_float("C", 1e-3, 10.0, log=True),                                  # más pequeño = más regularización
+        "age_spline_knots": trial.suggest_int("age_spline_knots", 4, 12),                      # flexibilidad de la curva de la edad
+        "profile_12": trial.suggest_categorical("profile_12", [False, True]),                  # añade los 12 perfiles (quedó "en observación")
+    }
 
-    `subsample_freq=1` hace que `subsample` tenga efecto (LightGBM lo ignora si la frecuencia es 0).
+
+SPACES = {"lightgbm": lightgbm_space, "regresion_logistica": logistic_space}
+
+
+def build_tuned_pipeline(finalist: str, params: dict, random_state: int = RANDOM_STATE) -> Pipeline:
+    """Pipeline completo del finalista con unos parámetros dados (los de partida o los de un ensayo)."""
+    if finalist == "lightgbm":
+        model = LGBMClassifier(**params, subsample_freq=1, random_state=random_state, n_jobs=4, verbose=-1)
+        return build_pipeline(model, TOURNAMENT_FEATURES)
+    if finalist == "regresion_logistica":
+        options = TOURNAMENT_FEATURES_LINEAR.with_changes(age_spline_knots=int(params["age_spline_knots"]), profile_12=bool(params["profile_12"]))
+        return build_pipeline(LogisticRegression(C=float(params["C"]), max_iter=500, random_state=random_state), options)
+    raise ValueError(f"finalista desconocido: {finalist!r}; opciones: {FINALISTS}")
+
+
+def evaluate_pipeline(pipeline: Pipeline, X: pd.DataFrame, y, folds) -> pd.DataFrame:
+    """Valida un pipeline con `folds`: una fila por pliegue con todas las métricas de `technical_metrics`."""
+    y = np.asarray(y)
+    rows = []
+    for train_idx, valid_idx in folds:
+        model = clone(pipeline).fit(X.iloc[train_idx], y[train_idx])
+        proba = model.predict_proba(X.iloc[valid_idx])[:, 1]
+        rows.append(technical_metrics(y[valid_idx], proba))
+    return pd.DataFrame(rows)
+
+
+def per_client_cost(y_true, proba, fn_cost: float = COST_FALSE_NEGATIVE, fp_cost: float = COST_FALSE_POSITIVE) -> np.ndarray:
+    """Costo de la decisión de cada cliente (0, `fp_cost` o `fn_cost`), llamando si la probabilidad supera el umbral."""
+    y_true = np.asarray(y_true)
+    call = np.asarray(proba) >= decision_threshold(fn_cost, fp_cost)
+    cost = np.zeros(len(y_true))
+    cost[call & (y_true == 0)] = fp_cost          # falsa alarma
+    cost[~call & (y_true == 1)] = fn_cost         # venta perdida
+    return cost
+
+
+def bootstrap_interval(difference_per_client, clients, n: int = 1000, seed: int = 42, level: float = 95.0) -> tuple:
+    """Intervalo del `level` % de la diferencia media, remuestreando **clientes completos** (no filas sueltas).
+
+    `difference_per_client` = costo(optimizado) - costo(partida), fila a fila. Negativo = el optimizado mejora.
+    Si un mismo cliente aparece en varias filas, pasarlo en `clients` las mantiene juntas al remuestrear.
     """
-    return LGBMClassifier(subsample_freq=1, random_state=random_state, verbose=-1, n_jobs=-1, **params)
+    table = pd.DataFrame({"g": np.asarray(clients), "d": np.asarray(difference_per_client, dtype=float)}).groupby("g")["d"].agg(["sum", "count"])
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(table), size=(n, len(table)))
+    means = table["sum"].to_numpy()[idx].sum(axis=1) / table["count"].to_numpy()[idx].sum(axis=1)
+    low, high = np.percentile(means, [(100 - level) / 2, 100 - (100 - level) / 2])
+    return float(low), float(high)
 
 
-def tune(X: pd.DataFrame, y, folds, n_trials: int, metric: str = "cost", seed: int = SEED, log: bool = True,
-         storage: str | Path | None = None, use_engineered: bool = True) -> optuna.Study:
-    """Estudio de Optuna que optimiza `metric` (ver OBJECTIVES) con validación cruzada en `folds`.
+def run_search(finalist: str, X: pd.DataFrame, y, folds, n_trials: int = 20, seed: int = 42, on_trial=None):
+    """Búsqueda de hiperparámetros de un finalista con Optuna (TPE) y un presupuesto fijo de ensayos.
 
-    - Cada ensayo guarda TODAS las métricas (media entre pliegues) en `trial.user_attrs`; con `log=True` además queda como
-      ejecución anidada en MLflow con sus desviaciones, para poder ordenar la lista por cualquier métrica.
-    - Con `storage` (ruta de un archivo .db) el estudio se guarda en disco y se reanuda: solo se corren los ensayos que
-      faltan hasta completar `n_trials`.
+    - El **ensayo 0 es siempre la configuración de partida**, medida con los mismos pliegues: la comparación es limpia.
+    - Cada ensayo guarda en `trial.user_attrs` el ruido entre pliegues, la PR-AUC y el log loss.
+    - `on_trial(study, trial)` se llama al terminar cada ensayo: sirve para registrarlo en MLflow.
+    Devuelve el `study` de Optuna (minimiza el costo por cliente).
     """
-    if metric not in OBJECTIVES:
-        raise ValueError(f"Métrica no soportada: {metric}. Opciones: {sorted(OBJECTIVES)}")
+    if finalist not in SPACES:
+        raise ValueError(f"finalista desconocido: {finalist!r}; opciones: {FINALISTS}")
+    y = np.asarray(y)
+    study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=seed), study_name=finalist)
+    study.enqueue_trial(START_PARAMS[finalist])
 
-    def objective(trial: optuna.Trial) -> float:
-        params = lgbm_space(trial)
-        table = evaluate_folds(build_pipeline(make_lgbm(params, seed), use_engineered=use_engineered), X, y, folds)
-        means = {col: float(table[col].mean()) for col in table.columns if col != "fold"}
-        stds = {f"{col}_std": float(table[col].std()) for col in table.columns if col not in ("fold", "fit_seconds")}
-        for name, value in {**means, **stds}.items():
-            trial.set_user_attr(name, value)
-        if log:
-            with mlflow.start_run(run_name=f"{MODEL_NAME}-trial-{trial.number}", nested=True):
-                mlflow.log_params(params)
-                mlflow.log_metrics({**means, **stds})
-                mlflow.set_tags({"etapa": STAGE_TAG, "modelo": MODEL_NAME, "metrica_optimizada": metric,
-                                 "ensayo": str(trial.number)})
-        return means[metric]
+    def objective(trial):
+        params = SPACES[finalist](trial)
+        table = evaluate_pipeline(build_tuned_pipeline(finalist, params), X, y, folds)
+        trial.set_user_attr("cost_sd", float(table["cost"].std(ddof=1)))
+        trial.set_user_attr("pr_auc", float(table["pr_auc"].mean()))
+        trial.set_user_attr("log_loss", float(table["log_loss"].mean()))
+        return float(table["cost"].mean())
 
-    optuna.logging.set_verbosity(optuna.logging.WARNING)
-    study = optuna.create_study(
-        direction=OBJECTIVES[metric],
-        sampler=optuna.samplers.TPESampler(seed=seed),
-        study_name=f"venta-cruzada-{MODEL_NAME}-{metric}",
-        storage=f"sqlite:///{Path(storage).as_posix()}" if storage else None,
-        load_if_exists=True,
-    )
-    done = len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE])
-    remaining = max(n_trials - done, 0)
-    if done:
-        print(f"Se reanuda el estudio: {done} ensayos ya hechos, faltan {remaining}.")
-    study.set_user_attr("metric", metric)
-    if log:
-        with mlflow.start_run(run_name=f"optuna-{MODEL_NAME}-{metric}") as parent:
-            mlflow.set_tags({"etapa": STAGE_TAG, "modelo": MODEL_NAME, "metrica_optimizada": metric})
-            mlflow.log_params({"n_trials": n_trials, "n_folds": len(folds), "n_rows": len(y)})
-            study.optimize(objective, n_trials=remaining)
-            mlflow.log_metric(f"best_{metric}", study.best_value)
-            mlflow.log_params({f"best_{k}": v for k, v in study.best_params.items()})
-            study.set_user_attr("mlflow_parent_run_id", parent.info.run_id)
-    else:
-        study.optimize(objective, n_trials=remaining)
+    study.optimize(objective, n_trials=n_trials, callbacks=[on_trial] if on_trial else None)
     return study
-
-
-def _row_costs(y_true, proba, cost=COST_MATRIX) -> np.ndarray:
-    """Costo de cada cliente con la decisión de negocio (umbral 1/6)."""
-    return np.asarray(cost, dtype=float)[np.asarray(y_true, dtype=int), decide(proba)]
-
-
-def bootstrap_cost_difference(y_true, proba_a, proba_b, n_boot: int = 1000, seed: int = SEED) -> tuple[float, float, float]:
-    """Diferencia de costo por cliente (A menos B) con intervalo del 95 %, remuestreando clientes.
-
-    Cada fila es un cliente distinto, así que remuestrear filas es remuestrear clientes. Negativo: A cuesta menos que B.
-    Devuelve (diferencia observada, límite inferior, límite superior).
-    """
-    diff = _row_costs(y_true, proba_a) - _row_costs(y_true, proba_b)
-    rng = np.random.default_rng(seed)
-    boot = np.array([diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(n_boot)])
-    return float(diff.mean()), float(np.percentile(boot, 2.5)), float(np.percentile(boot, 97.5))
-
-
-def bootstrap_metric_difference(y_true, proba_a, proba_b, metric_fn, n_boot: int = 300,
-                                seed: int = SEED) -> tuple[float, float, float]:
-    """Diferencia de una métrica cualquiera (A menos B) con intervalo del 95 %, remuestreando clientes.
-
-    `metric_fn(y_true, proba)` devuelve un número, p. ej. `average_precision_score` (PR-AUC).
-    Positivo: A obtiene una métrica mayor que B.
-    """
-    y_true, proba_a, proba_b = np.asarray(y_true), np.asarray(proba_a), np.asarray(proba_b)
-    rng = np.random.default_rng(seed)
-    diffs = []
-    for _ in range(n_boot):
-        rows = rng.integers(0, len(y_true), len(y_true))
-        diffs.append(metric_fn(y_true[rows], proba_a[rows]) - metric_fn(y_true[rows], proba_b[rows]))
-    full = metric_fn(y_true, proba_a) - metric_fn(y_true, proba_b)
-    return float(full), float(np.percentile(diffs, 2.5)), float(np.percentile(diffs, 97.5))

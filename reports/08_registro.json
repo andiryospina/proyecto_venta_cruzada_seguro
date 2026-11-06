@@ -1,0 +1,19 @@
+{
+  "tracking": "databricks (token)",
+  "experimento": "/Users/ricardo.gonzalez1544@unaula.edu.co/venta-cruzada-seguros-modelo-final",
+  "modelo_registrado": "workspace.default.venta_cruzada_seguros",
+  "version": 1,
+  "alias": "champion",
+  "run_id": "978b062c00f54eb785f11f28b62928a5",
+  "registrado_el": "2026-11-05 19:36",
+  "columnas_entrada": [
+    "Age",
+    "Gender",
+    "Previously_Insured",
+    "Vehicle_Age",
+    "Vehicle_Damage",
+    "Region_Code",
+    "Annual_Premium",
+    "Premium_is_minimum"
+  ]
+}
