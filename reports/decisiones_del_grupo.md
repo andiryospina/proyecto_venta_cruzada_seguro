@@ -147,7 +147,7 @@
 
 | | |
 |---|---|
-| **Qué falta** | Los **roles** de Carolina Orejuela Perea, Katherin Andrea Tabares y Jhonatan Rojas Cardona (no tienen commits en el repositorio, así que no se les asignó ninguno) y el **nombre de la startup**. **Asignados según los commits (2026-11-06):** Ricardo (integración, registro, app, despliegue, documentación) y Jessica Andiry (modelado y validación). **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
+| **Qué falta** | El **nombre de la startup**. **Roles:** el grupo indicó (2026-11-06) que los cinco integrantes trabajaron **por igual y en conjunto** en todas las etapas, y así quedó en el `README.md` y la especificación; los commits del repositorio los hicieron Ricardo y Jessica Andiry. **Ya está:** el nombre del proyecto («Venta cruzada inteligente: predicción del interés en seguro de vehículo»), los 5 integrantes y el repositorio (https://github.com/andiryospina/proyecto_venta_cruzada_seguro) |
 | **Quién lo cierra** | El grupo |
 | **Dónde va** | `especificacion-proyecto.md` §1, `README.md` e `informe_tecnico.md` |
 
