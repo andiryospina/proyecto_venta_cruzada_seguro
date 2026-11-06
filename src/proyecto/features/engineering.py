@@ -1,7 +1,7 @@
 """Variables nuevas y preprocesamiento que APRENDE de los datos (etapa 4).
 
 Todo lo que está aquí se ejecuta **dentro de un `Pipeline`**: `fit` mira solo el entrenamiento de cada pliegue y
-`transform` aplica lo aprendido a datos que el modelo no ha visto. Así el recorte de la prima, los canales raros o la
+`transform` aplica lo aprendido a datos que el modelo no ha visto. Así el recorte de la prima, las regiones raras o la
 tasa histórica de un canal no filtran información de validación ni de la prueba cerrada.
 
 Cada idea del notebook 04 es una opción de `FeatureOptions`: la referencia es `FeatureOptions()` y cada idea cambia
@@ -25,7 +25,7 @@ NUMERIC_COLS = ["Age", "Vintage"]
 PREMIUM_COL = "Annual_Premium"
 CATEGORICAL_COL = "Gender"
 CODE_COLS = ["Region_Code"]
-RARE_LABEL = -1   # código que reemplaza a los canales o regiones poco frecuentes y a los que no se vieron al entrenar
+RARE_LABEL = -1   # código que reemplaza a las regiones poco frecuentes y a las que no se vieron al entrenar
 
 
 class PremiumClipper(BaseEstimator, TransformerMixin):
@@ -212,9 +212,9 @@ def vintage_share(X) -> np.ndarray:
 
 @dataclass(frozen=True)
 class FeatureOptions:
-    """Una opción por idea. Todo apagado = la referencia (las variables limpias de la etapa 3, más los canales raros agrupados)."""
+    """Una opción por idea. Todo apagado = la referencia (las variables limpias de la etapa 3, más las regiones raras agrupadas)."""
 
-    group_rare: bool = True                 # agrupar canales/regiones raros en "otros" (decisión 5 del EDA)
+    group_rare: bool = True                 # agrupar regiones raras en "otros" (decisión 5 del EDA)
     min_count: int = 100                    # umbral de "raro"
     clip_premium: bool = False              # recortar la prima en el percentil 99 (decisión 4 del EDA)
     segment_flag: bool = False              # marca "sin seguro y con daño"

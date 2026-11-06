@@ -4,7 +4,7 @@ Cada función aplica **una** decisión del EDA (`reports/01_eda.md`) y devuelve 
 DataFrame que recibe ni `data/raw/`.
 
 Aquí solo va lo que **no depende de los datos de entrenamiento** (convertir textos fijos a números, avisar de un
-valor repetido, validar rangos). Lo que sí depende de ellos (agrupar canales raros, recortar la prima, escalar,
+valor repetido, validar rangos). Lo que sí depende de ellos (agrupar regiones raras, recortar la prima, escalar,
 imputar) va dentro del `Pipeline` de la etapa 4, ajustado solo con entrenamiento, para evitar fuga de información.
 """
 from pathlib import Path

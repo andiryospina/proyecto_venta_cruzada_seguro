@@ -1,5 +1,7 @@
 # Informe del EDA
 
+> **Nota (2026-11-05):** este informe describe todas las columnas, incluido `Policy_Sales_Channel`. El grupo **eliminó después el canal de venta** del modelo por posible fuga (D13, P11); lo dicho aquí del canal sigue siendo válido como descripción de los datos.
+
 > **BORRADOR.** Primera medición hecha sobre `data/raw/train.csv`. El grupo debe reproducir estas cifras en
 > `notebooks/02_eda.ipynb` antes de darlo por cerrado. Cada decisión se implementa luego en `src/proyecto/data/` con pruebas.
 > Guía: `material-del-curso/kit/guia-eda-y-preprocesamiento.md`.

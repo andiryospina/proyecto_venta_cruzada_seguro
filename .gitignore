@@ -15,7 +15,8 @@ __pycache__/
 data/raw/*
 !data/raw/.gitkeep
 
-# Datos de la etapa 3: se regeneran con notebooks/03_preprocesamiento.ipynb, no se versionan
+# Datos de la etapa 3 (se regeneran con notebooks/03_preprocesamiento.ipynb). Las dos líneas siguientes están comentadas a propósito para poder
+# subir train.parquet a Databricks. NO subas data/processed/holdout.parquet: es la prueba cerrada.
 # data/processed/*
 # !data/processed/.gitkeep
 

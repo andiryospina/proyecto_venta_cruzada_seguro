@@ -1,6 +1,9 @@
 """Constantes del proyecto de venta cruzada de seguro de vehículo.
 
 Cada valor sale de una decisión escrita en `especificaciones/03-preprocesamiento.md` o en `reports/01_eda.md`.
+
+Nota: este módulo viene de la rama de la compañera (`companera/main`) y hoy **no lo importa** el código del proyecto (la limpieza y las
+variables usan constantes propias en `data/cleaning.py` y `features/engineering.py`). Se conserva como referencia de esa implementación.
 """
 from pathlib import Path
 
@@ -51,7 +54,7 @@ SEED = 42
 
 # Atípicos y categorías raras (se aprenden SOLO de entrenamiento, dentro del Pipeline)
 PREMIUM_CAP_QUANTILE = 0.999          # decisión de negocio: recortar al p99,9, no borrar filas
-RARE_CATEGORY_MIN_FREQUENCY = 0.0033  # ≈ 1.000 de 304.710 filas de entrenamiento
+RARE_CATEGORY_MIN_FREQUENCY = 0.0033  # ≈ 1.000 de 304.887 filas de entrenamiento
 
 # Variables que entran al modelo, por tipo (id y Response quedan fuera)
 NUMERIC_FEATURES = ["Age", "Vintage"]
