@@ -45,12 +45,14 @@ clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/mont
 
 | Integrante | Rol |
 |---|---|
-| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
-| Carolina Orejuela Perea | **[PENDIENTE: rol]** |
-| Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
-| Katherin Andrea Tabares | **[PENDIENTE: rol]** |
-| Jhonatan Rojas Cardona | **[PENDIENTE: rol]** |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Carolina Orejuela Perea | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jessica Andiry Ospina Valencia | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Katherin Andrea Tabares | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jhonatan Rojas Cardona | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
 
-*Nombre de la startup:* **[PENDIENTE]**
+*Nota:* los commits del repositorio los hicieron Ricardo (integración, registro en Databricks, app y despliegue) y Jessica Andiry (modelado y validación); el resto del trabajo fue conjunto, según el grupo.
+
+*Nombre de la startup:* **Contacto Inteligente**
 
 Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/) · Decisiones del grupo y su estado: [`reports/decisiones_del_grupo.md`](reports/decisiones_del_grupo.md)

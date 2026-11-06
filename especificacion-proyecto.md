@@ -7,13 +7,13 @@
 
 | Integrante | Rol (datos / modelado / app / negocio) |
 |---|---|
-| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | **[PENDIENTE: rol]** |
-| Carolina Orejuela Perea | **[PENDIENTE: rol]** |
-| Jessica Andiry Ospina Valencia | **[PENDIENTE: rol]** |
-| Katherin Andrea Tabares | **[PENDIENTE: rol]** |
-| Jhonatan Rojas Cardona | **[PENDIENTE: rol]** |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Carolina Orejuela Perea | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jessica Andiry Ospina Valencia | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Katherin Andrea Tabares | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jhonatan Rojas Cardona | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
 
-Nombre del proyecto: **Venta cruzada inteligente: predicción del interés en seguro de vehículo**   Nombre de la "startup": **[PENDIENTE]**   Repositorio (público): https://github.com/andiryospina/proyecto_venta_cruzada_seguro
+Nombre del proyecto: **Venta cruzada inteligente: predicción del interés en seguro de vehículo**   Nombre de la "startup": **Contacto Inteligente**   Repositorio (público): https://github.com/andiryospina/proyecto_venta_cruzada_seguro
 
 ## 2. Caso de negocio
 
