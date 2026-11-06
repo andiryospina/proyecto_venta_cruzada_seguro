@@ -30,8 +30,6 @@ mlflow_local.db
 mlruns/
 .verify-*
 
-# Modelo intermedio (pesado): solo se sube models/model.joblib
-models/final_pipeline.joblib
 
 # Estudio de Optuna de la etapa 06 (se regenera; permite reanudar la búsqueda)
 optuna_06.db
