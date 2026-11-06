@@ -4,7 +4,7 @@
 > lo ejecutan (3 y 4). El resultado final, con las decisiones, va a `reports/01_eda.md`.
 > Guía: `material-del-curso/kit/guia-eda-y-preprocesamiento.md` · Ejemplo: `material-del-curso/ejemplo-creditsight/reports/01_eda.md`.
 
-**Grupo:** _______________   **Fecha:** 2026-10-31   **Estado:** ☒ borrador  ☐ cerrada
+**Grupo:** Contacto Inteligente   **Fecha:** 2026-10-31   **Estado:** ☐ borrador  ☒ cerrada (revisada y cerrada por el grupo el 2026-11-06)
 
 > Nota: esta especificación la redactó Claude a partir de la ficha del caso y de la ejecución del notebook. Las hipótesis de la sección 1
 > no se escribieron "a ciegas": el grupo debe revisarlas y marcar la especificación como cerrada.

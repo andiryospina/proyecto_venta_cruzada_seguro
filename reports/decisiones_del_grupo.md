@@ -176,7 +176,7 @@
 
 | | |
 |---|---|
-| **Qué falta** | (1) **Ficha de caso:** pasar de `borrador` a `aprobada` (la aprueba el instructor); (2) **especificaciones 02 y 03:** el grupo las revisa y cambia su estado a `cerrada`; (3) **revisión del código** con `material-del-curso/kit/checklist-revision-ia.md`, de modo que cada integrante pueda explicar una función |
+| **Qué falta** | (1) **Ficha de caso:** pasar de `borrador` a `aprobada` (la aprueba el instructor); (2) ~~**especificaciones 02 y 03:** el grupo las revisa y cambia su estado a `cerrada`~~ **Hecho el 2026-11-06: el grupo las cerró**; (3) **revisión del código** con `material-del-curso/kit/checklist-revision-ia.md`, de modo que cada integrante pueda explicar una función |
 | **Quién lo cierra** | Instructor y grupo |
 | **Por qué no se hizo** | Son aprobaciones humanas; no se pueden dar por hechas desde el repositorio |
 
@@ -195,6 +195,6 @@
 | P07 · Roles y nombre de la startup | Grupo | Cerrado: los cinco trabajaron en conjunto; startup «Contacto Inteligente» | 2026-11-06 |
 | P08 · Datos nuevos | Negocio + TI | Adoptado como supuesto del grupo: Siguientes pasos: historial de contactos y vencimiento del seguro | 2026-11-06 |
 | P09 · Hipótesis del daño | Negocio | Adoptado como supuesto del grupo: Hipótesis; se redacta como asociación, no como causa | 2026-11-06 |
-| P10 · Aprobaciones | Instructor y grupo | | |
+| P10 · Aprobaciones | Instructor y grupo | Parcial: especificaciones 02 y 03 **cerradas** por el grupo; faltan la aprobación de la ficha de caso por el instructor y la revisión del código por cada integrante | 2026-11-06 |
 | P11 · Canal de venta | Negocio / Ventas | Adoptado como supuesto del grupo: Sin canal de venta; falta confirmación | 2026-11-06 |
 | P12 · 649 clientes de prima 2.630 | Andiry y el grupo | Cerrado: perfiles repetidos al quitar el canal; se quitan del entrenamiento (D15) | 2026-11-06 |

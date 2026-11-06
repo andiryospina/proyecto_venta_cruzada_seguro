@@ -5,7 +5,7 @@
 > **exactamente** esto (`material-del-curso/kit/checklist-revision-ia.md`).
 > Guía: `material-del-curso/kit/guia-eda-y-preprocesamiento.md`, sección 4 · Ejemplo: `material-del-curso/ejemplo-creditsight/src/creditsight/data/`.
 
-**Grupo:** _______________   **Fecha:** 2026-10-31   **Estado:** ☒ borrador  ☐ cerrada
+**Grupo:** Contacto Inteligente   **Fecha:** 2026-10-31   **Estado:** ☐ borrador  ☒ cerrada (revisada y cerrada por el grupo el 2026-11-06)
 
 > Redactada por Claude a partir de `reports/01_eda.md`, del análisis de atípicos (sección 3b) y de las respuestas de negocio del grupo
 > del 2026-10-31 (prima alta, prima mínima, clientes sin licencia). El grupo la revisa y la marca como cerrada.
