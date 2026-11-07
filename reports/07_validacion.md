@@ -165,7 +165,7 @@ Observaciones menores, que se aceptan como límites:
    "no calibrar", no tiene efecto práctico.
 2. **Las marcas de tiempo las escribe el propio notebook**, y el commit `e94c0cb` de la marca no contiene el código de esta etapa.
    **Corregido:** el código, la marca y `07_decisiones_congeladas.json` quedaron en el commit `cdda173` (rama `005-validacion`).
-3. **Los nombres de SHAP salieron genéricos**; ya están traducidos en `07_shap_nombres.csv` (sección 5).
+3. **Los nombres de SHAP salieron genéricos**; ya están traducidos en `07_shap_nombres.csv` (sección 5). **Actualización 2026-11-06:** `reports/07_shap.png` se regeneró con nombres legibles con `scripts/regenerar_shap.py`, usando una muestra de 5.000 clientes del **entrenamiento** (la prueba no se volvió a abrir). El orden y los valores coinciden con los de la prueba de `07_shap_nombres.csv` (por ejemplo, 1,319 frente a 1,318 en «Ya tiene seguro de vehículo»).
 4. **Hay perfiles idénticos con distinto `id` a ambos lados de la partición.** Son clientes distintos, no fuga estricta, y son pocos
    (269 filas repetidas en el EDA, 649 sin el canal). Pueden hacer las métricas apenas optimistas.
 
