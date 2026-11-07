@@ -41,7 +41,7 @@
 ## 4. Problemas encontrados y plan B
 
 - Errores de despliegue que aparecieron y cómo se resolvieron (qué decía el registro y qué se cambió): _______________
-- **Plan B** (si la app falla en vivo): captura con fecha → `reports/09_app_captura_2026-11-06.png` (la app pública con el diseño actual y la recomendación «LLAMAR» para un cliente con daño y sin seguro previo, tomada el 2026-11-07)
+- **Plan B** (si la app falla en vivo): captura con fecha → `reports/09_app_captura_2026-11-06.png` (la app pública con el diseño actual y la recomendación «LLAMAR» para un cliente con daño y sin seguro previo, tomada el 2026-11-07); app en local → `streamlit run app/streamlit_app.py` desde la raíz del repo
 - Si **no se desplegó**: **plan de despliegue escrito** (qué se intentó, qué error dio, qué harían): _______________
 
 ## 5. Ensayo cronometrado (clase 5)
