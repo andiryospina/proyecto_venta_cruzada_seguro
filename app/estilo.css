@@ -7,7 +7,7 @@
 /* Marco de la página: sin la barra y el menú de Streamlit */
 [data-testid="stHeader"] { background: transparent; }
 #MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"], .stDeployButton { visibility: hidden; height: 0; }
-.block-container { padding-top: 1.1rem; padding-bottom: 3rem; max-width: 1180px; }
+.block-container { padding-top: 1.1rem; padding-bottom: 3rem; max-width: 1290px; }
 h1, h2, h3, h4 { color: var(--navy); letter-spacing: -0.01em; }
 
 /* Portada */
@@ -31,19 +31,18 @@ h1, h2, h3, h4 { color: var(--navy); letter-spacing: -0.01em; }
 .stat b { display: block; font-size: 1.75rem; line-height: 1.1; color: var(--amber); }
 .stat span { font-size: .84rem; opacity: .92; }
 
-/* Pestañas en forma de píldora */
-.stTabs [data-baseweb="tab-list"], [data-testid="stTabs"] [data-baseweb="tab-list"] {
-  gap: 6px !important; background: #fff !important; padding: 6px !important; border-radius: 14px !important; border: 1px solid var(--line) !important;
-  box-shadow: 0 4px 14px rgba(10, 31, 68, .05); flex-wrap: wrap !important; overflow: visible !important;
+/* Pestañas en forma de píldora (Streamlit 1.66: role=tablist / data-testid=stTab) */
+[data-testid="stTabs"] > div:has(> [role="tablist"]) { height: auto !important; overflow: visible !important; border-bottom: 0 !important; }
+[data-testid="stTabs"] [role="tablist"] {
+  gap: 3px !important; background: #fff; padding: 5px !important; border-radius: 14px; border: 1px solid var(--line);
+  box-shadow: 0 4px 14px rgba(10, 31, 68, .05); flex-wrap: wrap !important; height: auto !important; overflow: visible !important;
 }
-.stTabs [data-baseweb="tab"], [data-testid="stTabs"] [data-baseweb="tab"] {
-  height: auto !important; padding: 9px 15px !important; border-radius: 10px !important; background: transparent !important; flex: 0 0 auto;
-}
-.stTabs [data-baseweb="tab"] p, [data-testid="stTabs"] [data-baseweb="tab"] p { font-weight: 600; color: var(--navy); white-space: nowrap; }
-.stTabs [aria-selected="true"], [data-testid="stTabs"] [aria-selected="true"] { background: var(--teal) !important; box-shadow: 0 4px 12px rgba(0, 168, 150, .30); }
-.stTabs [aria-selected="true"] p, [data-testid="stTabs"] [aria-selected="true"] p { color: #fff !important; }
-.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"],
-[data-testid="stTabs"] [data-baseweb="tab-highlight"], [data-testid="stTabs"] [data-baseweb="tab-border"] { display: none !important; }
+[data-testid="stTab"] { height: auto !important; padding: 9px 9px !important; border-radius: 10px !important; background: transparent; }
+[data-testid="stTab"] p { font-weight: 600; font-size: .88rem; color: var(--navy); white-space: nowrap; }
+[data-testid="stTab"][aria-selected="true"] { background: var(--teal) !important; box-shadow: 0 4px 12px rgba(0, 168, 150, .30); }
+[data-testid="stTab"][aria-selected="true"] p { color: #fff !important; }
+[data-testid="stTab"] > div:not([data-testid]) { display: none !important; }
+[data-testid="stTabs"] > button { display: none !important; }
 
 /* Tarjetas */
 [data-testid="stVerticalBlockBorderWrapper"] {
