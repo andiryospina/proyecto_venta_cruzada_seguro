@@ -9,6 +9,7 @@
 
 Ejecutar en local (desde la raíz de tu repo):  streamlit run app/streamlit_app.py
 """
+import html
 import importlib
 import sys
 from pathlib import Path
@@ -22,6 +23,8 @@ MODEL_PATH = ROOT / "models" / "model.joblib"
 SCHEMA_PATH = ROOT / "models" / "input_schema.json"
 UNKNOWN = "(no sé)"
 DEFAULT_TITLE = "Venta cruzada inteligente"
+STYLE_PATH = ROOT / "app" / "estilo.css"
+BRAND = "Contacto Inteligente"
 
 # El paquete de src/ puede llamarse `proyecto` o el nombre que le hayas puesto: lo buscamos.
 SRC = ROOT / "src"
@@ -100,6 +103,44 @@ def show_image(relative: str, caption: str) -> None:
         warn_missing(relative)
         return
     st.image(str(path), caption=caption, width="stretch")
+
+
+# ---------- imagen de la app: estilo, portada y pie ----------
+
+LOGO_SVG = ('<svg class="hero-logo" width="54" height="54" viewBox="0 0 48 48" aria-hidden="true">'
+            '<path d="M24 3.5l16.5 6.2v12.6c0 10.4-7 18.6-16.5 22.2C14.5 40.9 7.5 32.7 7.5 22.3V9.7z" fill="#00A896"/>'
+            '<path d="M24 3.5l16.5 6.2v12.6c0 10.4-7 18.6-16.5 22.2z" fill="#00897B" opacity=".55"/>'
+            '<path d="M16.5 24.5l5.2 5.2 9.8-11.6" stroke="#fff" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
+def inject_style() -> None:
+    """CSS estático del proyecto (app/estilo.css). Si falta el archivo, la app sigue funcionando con el tema por defecto."""
+    try:
+        css = STYLE_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return
+    st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+
+
+def render_hero(schema: dict) -> None:
+    """Portada: marca, qué es y tres cifras que salen de `reports/07_metricas_test.json` (nunca escritas a mano)."""
+    stats = report_metrics.hero_stats(load_json("reports/07_metricas_test.json"))
+    subtitle = html.escape(schema.get("app_title", DEFAULT_TITLE))
+    chips = "".join(f'<span class="chip">{html.escape(c)}</span>' for c in
+                    ("Seguro de vehículo", "Venta cruzada", "Modelo comprobado con una prueba cerrada"))
+    stat_html = "".join(f'<div class="stat"><b>{html.escape(value)}</b><span>{html.escape(label_)}</span></div>' for value, label_ in stats)
+    st.markdown(
+        f'<div class="hero"><div class="hero-top">{LOGO_SVG}<div><div class="kicker">Venta cruzada de seguros</div>'
+        f'<h1>{html.escape(BRAND)}</h1></div></div>'
+        f'<p class="tagline">{subtitle}. Herramienta de apoyo a la decisión: ordena a los clientes para llamar primero a quienes más probablemente se interesan.</p>'
+        f'<div class="hero-chips">{chips}</div>'
+        f'{f"<div class=hero-stats>{stat_html}</div>" if stat_html else ""}</div>',
+        unsafe_allow_html=True)
+
+
+def render_footer() -> None:
+    st.markdown(f'<div class="app-footer">{html.escape(BRAND)} · Herramienta de apoyo a la decisión: no decide por sí sola, '
+                'la decisión final es de una persona.</div>', unsafe_allow_html=True)
 
 
 # ---------- avisos de honestidad (extraídos de los archivos, no reescritos) ----------
@@ -287,7 +328,27 @@ def build_form(schema: dict) -> dict:
     return row
 
 
+def render_probability_meter(probability: float, threshold: float | None, is_call: bool) -> None:
+    """Medidor de la probabilidad de interés con la marca del umbral de decisión (los valores salen del modelo y del esquema)."""
+    pct = max(0.0, min(1.0, float(probability)))
+    marker = ""
+    note = "La probabilidad que calcula el modelo para este cliente."
+    if threshold is not None:
+        marker = f'<div class="thr" style="left:{threshold * 100:.1f}%"><span>umbral {report_metrics.format_percent(threshold)}</span></div>'
+        note = (f"Se recomienda llamar cuando la probabilidad supera el umbral de {report_metrics.format_percent(threshold)}; "
+                "ese valor sale de la matriz de costos.")
+    st.markdown(
+        f'<div class="meter-card"><div class="meter-title">Probabilidad de que se interese</div>'
+        f'<div class="meter-value">{report_metrics.format_percent(pct)}</div>'
+        f'<div class="meter {"call" if is_call else "skip"}"><div class="fill" style="width:{pct * 100:.1f}%"></div>{marker}</div>'
+        f'<div class="meter-scale"><span>0 %</span><span>100 %</span></div><p class="meter-note">{html.escape(note)}</p></div>',
+        unsafe_allow_html=True)
+
+
 def render_predict_tab(model, schema: dict) -> None:
+    st.markdown('<div class="section-intro"><h3>Evalúe a un cliente</h3>'
+                '<p>Ingrese los datos que conozca. Si alguno no se sabe, marque «No sé» y el modelo usará un valor neutro.</p></div>',
+                unsafe_allow_html=True)
     with st.form("entrada"):
         row = build_form(schema)
         submitted = st.form_submit_button("Evaluar", type="primary")
@@ -304,9 +365,11 @@ def render_predict_tab(model, schema: dict) -> None:
 
     first = result.iloc[0]
     class_names = schema["class_names"]
-    left, right = st.columns(2)
+    is_call = str(first["decision"]) == class_names[-1]                       # la clase «interesado» es la que se llama
+    left, right = st.columns([1, 1.25], gap="large")
     with left:
         decision_labels = schema.get("decision_labels", {})
+        st.markdown(f'<span class="{"dc-call" if is_call else "dc-skip"}"></span>', unsafe_allow_html=True)   # marca para el color de la tarjeta
         st.metric("Resultado sugerido", decision_labels.get(str(first["decision"]), str(first["decision"])))
         detail = f"Clase más probable: **{first['most_likely']}**"
         if "expected_cost" in result.columns:
@@ -319,8 +382,7 @@ def render_predict_tab(model, schema: dict) -> None:
         for message in result.attrs.get("warnings", []):
             st.warning(message)
     with right:
-        st.write("**Probabilidad por clase**")
-        st.bar_chart(pd.DataFrame({"probabilidad": [first[f"proba_{c}"] for c in class_names]}, index=class_names))
+        render_probability_meter(first[f"proba_{class_names[-1]}"], report_metrics.decision_threshold(schema.get("cost_matrix")), is_call)
 
     if "cost_matrix" in schema:
         with st.expander("¿Cómo se decide? (matriz de costos)"):
@@ -331,12 +393,12 @@ def render_predict_tab(model, schema: dict) -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="Venta cruzada de seguros", page_icon="🧭", layout="wide")
+    st.set_page_config(page_title=f"{BRAND} · Venta cruzada de seguros", page_icon="🛡️", layout="wide")
+    inject_style()
 
     model_ready = MODEL_PATH.exists() and SCHEMA_PATH.exists()
     schema = get_schema() if model_ready else {}
-    st.title(schema.get("app_title", DEFAULT_TITLE))
-    st.caption("Herramienta de apoyo a la decisión. **No decide por sí sola.**")
+    render_hero(schema)
 
     render_notices()
 
@@ -363,6 +425,7 @@ def main() -> None:
                 "Falta `models/model.joblib` o `models/input_schema.json`. "
                 "Ejecuta el notebook `notebooks/09_inferencia.ipynb` para generarlos."
             )
+    render_footer()
 
 
 if __name__ == "__main__":  # `streamlit run` ejecuta el archivo como programa principal

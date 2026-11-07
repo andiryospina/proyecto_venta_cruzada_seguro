@@ -1,0 +1,105 @@
+/* Estilo de la app «Contacto Inteligente». Es CSS estático del proyecto: no incluye contenido de ningún informe. */
+:root {
+  --navy: #0A1F44; --navy2: #14305E; --teal: #00A896; --teal-dark: #00897B; --amber: #FFB000;
+  --bg: #F3F6FB; --card: #FFFFFF; --line: #E1E8F2; --muted: #5B6B86;
+}
+
+/* Marco de la página: sin la barra y el menú de Streamlit */
+[data-testid="stHeader"] { background: transparent; }
+#MainMenu, footer, [data-testid="stToolbar"], [data-testid="stDecoration"], .stDeployButton { visibility: hidden; height: 0; }
+.block-container { padding-top: 1.1rem; padding-bottom: 3rem; max-width: 1180px; }
+h1, h2, h3, h4 { color: var(--navy); letter-spacing: -0.01em; }
+
+/* Portada */
+.hero {
+  position: relative; overflow: hidden; border-radius: 22px; padding: 28px 34px 26px; margin: 4px 0 18px; color: #fff;
+  background:
+    radial-gradient(760px 280px at 92% -25%, rgba(0, 168, 150, .60), transparent 62%),
+    radial-gradient(420px 240px at -2% 125%, rgba(255, 176, 0, .24), transparent 62%),
+    linear-gradient(120deg, #0A1F44 0%, #14305E 100%);
+  box-shadow: 0 14px 34px rgba(10, 31, 68, .20);
+}
+.hero-top { display: flex; align-items: center; gap: 16px; }
+.hero-logo { flex: none; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .25)); }
+.hero h1 { margin: 0; padding: 0; font-size: 2.15rem; font-weight: 800; color: #fff; line-height: 1.1; }
+.hero .kicker { font-size: .78rem; font-weight: 700; letter-spacing: .18em; color: #5FE0CF; text-transform: uppercase; margin-bottom: 2px; }
+.hero .tagline { margin: 10px 0 0; font-size: 1.05rem; opacity: .92; max-width: 760px; }
+.hero-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.chip { background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .24); border-radius: 999px; padding: 5px 13px; font-size: .82rem; }
+.hero-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 20px; }
+.stat { background: rgba(255, 255, 255, .10); border: 1px solid rgba(255, 255, 255, .20); border-radius: 16px; padding: 12px 20px; min-width: 190px; }
+.stat b { display: block; font-size: 1.75rem; line-height: 1.1; color: var(--amber); }
+.stat span { font-size: .84rem; opacity: .92; }
+
+/* Pestañas en forma de píldora */
+.stTabs [data-baseweb="tab-list"], [data-testid="stTabs"] [data-baseweb="tab-list"] {
+  gap: 6px !important; background: #fff !important; padding: 6px !important; border-radius: 14px !important; border: 1px solid var(--line) !important;
+  box-shadow: 0 4px 14px rgba(10, 31, 68, .05); flex-wrap: wrap !important; overflow: visible !important;
+}
+.stTabs [data-baseweb="tab"], [data-testid="stTabs"] [data-baseweb="tab"] {
+  height: auto !important; padding: 9px 15px !important; border-radius: 10px !important; background: transparent !important; flex: 0 0 auto;
+}
+.stTabs [data-baseweb="tab"] p, [data-testid="stTabs"] [data-baseweb="tab"] p { font-weight: 600; color: var(--navy); white-space: nowrap; }
+.stTabs [aria-selected="true"], [data-testid="stTabs"] [aria-selected="true"] { background: var(--teal) !important; box-shadow: 0 4px 12px rgba(0, 168, 150, .30); }
+.stTabs [aria-selected="true"] p, [data-testid="stTabs"] [aria-selected="true"] p { color: #fff !important; }
+.stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"],
+[data-testid="stTabs"] [data-baseweb="tab-highlight"], [data-testid="stTabs"] [data-baseweb="tab-border"] { display: none !important; }
+
+/* Tarjetas */
+[data-testid="stVerticalBlockBorderWrapper"] {
+  background: #fff; border: 1px solid var(--line) !important; border-radius: 18px !important; box-shadow: 0 4px 16px rgba(10, 31, 68, .05);
+}
+[data-testid="stForm"] { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 22px 24px; box-shadow: 0 4px 16px rgba(10, 31, 68, .05); }
+[data-testid="stMetric"] { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px 22px; box-shadow: 0 4px 16px rgba(10, 31, 68, .05); }
+[data-testid="stMetricValue"] { color: var(--navy); font-weight: 800; font-size: 2.3rem; }
+[data-testid="stMetricLabel"] p { color: var(--muted); font-weight: 600; }
+[data-testid="stAlert"] { border-radius: 14px; }
+[data-testid="stExpander"] { border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+[data-testid="stDataFrame"] { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+
+/* Botón principal */
+button[kind="primary"], button[kind="primaryFormSubmit"] {
+  background: linear-gradient(120deg, var(--teal-dark), var(--teal)); border: 0; color: #fff; border-radius: 12px; padding: .55rem 1.6rem; font-weight: 700;
+  box-shadow: 0 6px 16px rgba(0, 168, 150, .30);
+}
+button[kind="primary"]:hover, button[kind="primaryFormSubmit"]:hover { filter: brightness(1.06); }
+
+/* Resultado de la evaluación: la tarjeta cambia de color según la decisión */
+.dc-call, .dc-skip { display: none; }
+[data-testid="stElementContainer"]:has(.dc-call) + [data-testid="stElementContainer"] [data-testid="stMetric"],
+.element-container:has(.dc-call) + .element-container [data-testid="stMetric"] {
+  background: linear-gradient(120deg, #00897B, #00B39C); border: 0; box-shadow: 0 10px 26px rgba(0, 137, 123, .30);
+}
+[data-testid="stElementContainer"]:has(.dc-skip) + [data-testid="stElementContainer"] [data-testid="stMetric"],
+.element-container:has(.dc-skip) + .element-container [data-testid="stMetric"] {
+  background: linear-gradient(120deg, #4A5B7C, #6C7C9B); border: 0; box-shadow: 0 10px 26px rgba(74, 91, 124, .28);
+}
+[data-testid="stElementContainer"]:has(.dc-call) + [data-testid="stElementContainer"] [data-testid="stMetric"] *,
+[data-testid="stElementContainer"]:has(.dc-skip) + [data-testid="stElementContainer"] [data-testid="stMetric"] *,
+.element-container:has(.dc-call) + .element-container [data-testid="stMetric"] *,
+.element-container:has(.dc-skip) + .element-container [data-testid="stMetric"] * { color: #fff !important; }
+[data-testid="stElementContainer"]:has(.dc-call) + [data-testid="stElementContainer"] [data-testid="stMetricValue"],
+[data-testid="stElementContainer"]:has(.dc-skip) + [data-testid="stElementContainer"] [data-testid="stMetricValue"] { font-size: 2.8rem; letter-spacing: .02em; }
+
+/* Medidor de probabilidad */
+.meter-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px 22px 16px; box-shadow: 0 4px 16px rgba(10, 31, 68, .05); }
+.meter-title { color: var(--muted); font-weight: 600; font-size: .95rem; }
+.meter-value { color: var(--navy); font-weight: 800; font-size: 2.3rem; line-height: 1.15; }
+.meter { position: relative; height: 14px; border-radius: 999px; background: #E6ECF5; margin: 30px 0 8px; }
+.meter .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, #00A896, #3FD6C3); }
+.meter.skip .fill { background: linear-gradient(90deg, #6C7C9B, #9AA8C2); }
+.meter .thr { position: absolute; top: -7px; bottom: -7px; width: 3px; border-radius: 2px; background: var(--amber); }
+.meter .thr span { position: absolute; top: -21px; left: 50%; transform: translateX(-50%); font-size: .72rem; font-weight: 700; color: #8A6200; white-space: nowrap; }
+.meter-scale { display: flex; justify-content: space-between; color: var(--muted); font-size: .78rem; }
+.meter-note { margin: 12px 0 0; color: var(--muted); font-size: .88rem; }
+
+/* Encabezado de sección dentro de una pestaña */
+.section-intro h3 { margin: 6px 0 2px; }
+.section-intro p { margin: 0 0 12px; color: var(--muted); }
+
+/* Pie */
+.app-footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
+
+@media (max-width: 720px) {
+  .hero { padding: 22px 20px; } .hero h1 { font-size: 1.6rem; } .stat { min-width: 100%; }
+}

@@ -255,3 +255,29 @@ def test_real_segments_file_has_gender_age_and_region():
 ])
 def test_real_files_the_app_reads_exist(relative):
     assert (ROOT / relative).is_file()
+
+
+# --- portada de la app: cifras y umbral (specs/008, mejora visual)
+def test_hero_stats_come_from_the_json_and_skip_what_is_missing():
+    from proyecto.reporting.metrics import hero_stats
+
+    metrics = {"prueba": {"modelo": {"contact_rate": 0.365, "recall": 0.879, "cost": 0.3312}, "linea_base": {"cost": 0.3720}}}
+    assert hero_stats(metrics) == [("36,5 %", "de la lista a llamar"), ("87,9 %", "de los interesados encontrados"),
+                                   ("−11 %", "de costo frente a la mejor regla")]
+    assert hero_stats({"prueba": {"modelo": {"recall": 0.879}}}) == [("87,9 %", "de los interesados encontrados")]
+    assert hero_stats(None) == [] and hero_stats({}) == []
+
+
+def test_hero_stats_never_show_a_saving_when_the_model_is_not_cheaper():
+    from proyecto.reporting.metrics import hero_stats
+
+    worse = {"prueba": {"modelo": {"cost": 0.40}, "linea_base": {"cost": 0.37}}}
+    assert hero_stats(worse) == []
+
+
+def test_decision_threshold_is_derived_from_the_cost_matrix():
+    from proyecto.reporting.metrics import decision_threshold
+
+    assert decision_threshold([[0, 1], [5, 0]]) == pytest.approx(1 / 6)
+    assert decision_threshold([[0, 1], [10, 0]]) == pytest.approx(1 / 11)
+    assert decision_threshold(None) is None and decision_threshold([[0, 0], [0, 0]]) is None and decision_threshold("no") is None

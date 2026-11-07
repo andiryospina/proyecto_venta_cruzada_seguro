@@ -113,3 +113,29 @@ def segments_by_variable(df: pd.DataFrame | None) -> dict[str, pd.DataFrame]:
             "Recall": [format_percent(v) for v in group["recall"]],
         })
     return tables
+
+
+def hero_stats(metrics: dict | None) -> list[tuple[str, str]]:
+    """Tres cifras de la portada de la app: (valor ya formateado, etiqueta). Lo que falta en el JSON no se muestra."""
+    stats: list[tuple[str, str]] = []
+    contact = _get(metrics, "prueba", "modelo", "contact_rate")
+    recall = _get(metrics, "prueba", "modelo", "recall")
+    cost = _get(metrics, "prueba", "modelo", "cost")
+    rule = _get(metrics, "prueba", "linea_base", "cost")
+    if _is_number(contact):
+        stats.append((format_percent(contact), "de la lista a llamar"))
+    if _is_number(recall):
+        stats.append((format_percent(recall), "de los interesados encontrados"))
+    if _is_number(cost) and _is_number(rule) and rule > 0 and cost < rule:
+        stats.append((f"−{format_percent((rule - cost) / rule, 0)}", "de costo frente a la mejor regla"))
+    return stats
+
+
+def decision_threshold(cost_matrix) -> float | None:
+    """Probabilidad desde la que conviene llamar, según la matriz [[0, llamada inútil], [venta perdida, 0]]: c01 / (c01 + c10)."""
+    try:
+        wasted_call, lost_sale = float(cost_matrix[0][1]), float(cost_matrix[1][0])
+    except (TypeError, ValueError, IndexError, KeyError):
+        return None
+    total = wasted_call + lost_sale
+    return wasted_call / total if wasted_call > 0 and lost_sale > 0 else None
