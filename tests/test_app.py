@@ -107,7 +107,7 @@ def test_honesty_notices_are_visible_above_the_tabs_and_come_from_the_files():
     warnings = " ".join(str(w.value) for w in at.warning)
     assert "Atributos sensibles" in warnings and "La prueba en el grupo" in warnings
     assert "Atributos sensibles" in ficha                                # el texto sale de la ficha, no está reescrito
-    assert any("pendientes de terceros" in str(i.value) for i in at.info)
+    assert not any("pendientes de terceros" in str(i.value) for i in at.info)                          # el aviso azul de pendientes se quitó; el detalle vive en la pestaña 7
     assert "dos veces" in " ".join(str(w.value) for w in _top_tabs(at)[4].warning)                     # la sección 3.1 destacada en la pestaña de resultados
 
 

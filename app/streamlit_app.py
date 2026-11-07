@@ -105,10 +105,9 @@ def show_image(relative: str, caption: str) -> None:
 # ---------- avisos de honestidad (extraídos de los archivos, no reescritos) ----------
 
 def render_notices() -> None:
-    """Bloque visible sobre las pestañas: prueba abierta dos veces, uso de edad y género, pendientes de terceros."""
+    """Bloque visible sobre las pestañas: prueba abierta dos veces y uso de edad y género. (Los pendientes viven en la pestaña 7.)"""
     ficha = load_text("models/ficha_modelo.md")
     opened = load_text("reports/prueba_abierta.txt")
-    decisions = load_text("reports/decisiones_del_grupo.md")
     with st.container(border=True):
         st.markdown("**Avisos importantes antes de usar este modelo**")
         limits = documents.find_section(ficha, "Límites")
@@ -122,13 +121,6 @@ def render_notices() -> None:
         if opened is not None:
             with st.expander("Constancia de apertura de la prueba cerrada (`reports/prueba_abierta.txt`)"):
                 st.markdown(opened.replace("\n", "  \n"))
-        _, pending = documents.list_pending(decisions)
-        if pending:
-            open_items = [p.code for p in pending if not p.closed]
-            st.info(f"**Decisiones pendientes de terceros:** {len(open_items)} abiertas ({', '.join(open_items)}) y "
-                    f"{len(pending) - len(open_items)} cerradas. Detalle en la pestaña 7.")
-        elif decisions is None:
-            warn_missing("reports/decisiones_del_grupo.md")
 
 
 # ---------- pestañas de contenido ----------
