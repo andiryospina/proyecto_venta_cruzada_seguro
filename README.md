@@ -1,8 +1,8 @@
-# Venta cruzada de seguros
+# Venta cruzada inteligente: predicción del interés en seguro de vehículo
 
 > Predecir qué clientes con seguro de salud aceptarán un seguro de vehículo, para que el equipo comercial priorice a quién llamar. _(Borrador: el grupo confirma el nombre y el caso.)_
 
-**App desplegada:** _enlace público de Streamlit (se completa en la clase 5)_
+**App desplegada:** [https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/](https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/) *(Streamlit Community Cloud; se despliega desde el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`, rama `main`, idéntico al `main` de este repositorio)*
 
 **Estado (2026-11-06):** etapas 1 a 9 completas en local. Modelo final: LightGBM con 5 variables nuevas, sin `Policy_Sales_Channel` y con `Gender`; costo 0,3312 por cliente en la prueba frente a 0,3720 de la regla "sin seguro de vehículo y con daño" (diferencia −0,0408, IC 95 % [−0,0453; −0,0362]). Ver [`reports/07_validacion.md`](reports/07_validacion.md), [`models/ficha_modelo.md`](models/ficha_modelo.md) y, sobre cómo se unieron las dos ramas del grupo, [`reports/integracion_main.md`](reports/integracion_main.md). Pendiente: registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`). Orden para reproducir: notebooks 03 a 09 y `pytest`.
 
@@ -40,8 +40,19 @@ Nació de la rama `feature/estudiantes` del repositorio del curso (ver `LEEME-PR
 clonan **este** repositorio. Para arrancar, sigue `material-del-curso/guias/montaje-proyecto.md`.
 
 ## Equipo
+
+**Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro
+
 | Integrante | Rol |
 |---|---|
-| | |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Carolina Orejuela Perea | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jessica Andiry Ospina Valencia | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Katherin Andrea Tabares | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jhonatan Rojas Cardona | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+
+*Nota:* los commits del repositorio los hicieron Ricardo (integración, registro en Databricks, app y despliegue) y Jessica Andiry (modelado y validación); el resto del trabajo fue conjunto, según el grupo.
+
+*Nombre de la startup:* **Contacto Inteligente**
 
 Especificación del proyecto: [`especificacion-proyecto.md`](especificacion-proyecto.md) · Especificaciones por etapa: [`especificaciones/`](especificaciones/) · Decisiones del grupo y su estado: [`reports/decisiones_del_grupo.md`](reports/decisiones_del_grupo.md)

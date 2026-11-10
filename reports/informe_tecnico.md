@@ -1,4 +1,4 @@
-# Informe técnico — Venta cruzada de seguro de vehículo
+# Informe técnico — Contacto Inteligente: venta cruzada inteligente, predicción del interés en seguro de vehículo
 
 > **BORRADOR para revisión del grupo (actualizado el 2026-11-06).** Ensamblado a partir de los informes de `reports/`; las cifras de la
 > prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`. Se entrega el domingo 15 de noviembre (hito H4).
@@ -6,7 +6,7 @@
 > **Integración (2026-11-06, `specs/007-integracion-main`):** el grupo tenía dos modelos finales; quedó el que incluye las 5 variables nuevas
 > (D15 en `reports/decisiones_del_grupo.md`). Este informe describe **ese** modelo. Qué se tomó de cada rama: `reports/integracion_main.md`.
 
-**Grupo:** **[PENDIENTE: P07]** (integrantes y roles) · **Repositorio:** `andiryospina/proyecto_venta_cruzada_seguro` · **App:** **[PENDIENTE]** (enlace público)
+**Grupo:** Ricardo González Restrepo (cuenta `rigonzalezre-dot`), Carolina Orejuela Perea, Jessica Andiry Ospina Valencia, Katherin Andrea Tabares, Jhonatan Rojas Cardona (trabajo conjunto de los cinco en todas las etapas; commits de Ricardo y Jessica Andiry; startup: **Contacto Inteligente**) · **Repositorio:** https://github.com/andiryospina/proyecto_venta_cruzada_seguro · **App:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
 ## Resumen ejecutivo
 
@@ -107,14 +107,14 @@ Cinco modelos y dos líneas base, con los mismos datos (base + 5 nuevas), los mi
 
 > Fuente: `reports/08_registro.md`, `models/ficha_modelo.md`, `specs/006-registro-modelo/`.
 
-- **Pendiente (T009 de `specs/006-registro-modelo`):** registrar el modelo final en Databricks (Unity Catalog) como versión nueva de `workspace.default.venta_cruzada_seguros` y moverle el alias `champion`, con la comprobación de ida y vuelta (el modelo recuperado debe predecir igual que el local). **Hoy `champion` (versión 1) es el modelo anterior de `main`**, que ya no es el final.
+- **Registrado en Databricks (T009, 2026-11-06):** `workspace.default.venta_cruzada_seguros` **versión 2** con el alias `champion` (la versión 1 es el modelo anterior de `main`). Ida y vuelta comprobada: el modelo recuperado predice igual que el local (diferencia máxima 0,0). Detalle en `reports/08_registro.md`.
 - **Exportado a `models/model.joblib`** desde `models/final_pipeline.joblib` (etapa 7): capa `ServingModel` que traduce lo que escribe una persona a las columnas limpias, con su esquema en `models/input_schema.json`. Comprobado: **mismas probabilidades** que el modelo de la etapa 7 en 200 clientes de entrenamiento (diferencia máxima 0), sin volver a abrir la prueba.
 
 ## 8. Despliegue
 
 > Fuente: `reports/09_despliegue.md`.
 
-**[PENDIENTE]** el enlace público. La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
+Enlace público: https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/ (Streamlit Community Cloud, desplegada desde una copia idéntica del `main` en el fork `rigonzalezre-dot/proyecto_venta_cruzada_seguro`; probada en el enlace público el 2026-11-06: caso normal → LLAMAR (0,71), caso límite → NO LLAMAR (0,01) y «no sé» responde sin errores; detalle en `reports/09_despliegue.md`). La app carga `models/model.joblib` desde el repositorio, no consulta Databricks, pide 9 datos (sin canal de venta), valida los datos (el formulario no admite una edad fuera de 18–100 y la función de predicción rechaza una edad de 150 con un mensaje claro) y trata "no sé" con valores del entrenamiento. Probada en local con la prueba automática de Streamlit.
 
 ## 9. Riesgos, límites y siguientes pasos
 
@@ -123,7 +123,7 @@ Cinco modelos y dos líneas base, con los mismos datos (base + 5 nuevas), los mi
 - **La prueba se usó para dos modelos** (sección 6): las cifras de este modelo son honestas porque nada se ajustó después de verla, pero la próxima evaluación debe hacerse con datos nuevos.
 - **Uso responsable:** usa edad, género y región; **Legal debe aprobar el uso del género** y el grupo definir qué hacer con los interesados de 18–29 y 60+ que no recibirían la llamada **[P04]**. Falta medir el modelo sin `Gender` (con validación, no con la prueba).
 - **Supuestos por confirmar:** R = 5 **[P01]** (con 10 a 1 la regla es mejor), la capacidad de llamadas **[P02]**, si hay que explicar cada llamada **[P03]** (si sí, la alternativa explicable es la regresión logística, que en el torneo costó 0,3389 frente a 0,3324; habría que optimizarla y validarla) y si el canal de venta se conoce antes de llamar **[P11]**.
-- **Siguiente mejora concreta:** registrar el modelo en Databricks (T009); conseguir datos nuevos (historial de contactos, vencimiento del seguro actual) **[P08]**; vigilar la tasa real de interés frente a la predicha y reentrenar si se aleja más de 10 % relativo durante 2 campañas (D11).
+- **Siguiente mejora concreta:** conseguir datos nuevos (historial de contactos, vencimiento del seguro actual) **[P08]**; vigilar la tasa real de interés frente a la predicha y reentrenar si se aleja más de 10 % relativo durante 2 campañas (D11).
 
 ## Anexo: cómo reproducir el proyecto
 
@@ -144,8 +144,8 @@ streamlit run app/streamlit_app.py
 
 - [x] Las **9 secciones** tienen contenido y cada decisión lleva su motivo (la 7 y la 8 tienen pasos pendientes, declarados).
 - [x] Las cifras de la prueba coinciden con `reports/07_metricas_test.json` y `reports/07_validacion.md`.
-- [ ] Completar integrantes, roles, nombre de la startup y enlace de la app.
-- [ ] Registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`).
+- [x] Integrantes, nombre de la startup, repositorio y enlace de la app (el trabajo fue conjunto; ver P07).
+- [x] Registrar el modelo final en Databricks (T009 de `specs/006-registro-modelo`): versión 2, alias `champion`.
 - [x] No hay credenciales, `.env` ni datos personales.
 - [ ] El enlace de la app abre en una ventana privada.
 - [ ] Un tercero reproduce el proyecto con el anexo.

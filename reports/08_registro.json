@@ -1,0 +1,22 @@
+{
+  "tracking": "databricks (token)",
+  "experimento": "venta-cruzada-registro",
+  "modelo_registrado": "workspace.default.venta_cruzada_seguros",
+  "version": 2,
+  "alias": "champion",
+  "run_id": "62407bc214714c8fb8ac118b99005076",
+  "columnas_entrada": [
+    "Gender",
+    "Age",
+    "Driving_License",
+    "Region_Code",
+    "Previously_Insured",
+    "Vehicle_Age",
+    "Vehicle_Damage",
+    "Annual_Premium",
+    "Vintage",
+    "is_min_premium"
+  ],
+  "ida_y_vuelta_diferencia_maxima": 0.0,
+  "registrado_el": "2026-11-06T17:47:18"
+}

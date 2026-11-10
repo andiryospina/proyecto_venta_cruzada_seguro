@@ -83,7 +83,7 @@ decidir**. Aun así es una desviación del principio III de la constitución y s
 
 ## Pendientes
 
-- **T009 de `specs/006-registro-modelo`:** registrar el modelo final en Databricks y mover `champion` (hoy apunta a la versión 1, el modelo de `main`).
+- ~~**T009 de `specs/006-registro-modelo`**~~ **Hecha el 2026-11-06:** `champion` apunta a la versión 2 (el modelo final) en `workspace.default.venta_cruzada_seguros`.
 - **T024:** mirar la app en el navegador.
 - **Registro de decisiones:** D01–D11 y P01–P04 conservan cifras del código de `main` (marcadas como historia); conviene revisarlas.
 - Revisión del grupo en el *pull request* a `main`.

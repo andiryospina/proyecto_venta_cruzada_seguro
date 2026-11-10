@@ -10,7 +10,7 @@
 Predice la probabilidad de que un cliente con seguro de salud se interese por un **seguro de vehículo**, para que el equipo comercial decida **a quién llamar primero**. No decide si se vende o se niega un seguro.
 
 - **Modelo:** LightGBM con parámetros optimizados (Optuna, ensayo #13: 186 árboles, tasa de aprendizaje 0,0315, 31 hojas, `min_child_samples` 137, `subsample` 0,943, `colsample_bytree` 0,601, `reg_lambda` 0,478), con las variables nuevas y el preprocesamiento dentro de un solo `Pipeline` (`models/final_pipeline.joblib`). Sin calibrar (la calibración no mejoró; `reports/07_validacion.md`, sección 2).
-- **Registro:** se registrará como versión nueva de `workspace.default.venta_cruzada_seguros` con el alias `champion` (Databricks, Unity Catalog; tarea T009 de `specs/006-registro-modelo`). **Hasta entonces, `champion` (versión 1) es el modelo anterior de `main`, que ya no es el final.** La app no depende del registro: usa `models/model.joblib`, exportado de `final_pipeline.joblib` y comprobado (mismas probabilidades en 200 clientes de entrenamiento).
+- **Registro:** `workspace.default.venta_cruzada_seguros` **versión 2**, alias `champion` (Databricks, Unity Catalog; registrada el 2026-11-06). La versión 1 es el modelo anterior de `main`. La app usa el archivo `models/model.joblib` y no consulta Databricks.
 - **Regla de decisión:** llamar si la probabilidad de interés supera **1 ÷ (R + 1) = 16,7 %**, con R = 5 (perder a un interesado cuesta 5 veces una llamada inútil; **hipótesis por confirmar, P01**). En la prueba equivale a llamar al 36,5 % de los clientes.
 
 ## Datos de entrenamiento

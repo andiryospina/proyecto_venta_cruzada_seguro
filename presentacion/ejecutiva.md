@@ -2,7 +2,7 @@
 marp: true
 theme: default
 paginate: true
-header: "Presentación ejecutiva · Venta cruzada de seguro de vehículo"
+header: "Contacto Inteligente · Venta cruzada inteligente: predicción del interés en seguro de vehículo"
 footer: "Casos Avanzados · Maestría en Ingeniería Analítica"
 ---
 
@@ -41,11 +41,11 @@ footer: "Casos Avanzados · Maestría en Ingeniería Analítica"
 
 # 4 · Demo de la app
 
-**Enlace:** *(se completa al desplegar)*
+**Enlace:** https://proyectoventacruzadasegur-fvvb72lfv96hczzujvoutd.streamlit.app/
 
-1. **Un caso normal:** hombre de 34 años, sin seguro previo, con daño en el vehículo → el modelo da 39 % de probabilidad y recomienda **LLAMAR**.
-2. **Un caso límite:** el mismo cliente con seguro previo y sin daño → 0,3 %, **NO LLAMAR**.
-3. **Un dato inválido:** edad de 150 años → se rechaza: «Age: debe estar entre 18 y 100».
+1. **Un caso normal:** cliente con daño en el vehículo y sin seguro previo → el modelo recomienda **LLAMAR** (en la prueba en vivo dio 71 % de probabilidad).
+2. **Un caso límite:** el mismo cliente con seguro previo y sin daño → **NO LLAMAR** (1 %).
+3. **Un dato inválido o desconocido:** el formulario no deja escribir una edad fuera de 18 a 100, y si se marca «No sé» en un campo la app responde igual con un valor neutro.
 
 > Plan B: captura de pantalla con fecha y la app en local (`streamlit run app/streamlit_app.py`).
 

@@ -7,11 +7,13 @@
 
 | Integrante | Rol (datos / modelado / app / negocio) |
 |---|---|
-| | |
-| | |
-| | |
+| Ricardo González Restrepo (cuenta `rigonzalezre-dot`) | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Carolina Orejuela Perea | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jessica Andiry Ospina Valencia | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Katherin Andrea Tabares | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
+| Jhonatan Rojas Cardona | Trabajo conjunto en todas las etapas del proyecto (según el grupo, 2026-11-06) |
 
-Nombre de la "startup": _______________   Repositorio (público): _______________
+Nombre del proyecto: **Venta cruzada inteligente: predicción del interés en seguro de vehículo**   Nombre de la "startup": **Contacto Inteligente**   Repositorio (público): https://github.com/andiryospina/proyecto_venta_cruzada_seguro
 
 ## 2. Caso de negocio
 
@@ -107,6 +109,6 @@ Nombre de la "startup": _______________   Repositorio (público): ______________
 | 2026-11-05 | La ejecución de la etapa 07 quedó en **MLflow local**, no en Databricks | El `.env` de quien ejecutó tenía `MLFLOW_FORCE_LOCAL` y la conexión comentada; no se repite porque sería abrir la prueba otra vez. Las cifras están en `reports/07_metricas_test.json` |
 | 2026-11-05 | *(desde `main`)* Conservar `Gender` en el modelo (D12 del registro del grupo) | Quitarla no tiene costo medible; el grupo decidió mantenerla. Exige auditoría de equidad (hecha en la etapa 07) y aprobación de Legal |
 | 2026-11-05 | *(desde `main`, **reemplazada el 2026-11-06**)* Modelo final: LightGBM con parámetros de partida y sin variables nuevas (D14) | Reemplazada por la decisión del 2026-11-06 (D15). Ese modelo también se evaluó en la prueba (19:09) |
-| 2026-11-05 | *(desde `main`)* Registrar el modelo final en Databricks (Unity Catalog, alias `champion`); la app usa `models/model.joblib` y no consulta Databricks | El registro es la fuente de verdad. Hoy `champion` (v1) es el modelo de `main`; pasa al modelo final con T009 de `specs/006-registro-modelo` |
+| 2026-11-05 | *(desde `main`)* Registrar el modelo final en Databricks (Unity Catalog, alias `champion`); la app usa `models/model.joblib` y no consulta Databricks | El registro es la fuente de verdad. `champion` apunta desde el 2026-11-06 a la **versión 2**, el modelo final (T009 de `specs/006-registro-modelo`); la versión 1 es el modelo anterior de `main` |
 | 2026-11-06 | **Integración de `main`: el modelo final es el de esta rama (D15)** — LightGBM con las 5 variables nuevas, sin `Policy_Sales_Channel`, con `Gender`, parámetros de Optuna. Código oficial de `src/` = el de esta rama | El grupo exige incluir las variables nuevas. No se eligió comparando cifras de prueba. La prueba quedó abierta dos veces en el grupo (19:09 y 20:43 del 2026-11-05) y se declara (`reports/07_validacion.md` §3.1). Detalle: `reports/integracion_main.md` |
 | 2026-11-06 | El modelo se registra como `venta_cruzada_seguros` (nombre que ya usaba el grupo), no `venta_cruzada_lgbm` | Un solo nombre en el registro; la versión 1 de `main` queda como historia |

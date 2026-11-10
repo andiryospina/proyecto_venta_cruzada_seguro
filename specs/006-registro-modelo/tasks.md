@@ -30,7 +30,7 @@ Una tarea se marca `[x]` solo cuando su prueba pasa (`pytest tests`). **No se le
   `train.parquet`; `assert diferencia <= 1e-9` (si falla, no se escribe la constancia).
 - [x] T008 Sección 5: escribir `reports/08_registro.json` (tracking, experimento, nombre completo, versión, alias, `run_id`, diferencia
   de la ida y vuelta, fecha y hora).
-- [ ] T009 Ejecutar el notebook completo **una vez, dentro de Databricks** (Git folder actualizado desde GitHub; si la sección 1 pide
+- [x] T009 *(hecha el 2026-11-06 desde el computador de Ricardo con token, no dentro de Databricks: `workspace.default.venta_cruzada_seguros` versión 2, alias `champion`, ida y vuelta con diferencia 0,0; se arregló antes la línea `fecha:` de `reports/prueba_abierta.txt`, que el cuaderno lee)* Ejecutar el notebook completo **una vez, dentro de Databricks** (Git folder actualizado desde GitHub; si la sección 1 pide
   versiones, `%pip install -r ../requirements.txt`) y `pytest tests -q` en verde. Si Databricks rechaza el registro (permisos de Unity
   Catalog), detenerse y avisar al grupo antes de pasar a local. Desde Databricks, commit y push de `reports/08_registro.json` y del
   notebook con sus salidas; después, `git pull` en el equipo local. *(Enmienda 2026-11-05, ver plan. T003–T008 verificadas con un
